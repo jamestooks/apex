@@ -13,6 +13,8 @@ export function initCanvas(el) {
   addEventListener('resize', resize);
   return ctx;
 }
+// Draw into another 2D context (gallery, previews). Logical height h.
+export function useContext(c, h) { ctx = c; if (h) view.H = h; }
 export function resize() {
   const el = view.el; if (!el) return;
   const vw = innerWidth, vh = innerHeight;

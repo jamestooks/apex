@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><title>Apex art gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Lora:ital@1&display=swap" rel="stylesheet">
+<style>body{background:#111;color:#ddd;font:14px system-ui;margin:16px}canvas{margin:6px;border:1px solid #333}.row{display:flex;flex-wrap:wrap}</style></head>
+<body><h1>Apex art gallery</h1><div class="row" id="themes"></div><div class="row" id="raptors"></div><div class="row" id="props"></div>
+<script type="module">
+import * as C from '../src/engine/canvas.js';
+import { drawWorld, drawForeground, THEMES } from '../src/art/world.js';
+import { drawRaptor } from '../src/art/raptor.js';
+import * as P from '../src/art/props.js';
+import { RIMS } from '../src/store.js';
+
+function panel(parent, w, h) {
+  const el = document.createElement('canvas'); el.width = w; el.height = h; document.getElementById(parent).append(el);
+  C.view.el = el; C.view.H = h; C.view.scale = 1; C.view.dpr = 1;
+  const ctx = el.getContext('2d');
+  return ctx;
+}
+const __setCtxForGallery = (c, h) => C.useContext(c, h);
+for (const name of Object.keys(THEMES)) {
+  const c = panel('themes', 400, 520 + 190); __setCtxForGallery(c, 710);
+  drawWorld(name, 120, 0, 3.3); drawRaptor(150, C.GY() + 2, 1, 'stand', 3.3, 1, { rim: RIMS[0] });
+  drawForeground(name, 120, 3.3);
+  c.fillStyle = '#fff'; c.font = '20px Oswald'; c.fillText(name.toUpperCase(), 12, 30);
+}
+const poses = ['stand', 'crouch', 'walk', 'run', 'still', 'lie'];
+RIMS.forEach((rim, ri) => {
+  const c = panel('raptors', 1100, 140); __setCtxForGallery(c, 140 + 190);
+  c.fillStyle = '#2a1520'; c.fillRect(0, 0, 1100, 140);
+  [0, 3, 6].forEach((done, i) => drawRaptor(90 + i * 150, 120, 1 + 0.06 * done, 'stand', 1, 1, { rim, feathers: 4 + 2 * done, scars: i }));
+  poses.forEach((p, i) => drawRaptor(560 + i * 90, 120, 0.8, p, 1.2, 1, { rim }));
+});
+{
+  const c = panel('props', 1100, 700); __setCtxForGallery(c, 700 + 190);
+  c.fillStyle = '#3a2030'; c.fillRect(0, 0, 1100, 700);
+  P.drawCarcass(80, 120); P.drawHerd(200, 130, 3, 1, true); P.drawHadrosaur(560, 140, 1, 1, 1, true); P.drawTrex(800, 200, 1, 1, 1, true);
+  P.drawBeetle(80, 260, 1); P.drawButterfly(150, 260, 1); P.drawAmber(220, 260, 1); P.drawFootprint(290, 260, 1); P.drawFootprint(330, 260, 0, 0.6);
+  P.drawLog(450, 270, 120, true, 1); P.drawRock(620, 290, 90, 50); P.drawLavaStone(760, 280, true, 1); P.drawLavaStone(860, 280, false, 1, true);
+  P.drawCallBubble(980, 260, 'LEFT!');
+  c.save(); c.translate(0, 330); P.drawRain(2, 1); P.drawLightning(0.8); c.restore();
+}
+window.galleryReady = true;
+</script></body></html>
