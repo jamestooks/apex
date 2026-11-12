@@ -46,6 +46,7 @@ export function makeBot(policy, fi) {
   function calm({ shell: sh, runner }) {
     const sc = runner.scene; if (!sc) { release(); ptrUp(); return; }
     if (runner.step === 'repair') { if (sh.choices) sh.choiceCb('peace'); return; }
+    if (runner.step === 'winddown') { useTool(sh, 'longExhale'); return; }
     if (sc.current !== undefined && sc.order !== undefined || runner.step === 'scene') { // teach Nip
       const id = sc.current; if (id) useTool(sh, id); else release(); return;
     }
@@ -82,7 +83,7 @@ export function makeBot(policy, fi) {
   }
   function lazy(ctx) {
     const { shell: sh, runner } = ctx, sc = runner.scene;
-    if (!sc || runner.step === 'practice' || runner.step === 'scene' || runner.step === 'repair') return calm(ctx);
+    if (!sc || runner.step === 'practice' || runner.step === 'scene' || runner.step === 'repair' || runner.step === 'winddown') return calm(ctx);
     if (sc.nextPrint) { const p = sc.nextPrint(); if (p && st.cool <= 0) { fi.tap(p.x, p.y); st.cool = 0.25; } return; }
     if (sc.speedFor) { if (sc.stopAt) useTool(sh, 'burstRest'); return; }
     if (sc.pounce) { if (sc.signalOn) ptrUp(); else ptrDown(); return; }

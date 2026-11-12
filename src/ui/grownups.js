@@ -98,12 +98,17 @@ function missions(body, app, p, rerender) {
   body.append(h('p', { class: 'small' }, 'Never tie missions to screen time or money.'));
 }
 function signs(body, app, p, rerender) {
-  body.append(h('p', { class: 'muted' }, 'Add warning signs in their own words. They will appear in the game when they pick signs.'));
+  body.append(h('p', { class: 'muted' }, 'Children with ADHD often notice their own body signals late. Add what YOU notice first; it goes on their plan card beside the signs they chose. You can also add signs in their own words for them to pick.'));
   for (const k of INST) {
     const inp = h('input', { type: 'text', maxlength: 28, placeholder: 'e.g. Stomping feet' });
+    const seen = h('input', { type: 'text', maxlength: 28, placeholder: 'e.g. Goes very quiet', 'data-parent-sign': k });
     body.append(h('div', { class: 'card' }, h('h3', {}, INSTINCTS[k].label),
       h('p', { class: 'small' }, 'Built in: ' + SIGN_OPTIONS[k].join(', ')),
       h('div', { class: 'row' }, (p.customSigns[k] || []).map(s => h('button', { class: 'quiet', style: { flex: 'none' }, onClick: () => { app.store.updateProfile(p.id, q => { q.customSigns[k] = q.customSigns[k].filter(x => x !== s); }); rerender(); } }, s + ' ✕'))),
+      h('p', { class: 'small' }, 'What grown-ups notice first'),
+      h('div', { class: 'row' }, (p.parentSigns[k] || []).map(s => h('button', { class: 'quiet', style: { flex: 'none' }, onClick: () => { app.store.updateProfile(p.id, q => { q.parentSigns[k] = q.parentSigns[k].filter(x => x !== s); }); rerender(); } }, s + ' ✕'))),
+      h('div', { class: 'row' }, seen, h('button', { style: { flex: 'none' }, 'data-add-parent-sign': k, onClick: () => { const v = seen.value.trim(); if (v) { app.store.updateProfile(p.id, q => { if (!q.parentSigns[k].includes(v)) q.parentSigns[k].push(v); }); rerender(); } } }, 'Add')),
+      h('p', { class: 'small' }, 'Extra signs for them to pick from'),
       h('div', { class: 'row' }, inp, h('button', { style: { flex: 'none' }, onClick: () => { const v = inp.value.trim(); if (v) { app.store.updateProfile(p.id, q => { if (!q.customSigns[k].includes(v)) q.customSigns[k].push(v); }); rerender(); } } }, 'Add'))));
   }
 }
@@ -124,8 +129,10 @@ function settings(body, app, p) {
       p.restUntil > Date.now() ? h('button', { class: 'ghost', onClick: () => { save(q => { q.restUntil = 0; }); app.show('grownups'); } }, 'End the rest now') : null),
     h('div', { class: 'card' }, h('h3', {}, 'Sound and feel'), check('sound', 'Sound'), check('vibration', 'Vibration (phones that support it)'),
       check('reducedMotion', 'Reduced motion (no screen shake, still backgrounds)'), check('largeText', 'Larger text'),
-      h('label', {}, 'Intensity of heartbeat, growl and red edges', h('select', { id: 'set-intensity', onChange: e => save(q => { q.settings.intensity = e.target.value; }) },
-        [['normal', 'Normal'], ['low', 'Low (if it stresses them)']].map(([v, l]) => h('option', { value: v, selected: S.intensity === v }, l))))),
+      h('p', { class: 'small' }, 'These effects rise as the meter rises and soften while a tool is being used. Watch the first sessions: if they wind your child up rather than help them notice, turn them down.'),
+      ...[['feelSound', 'Heartbeat and growl'], ['feelRed', 'Red at the screen edges'], ['feelShake', 'Screen shake']].map(([key, label]) => h('label', {}, label, h('select', { id: 'set-' + key, onChange: e => save(q => { q.settings[key] = e.target.value; }) },
+        [['off', 'Off'], ['soft', 'Gentle (default)'], ['full', 'Full']].map(([v, l]) => h('option', { value: v, selected: (S[key] || 'soft') === v }, l))))),
+    ),
     h('div', { class: 'card' }, h('h3', {}, 'Chapters open'), h('p', { class: 'small' }, 'By default chapters open in order. Tick to open specific chapters.'),
       h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: !Array.isArray(S.chaptersOpen), onChange: e => { save(q => { q.settings.chaptersOpen = e.target.checked ? null : CHAPTERS.filter(c => c.n === 1 || (q.chapters[c.n - 1] && q.chapters[c.n - 1].done)).map(c => c.n); }); app.show('grownups'); } }), 'Open in order (recommended)'),
       Array.isArray(S.chaptersOpen) ? CHAPTERS.map(c => h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: S.chaptersOpen.includes(c.n), onChange: e => save(q => { const set = new Set(q.settings.chaptersOpen); e.target.checked ? set.add(c.n) : set.delete(c.n); q.settings.chaptersOpen = [...set].sort(); }) }), `${c.n}. ${c.title}`)) : null));
@@ -133,7 +140,8 @@ function settings(body, app, p) {
 function coach(body) {
   body.append(h('p', { class: 'muted' }, 'The game only works if grown-ups use its words in the moment. Doing the tool with them works better than telling them to do it.'));
   for (const c of CHAPTERS) body.append(h('div', { class: 'card' }, h('h3', {}, `${c.n}. ${c.title}`), h('p', { class: 'small' }, c.blurb),
-    h('p', {}, h('b', {}, 'Say: '), c.coach.say.map(s => `"${s.replace(/^"|"$/g, '')}"`).join('  ·  ')),
+    h('p', {}, h('b', {}, 'First: '), 'take your own slow breath out. We cannot help a child calm down until we are calm ourselves.'),
+    h('p', {}, h('b', {}, 'Then say: '), c.coach.say.map(s => `"${s.replace(/^"|"$/g, '')}"`).join('  ·  ')),
     h('p', {}, h('b', {}, 'Avoid: '), c.coach.avoid.join('  ·  ')),
     h('p', {}, h('b', {}, 'Do it alongside: '), c.coach.alongside)));
 }

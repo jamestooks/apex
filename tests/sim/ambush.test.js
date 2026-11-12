@@ -42,10 +42,9 @@ test('tapping POUNCE in the window also works', () => {
   assert.equal(r.outcome, 'success');
 });
 
-test('letting go at the first wave peak is too early', () => {
+test('letting go before the signal is too early', () => {
   const s = setup(lookout);
-  const w = lookout.waves[0];
-  const { r } = play(s, (sc, t) => (sc.heldT > w.at + w.rise ? 'release' : 'hold'));
+  const { r } = play(s, sc => (sc.heldT > 1.5 ? 'release' : 'hold'));
   assert.equal(r.outcome, 'early'); assert.equal(r.dTrust, 0);
 });
 

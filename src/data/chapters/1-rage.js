@@ -13,7 +13,7 @@ export default {
   blurb: 'Rage. The Long Exhale.',
   legs: [['teach', 'test'], ['mix', 'big']],
   intro: { title: 'OLD SCAR', sub: 'Leader of the pack',
-    body: "You brought down your first prey today. The pack will eat well.\n\nRage isn't bad. It tells you something matters to you. But when it takes over, it makes young hunters reckless. I know. I nearly lost everything to mine.\n\nTonight I'll teach you how I tamed it." },
+    body: "You brought down your first prey today. The pack will eat well.\n\nRage isn't bad. It tells you something matters to you. But when it takes over, it makes young hunters reckless. I know. I nearly lost everything to mine.\n\nTonight I'll teach you how I learned to steer it." },
   toolCard: { title: 'THE LONG EXHALE', sub: 'Rage gets your body ready to fight. A long, slow breath OUT tells it to stand down.',
     body: 'HOLD Breathe and breathe IN as the circle grows.\n\nLET GO and breathe OUT slowly as it shrinks.\n\nDo it for real, with your own lungs. Not just your thumb.' },
   practice: { kind: 'practice', meters: ['rage'], primary: 'rage', startValue: 0.45, carcass: { x: 218 },
@@ -31,7 +31,7 @@ export default {
           introWary: 'Nip edges in, keeping one eye on you, and snatches meat from under your nose.',
           hint: "Little Nip. Check your signs. What's your body telling you?" }],
         outcomes: {
-          attack: { trust: -1, hurtPack: true, line: "Nip yelps and runs. He's pack, and half your size. The others saw it." },
+          attack: { hurtPack: true, line: "Nip yelps and runs. He's pack, and half your size. The others saw it." },
           stand: { line: 'You rise to your full height and look him in the eye. Nip drops the meat and backs off. He knows where the line is now.' },
           walk: { line: "You shift round to the other side of the kill. A scrap isn't worth a fight. Smart." },
           scar: { line: 'Scar gives one low chirp and Nip slinks away. Asking for help is what the pack is for.' },
@@ -41,7 +41,7 @@ export default {
           intro: 'Fang, a rival from another pack, circles you. Snarling. Mocking. Trying to get a reaction.',
           hint: "Fang wants you to snap. That's his whole game." }],
         outcomes: {
-          attack: { trust: -1, injure: true, line: 'You launch at Fang. Teeth, claws, dust. You limp back hurt. He got exactly what he wanted.' },
+          attack: { injure: true, line: 'You launch at Fang. Teeth, claws, dust. You limp back hurt. He got exactly what he wanted.' },
           stand: { line: 'You hold still and stare him down. Fang gets bored and leaves. He feeds on rage, and you gave him none.' },
           walk: { line: 'You turn your back and walk over to Scar. Fang hangs about, then gives up. Walking away from a pointless fight takes guts.' },
           scar: { line: "Scar steps forward beside you. Fang backs off fast. Knowing when to get backup is a hunter's skill." },
@@ -51,7 +51,7 @@ export default {
           intro: 'Fang is back. He grabs your kill and starts dragging it away!',
           hint: 'Your kill. Your choice. But breathe first.' }],
         outcomes: {
-          attack: { trust: -1, injure: true, meat: false, line: 'You charge in, raging. In the scuffle you get hurt AND the meat is lost in the dust.' },
+          attack: { injure: true, meat: false, line: 'You charge in, raging. In the scuffle you get hurt AND the meat is lost in the dust.' },
           stand: { line: 'You plant your feet and give one deep, steady growl. Fang drops your kill and slinks off.' },
           walk: { meat: false, line: "You let it go. You lost a meal, but you're not hurt. There will be other hunts. You're worth more than one kill." },
           scar: { line: 'You call for Scar. Together you stand over the kill and Fang backs down. You kept your head AND your meal.' },
@@ -70,7 +70,7 @@ export default {
         ],
         target: 'fang', taunt: true,
         outcomes: {
-          attack: { trust: -1, hurtPack: true, injure: true, line: 'You whirl and snap at everyone. Nip gets caught in it. Fang laughs and trots off.' },
+          attack: { hurtPack: true, injure: true, line: 'You whirl and snap at everyone. Nip gets caught in it. Fang laughs and trots off.' },
           stand: { line: 'You rise tall over your meal and give one low growl. Nip scurries back to the pack, and Fang decides it is not worth it.' },
           walk: { line: 'You pick up your share and move to quieter ground. Nip loses interest. Fang has no one to wind up.' },
           scar: { line: 'Scar thumps his tail once. Nip settles, Fang leaves. Two problems, one call for help.' },
@@ -83,7 +83,7 @@ export default {
           intro: 'Fang strides into the middle of the feast and roars a challenge at you. The whole pack goes quiet and watches.',
           hint: 'Everyone is watching. This is exactly when the Long Exhale matters most.' }],
         outcomes: {
-          attack: { trust: -1, injure: true, line: 'You fly at Fang in front of everyone. Dust, claws, a limp. The pack saw rage win.' },
+          attack: { injure: true, line: 'You fly at Fang in front of everyone. Dust, claws, a limp. The pack saw rage win.' },
           stand: { line: 'You rise, calm and huge, and hold his stare. Fang falters, then backs away. The whole pack saw you keep your head.' },
           walk: { line: 'You turn away from his challenge and go back to your meal. Fang is left roaring at no one. The whole pack saw you keep your head.' },
           scar: { line: 'You glance at Scar. He steps up beside you, and Fang backs down. The whole pack saw you keep your head, and ask for help.' },
@@ -98,7 +98,7 @@ export default {
     ],
     mission: 'Use one Long Exhale before reacting this week.',
     phrase: "Rage meter's rising. Long Exhale?",
-    strengthLine: "Rage tells you something matters. Aimed well, it's passion: standing up for yourself and others.",
+    strengthLine: "Rage tells you something matters. It can burn you and others, but aimed well it's passion: standing up for yourself and others.",
     planTitle: 'MY RAGE PLAN',
     planSteps: [
       { head: 'NOTICE MY SIGNS', lines: ['{signsList}', 'Breathe at the FIRST one.'], col: '#fca5a5' },

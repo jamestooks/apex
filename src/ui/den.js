@@ -7,11 +7,16 @@ import { showPlanCard } from './plancard.js';
 import { showSigns } from './signs.js';
 import { FINDS } from '../data/chapters/3-distraction.js';
 
+// Instant acknowledgement when a real-world mission is logged: a delayed trophy alone motivates weakly.
+export function missionAck(ch) {
+  const tool = ch.tool && TOOLS[ch.tool] ? TOOLS[ch.tool].TOOL.name : null;
+  return tool ? `"You used the ${tool} out there, for real. That's what all the training is for."` : '"You used your tools out there, for real. That\'s what all the training is for."';
+}
 function row(label, value) { return h('div', { class: 'r' }, h('span', {}, label), h('b', {}, String(value))); }
 
 export function fieldNotes(summary, ch) {
   const st = summary.stats, rows = [];
-  rows.push(['Pack trust', st.trustDelta > 0 ? 'Rising' : st.trustDelta < 0 ? 'Shaken' : 'Steady']);
+  rows.push(['Pack trust', st.trustDelta > 0 ? 'Rising' : 'Steady']);
   if (st.mealsKept || st.mealsLost) rows.push(['Kept your kill', st.mealsLost ? (st.mealsKept ? 'Some' : 'No') : 'Yes']);
   for (const id of TOOL_ORDER) if (st.toolUses[id]) rows.push([`${TOOLS[id].TOOL.name} used`, st.toolUses[id]]);
   if (st.earlyOf) rows.push(['Caught it early', `${st.early} of ${st.earlyOf}`]);
@@ -32,7 +37,7 @@ export function registerDen(app) {
     const n = summary.chapter || Math.max(1, ...Object.keys(p.chapters).map(Number).filter(k => p.chapters[k].leg > 0 || p.chapters[k].done), 1);
     const ch = chapterByN(n) || CHAPTERS[0];
     const back = () => app.show('den', summary);
-    const parts = [h('h2', {}, 'The Den')];
+    const parts = [h('h2', {}, 'The Den'), h('p', { class: 'small', id: 'den-privacy' }, 'Grown-ups can see your field notes and plan cards. Your answers stay private unless you tick Share.')];
     if (summary.stats) {
       parts.push(h('div', { class: 'notes', id: 'field-notes' },
         h('div', { class: 'row', style: { justifyContent: 'space-between', alignItems: 'baseline' } }, h('h2', { style: { flex: 'none' } }, 'Field notes'), h('span', { class: 'scar', style: { color: '#7c5a3a', flex: 'none' } }, summary.mode === 'hunt' ? 'Hunt' : ch.title)),
@@ -61,8 +66,8 @@ export function registerDen(app) {
       if (status === 'confirmed' && !(summary.chapter === c.n)) continue;
       parts.push(h('div', { class: 'card', 'data-mission': c.n },
         h('h3', {}, `Outside mission · ${c.title}`), h('p', {}, c.den.mission),
-        status === 'none' ? h('button', { class: 'sky', onClick: () => { app.store.updateProfile(p.id, q => { q.missions[c.n] = 'done-told'; }); back(); } }, "I did it! I'll tell a grown-up") :
-        status === 'done-told' ? h('p', { class: 'muted' }, 'Waiting for a grown-up to confirm it in Grown-ups mode.') :
+        status === 'none' ? h('button', { class: 'sky', 'data-did-it': c.n, onClick: () => { app.store.updateProfile(p.id, q => { q.missions[c.n] = 'done-told'; }); app.audio.SFX.good(); back(); } }, 'I did it!') :
+        status === 'done-told' ? h('div', { class: 'card', style: { borderColor: '#166534' } }, h('h3', { style: { color: '#86efac' } }, "Scar's mark"), h('p', { class: 'scar', 'data-ack': c.n }, missionAck(c)), h('p', { class: 'small' }, 'Tell a grown-up about it. When they confirm it, you earn a trophy too.')) :
         h('p', { class: 'muted' }, 'Confirmed. Trophy earned!')));
     }
     const tr = trophies(p);

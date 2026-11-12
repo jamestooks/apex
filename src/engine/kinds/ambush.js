@@ -7,14 +7,20 @@ import { drawRaptor } from '../../art/raptor.js';
 import { drawCallBubble } from '../../art/props.js';
 
 const BASE = 0.12, SETTLE_SIMMER = 0.05, TWITCH_DECAY = 0.15;
+// Delay aversion: start with short waits and build up ("shaping and fading"). Stored per child.
+export const WAIT_START = 4, WAIT_MIN = 3, WAIT_STEP = 3;
 
 export function createAmbush(sc, sh) {
   const A = sh.actors, me = A.me, SFX = sh.env.audio.SFX, input = sh.input, audio = sh.env.audio;
   const urge = sh.meters.get('urge');
   const pieces = createSetpieces(sc.setpieces, sh);
-  const waves = sc.waves || [], twitches = (sc.twitches || []).map(t => ({ ...t, done: false }));
-  const falses = (sc.falseSignals || []).map(f => ({ ...f, done: false }));
-  const trig = (sc.triggers || []).map(t => ({ ...t, fired: false }));
+  // Squeeze the scene's timeline to this child's current wait length.
+  const wait = Math.min(sc.signalAt, Math.max(WAIT_MIN, sh.profile.waitSecs || WAIT_START));
+  const f = wait / sc.signalAt, signalAt = wait;
+  const waves = (sc.waves || []).map(w => ({ ...w, at: w.at * f, rise: Math.max(0.6, w.rise * f), fall: Math.max(0.8, w.fall * f) }));
+  const twitches = (sc.twitches || []).map(t => ({ ...t, at: t.at * f, done: false }));
+  const falses = (sc.falseSignals || []).map(x => ({ ...x, at: x.at * f, done: false }));
+  const trig = (sc.triggers || []).map(t => ({ ...t, at: t.at * f, fired: false }));
   const rates = {};
   const k = {
     phase: 'settle', heldT: 0, signalOn: false, falseOn: false, signalT: 0, done: false, result: null,
@@ -43,6 +49,10 @@ export function createAmbush(sc, sh) {
   };
 
   function end(outcome, opts) {
+    if (!sc.practice) {
+      if (outcome === 'success') sh.profile.waitSecs = Math.min(sc.signalAt, wait + WAIT_STEP);
+      else if (outcome === 'early') sh.profile.waitSecs = Math.max(WAIT_MIN, Math.round(wait * 0.7));
+    }
     k.phase = 'end'; k.endT = 0; k.signalOn = false; k.falseOn = false; sh.clearChoices(); sh.spaceTaken = false;
     const success = outcome === 'success';
     const cool = success && (k.urgeAtSignal == null || k.urgeAtSignal < SIGN_T[1]);
@@ -115,7 +125,7 @@ export function createAmbush(sc, sh) {
       if (full) takeover(full);
       else if (!h && sh.resumedAt != null && sh.T - sh.resumedAt < 2) { k.phase = 'settle'; sh.say('Welcome back. Thumb down to hide again.', 3, 2); }
       else if (!h) early(sc.earlyLine || 'Too soon. The herd scatters before you get close.');
-      else if (k.heldT >= sc.signalAt) {
+      else if (k.heldT >= signalAt) {
         k.phase = 'signal'; k.signalOn = true; k.signalT = 0; k.urgeAtSignal = urge ? urge.value : 0; sh.stonesSettled = true;
         SFX.signal(); audio.vibrate(60);
         sh.say(sc.signalLine || "Scar's tail flicks. NOW!", 2.5, 3, 'scar');

@@ -66,7 +66,8 @@ export function createMoment(sc, sh) {
     const o = sc.outcomes[k] || {};
     const pm = sh.meters.get(primary) || sh.meters.list[0];
     const calm = !c.instinct && heat < SIGN_T[1];
-    const dTrust = o.trust != null && c.instinct ? o.trust : c.instinct ? -1 : (calm ? 1 : 0);
+    // Pack trust only ever rises: a blow-up costs nothing relational (rejection-sensitivity advice).
+    const dTrust = c.instinct ? 0 : (calm ? 1 : 0);
     const firstTool = pm ? pm.firstToolAt : null;
     const peak = Math.max(...sh.meters.list.map(x => x.peak));
     const early = !forced && !c.instinct && ((firstTool !== null && firstTool < SIGN_T[1]) || peak < SIGN_T[1]);
@@ -144,7 +145,7 @@ export function createMoment(sc, sh) {
     else if (r.usedTool) body = o.note || `"You ${T.past} before you chose. That's the whole secret."`;
     else body = o.note || '"You kept your head. Remember how that felt."';
     if (r.calm && (o.strength || sc.strength)) body += `\n\nStrength: ${o.strength || sc.strength}`;
-    const tline = r.dTrust > 0 ? 'Pack trust: rising' : r.dTrust < 0 ? 'Pack trust: shaken' : 'Pack trust: steady';
+    const tline = r.dTrust > 0 ? 'Pack trust: rising' : c.instinct ? 'The herd is spooked. One calm moment will settle them.' : 'Pack trust: steady';
     sh.showCard({ title, sub: o.line || '', body: body + '\n\n' + tline + (o.injure ? '  ·  You are hurt' : '') + (o.meat === false ? '  ·  The meat is gone' : ''),
       bad: c.instinct, good: r.calm,
       cb: () => {

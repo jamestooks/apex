@@ -13,7 +13,7 @@ const TYPES = {
         s.x += s.dir * (o.speed || 150) * dt * s.k;
         if (s.dir < 0 && s.x < -320) s.x = W + 80 + Math.random() * 120;
         if (s.dir > 0 && s.x > W + 80) s.x = -320 - Math.random() * 120;
-        s.nextRumble -= dt; if (s.nextRumble <= 0 && s.k > 0.3) { s.nextRumble = 2.2; sh.env.audio.SFX.rumble(); if (!sh.rm && !sh.low) sh.shake = Math.max(sh.shake, 0.15); }
+        s.nextRumble -= dt; if (s.nextRumble <= 0 && s.k > 0.3) { s.nextRumble = 2.2; sh.env.audio.SFX.rumble(); sh.shake = Math.max(sh.shake, 0.15 * sh.shakeK); }
       },
       calm() { s.k = 0.25; },
       drawBack() { if (s.wait <= 0) P.drawHerd(s.x, GY() - 18 + (o.y || 0), o.n || 4, sh.T, true, s.dir > 0 ? 1 : -1); },
@@ -72,7 +72,7 @@ const TYPES = {
         if (s.wait > 0) { s.wait -= dt; if (s.wait <= 0) s.on = true; return; }
         if (!s.on) return;
         const d = s.tx - s.x; if (Math.abs(d) > 1) s.x += Math.sign(d) * Math.min(Math.abs(d), s.sp * dt);
-        if (!s.roared && s.x < W - 40) { s.roared = true; sh.env.audio.SFX.trexRoar(); if (!sh.rm && !sh.low) sh.shake = 0.5; }
+        if (!s.roared && s.x < W - 40) { s.roared = true; sh.env.audio.SFX.trexRoar(); sh.shake = Math.max(sh.shake, 0.5 * sh.shakeK); }
       },
       drawBack() { if (s.on) P.drawTrex(s.x, GY() + 4, o.s || 1.1, sh.T, -1, o.sniff && Math.abs(s.x - (o.sniffAt || 220)) < 120); },
     };

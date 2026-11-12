@@ -5,7 +5,8 @@ const INSTINCT_KEYS = ['rage', 'overload', 'drift', 'fuel', 'urge'];
 const perInstinct = () => Object.fromEntries(INSTINCT_KEYS.map(k => [k, []]));
 
 export function defaultSettings() {
-  return { sessionMinutes: 15, chaptersOpen: null, sound: true, vibration: true, reducedMotion: false, intensity: 'normal', largeText: false };
+  // feel*: heartbeat/growl, red edges, screen shake. 'off' | 'soft' | 'full'; moderate by default.
+  return { sessionMinutes: 15, chaptersOpen: null, sound: true, vibration: true, reducedMotion: false, largeText: false, feelSound: 'soft', feelRed: 'soft', feelShake: 'soft' };
 }
 export function newProfile({ childName = 'Player', raptorName = 'Raptor', rim = RIMS[0] } = {}) {
   return {
@@ -15,7 +16,7 @@ export function newProfile({ childName = 'Player', raptorName = 'Raptor', rim = 
     signs: perInstinct(), customSigns: perInstinct(),
     trust: 0, scars: 0, mealsKept: 0, finaleCalm: false,
     chapters: {}, toolbelt: [], sessions: [], denAnswers: [], missions: {}, log: [],
-    restUntil: 0, strengths: {}, parked: [],
+    restUntil: 0, strengths: {}, parked: [], waitSecs: 4, parentSigns: perInstinct(),
   };
 }
 function emptyData() { return { version: 1, pin: null, activeId: null, profiles: {} }; }
@@ -30,8 +31,11 @@ function pinHash(pin) {
 function upgradeProfile(p) {
   const base = newProfile();
   for (const k of Object.keys(base)) if (p[k] === undefined) p[k] = base[k];
-  p.settings = { ...defaultSettings(), ...p.settings };
-  for (const k of INSTINCT_KEYS) { p.signs[k] ||= []; p.customSigns[k] ||= []; }
+  const old = p.settings || {};
+  p.settings = { ...defaultSettings(), ...old };
+  if (old.intensity === 'low' && old.feelShake === undefined) p.settings.feelShake = 'off';
+  delete p.settings.intensity;
+  for (const k of INSTINCT_KEYS) { p.signs[k] ||= []; p.customSigns[k] ||= []; p.parentSigns[k] ||= []; }
   return p;
 }
 

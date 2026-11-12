@@ -4,7 +4,9 @@ import { chapterByN } from '../data/chapters/index.js';
 
 export function planSteps(profile, ch) {
   const signs = ch.instinct === 'all' ? [] : (profile.signs[ch.instinct] || []);
-  return ch.den.planSteps.map(s => ({ ...s, lines: s.lines.map(l => l.replace('{signsList}', signs.map((x, i) => `${i + 1}. ${x}`).join('\n') || 'Pick your signs in the game.')) }));
+  const seen = ch.instinct === 'all' ? [] : ((profile.parentSigns && profile.parentSigns[ch.instinct]) || []);
+  const list = (signs.map((x, i) => `${i + 1}. ${x}`).join('\n') || 'Pick your signs in the game.') + (seen.length ? `\nGrown-ups notice: ${seen.join(', ')}` : '');
+  return ch.den.planSteps.map(s => ({ ...s, lines: s.lines.map(l => l.replace('{signsList}', list)) }));
 }
 export function planCardEl(profile, ch) {
   return h('div', { class: 'plan' },
@@ -14,7 +16,8 @@ export function planCardEl(profile, ch) {
       h('div', {}, h('h3', { style: { color: s.col } }, s.head), h('p', {}, s.lines.join('\n'))))),
     h('hr', { style: { border: 0, borderTop: '1px solid #2a1a1f', width: '100%' } }),
     h('div', { class: 'small', style: { textTransform: 'uppercase' } }, 'For grown-ups'),
-    h('p', { class: 'scar' }, `Try "${ch.den.phrase}" in the moment. Do the tool with them.`));
+    h('p', { class: 'scar' }, `Take your own slow breath out first, then say "${ch.den.phrase}" Do the tool with them.`),
+    h('p', { class: 'small', id: 'plan-label' }, `Written by ${profile.childName} and a grown-up. Not medical advice.`));
 }
 export function showPlanCard(app, profile, n, back) {
   const ch = chapterByN(n);

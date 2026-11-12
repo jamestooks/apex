@@ -7,6 +7,7 @@ import { createTrack } from '../engine/kinds/track.js';
 import { createRun } from '../engine/kinds/run.js';
 import { createAmbush } from '../engine/kinds/ambush.js';
 import { createTeachNip } from '../engine/kinds/teachNip.js';
+import { createWinddown } from '../engine/kinds/winddown.js';
 import { TOOL_ORDER } from '../engine/tools/index.js';
 import { completeLeg, recordSession, appearance } from '../model/progress.js';
 
@@ -53,6 +54,7 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     }
   }
   steps.push({ type: 'repair' });
+  if (mode !== 'single') steps.push({ type: 'winddown' });
   if (mode === 'leg' && leg === chapter.legs.length - 1 && chapter.endingCards) steps.push(...chapter.endingCards.map(fn => ({ type: 'card', cardFn: fn })));
   let si = -1, played = 0;
 
@@ -65,7 +67,7 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     r.scene = null;
     si++;
     const st = steps[si];
-    if (!st) return finish(false);
+    if (!st) return finish(!!r.capped);
     r.step = st.type;
     if (st.type === 'card') {
       const card = st.cardFn ? st.cardFn(profile, shell) : st.card;
@@ -87,6 +89,9 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
       stageFor(st.sc);
       r.scene = KINDS[st.sc.kind](st.sc, shell);
       r.currentSc = st.sc;
+    } else if (st.type === 'winddown') {
+      shell.setStage({ instincts: ['rage'], tools: ['longExhale'] });
+      r.scene = createWinddown(shell, { capped: !!r.capped });
     } else if (st.type === 'repair') {
       if (!shell.stats.needsRepair || chapter.repair === false || shell.stats.repaired) return next();
       shell.setStage({ instincts: [inst === 'all' ? 'rage' : inst], tools: belt() });
@@ -116,9 +121,12 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     }
     next();
   }
+  // Session cap reached between scenes: skip to the calm close (it carries the rest message).
   function wrapUp() {
-    r.step = 'wrap';
-    shell.showCard({ ...WRAP_CARD, cb: () => finish(true) });
+    r.capped = true;
+    si = steps.findIndex(s => s.type === 'winddown') - 1;
+    if (si < -1) { r.step = 'wrap'; shell.showCard({ ...WRAP_CARD, cb: () => finish(true) }); return; }
+    next();
   }
   function finish(capped) {
     if (r.finished) return;
@@ -140,6 +148,12 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
   r.update = dt => {
     if (r.finished) return;
     shell.update(dt);
+    // Warnings before the session cap, so stopping is never a surprise.
+    if (session && session.remaining) {
+      const left = session.remaining();
+      if (left <= 180000 && left > 60000 && !r.warned3) { r.warned3 = true; shell.say('Three more minutes of hunting today, then we rest.', 4, 2); }
+      if (left <= 60000 && !r.warned1) { r.warned1 = r.warned3 = true; shell.say("One more minute. We'll stop at the next calm moment.", 4, 2); }
+    }
     if (r.waiting || shell.card || shell.paused) return;
     if (r.scene) { r.scene.update(dt); if (r.scene.done) sceneDone(); }
     else if (r.step === null) next();

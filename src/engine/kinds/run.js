@@ -95,7 +95,7 @@ export function createRun(sc, sh) {
         k.burnout = BURNOUT; k.burntOut = true; fuel.adapt(); sh.difficulty.simmerMul = 0.6; sh.difficulty.promptEarly = true;
         sh.stats.tookOver += 1; sh.stats.instinctChoices += 1;
         sh.say(`Burned out. ${sc.burnoutLine || 'Your legs just stop. Lie still and get your breath back.'}`, 4, 3, 'narr');
-        if (!sh.rm && !sh.low) sh.shake = 0.3;
+        sh.shake = 0.3 * sh.shakeK;
       }
       k.px += speed * dt;
       sh.cx = k.px * 0.6;

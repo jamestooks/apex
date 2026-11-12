@@ -8,6 +8,7 @@ export function createSession(profile) {
     elapsed: () => played,
     capReached: () => played >= (profile.settings.sessionMinutes || 15) * MIN,
     minutes: () => Math.round(played / MIN),
+    remaining: () => Math.max(0, (profile.settings.sessionMinutes || 15) * MIN - played),
   };
 }
 export function restRemaining(p, now) { return Math.max(0, (p.restUntil || 0) - now); }

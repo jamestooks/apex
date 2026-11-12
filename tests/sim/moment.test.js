@@ -57,9 +57,9 @@ test('never-breathing player: rage takes over every scene, but every scene still
   assert.equal(shell.stats.tookOver, 3);
 });
 
-test('always-attack player: -1 per scene and the leg asks for repair', () => {
+test('always-attack player: trust never falls, and the leg asks for repair', () => {
   const { results, shell } = playLeg(({ m }) => () => { if (m.phase === 'live') m.choose('attack'); });
-  assert.deepEqual(results.map(r => r.dTrust), [-1, -1, -1]);
+  assert.deepEqual(results.map(r => r.dTrust), [0, 0, 0]);
   assert.equal(shell.stats.needsRepair, true);
 });
 

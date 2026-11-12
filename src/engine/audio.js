@@ -1,6 +1,6 @@
 // Web Audio: synthesised SFX, a growl that follows the meter, ambience. Ported from the prototype.
 let AC = null, MG = null, NB = null, growlG = null, rainG = null;
-const cfg = { sound: true, vibration: true, intensity: 'normal', muted: false };
+const cfg = { sound: true, vibration: true, muted: false };
 
 export function configureAudio(c) { Object.assign(cfg, c); applyGain(); }
 export function isMuted() { return cfg.muted || !cfg.sound; }
@@ -31,10 +31,10 @@ export function audioInit() {
 }
 export function suspend() { try { AC && AC.suspend(); } catch (e) {} }
 export function resume() { try { AC && AC.resume(); } catch (e) {} }
+// level 0..1, already scaled by the scene for heat, the child's sound setting and calming.
 export function setGrowl(level) {
   if (!growlG) return;
-  const k = cfg.intensity === 'low' ? 0.4 : 1;
-  try { growlG.gain.setTargetAtTime(Math.max(0, level - 0.3) * 0.28 * k, AC.currentTime, 0.2); } catch (e) {}
+  try { growlG.gain.setTargetAtTime(Math.max(0, level) * 0.28, AC.currentTime, 0.2); } catch (e) {}
 }
 export function vibrate(ms) { if (cfg.vibration && !isMuted() && navigator.vibrate) try { navigator.vibrate(ms); } catch (e) {} }
 
@@ -58,7 +58,7 @@ function noise(dur, freq, q, vol, type, delay, f2, attack) {
   } catch (e) {}
 }
 export const SFX = {
-  lubdub(v) { const k = cfg.intensity === 'low' ? 0.4 : 1; tone(68, 40, 0.16, 'sine', 0.7 * v * k); tone(62, 38, 0.14, 'sine', 0.4 * v * k, 0.17); },
+  lubdub(v) { if (v <= 0) return; tone(68, 40, 0.16, 'sine', 0.7 * v); tone(62, 38, 0.14, 'sine', 0.4 * v, 0.17); },
   snarl() { tone(180, 90, 0.5, 'sawtooth', 0.2); noise(0.5, 700, 0.8, 0.3, 'bandpass', 0, 300); },
   yelp() { tone(900, 500, 0.18, 'triangle', 0.2); tone(800, 450, 0.15, 'triangle', 0.15, 0.2); },
   roar() { tone(150, 55, 0.9, 'sawtooth', 0.28); noise(0.9, 500, 0.6, 0.45, 'lowpass', 0, 150); },

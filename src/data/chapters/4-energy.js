@@ -14,7 +14,7 @@ export default {
   theme: 'river', season: 'Flood season', strength: 'Speed and energy', blurb: 'Energy. Burst & Rest.',
   legs: [['teach', 'test'], ['mix', 'big']],
   intro: { title: 'OLD SCAR', sub: 'At the river at dawn',
-    body: "You've got more speed than any of us. Your engine never stops. That's a gift.\n\nSpeed isn't the problem. Running until you drop is. I've watched young hunters sprint the whole hunt and collapse right before the catch.\n\nThe trick is short bursts, then rest." },
+    body: "You've got more speed than any of us. Your engine never stops. That's a gift, but running flat out all day is exhausting.\n\nSpeed isn't the problem. Running until you drop is. I've watched young hunters sprint the whole hunt and collapse right before the catch.\n\nThe trick is short bursts, then rest." },
   toolCard: { title: 'BURST & REST', sub: 'Your energy is a weapon. Spend it on purpose.',
     body: 'HOLD anywhere to sprint. LET GO to rest.\n\nShort bursts beat one long sprint. If the FUEL meter fills, you burn out and have to lie down.\n\nAt rest stops, hold BURST & REST and do a real movement break: reach up high, then shake it out.' },
   practice: { ...base, id: 'practice', distance: 800, target: { type: 'pack', speed: 70 }, practice: true,
@@ -78,7 +78,7 @@ export default {
     ],
     mission: 'Try one burst and rest during homework this week: work hard for a bit, then a movement break.',
     phrase: 'Burst and rest.',
-    strengthLine: 'Your engine never stops. Aimed well, that is speed and energy nobody else in the pack has.',
+    strengthLine: 'Your engine never stops. It can wear you out, but aimed well it is speed and energy nobody else in the pack has.',
     planTitle: 'MY BURST & REST PLAN',
     planSteps: [
       { head: 'NOTICE MY SIGNS', lines: ['{signsList}', 'Rest at the FIRST one.'], col: '#bae6fd' },

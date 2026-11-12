@@ -25,7 +25,7 @@ export default {
   blurb: 'Overwhelm. One Thing.',
   legs: [['teach', 'test'], ['mix', 'big']],
   intro: { title: 'ECHO', sub: 'The pack\'s tracker',
-    body: "Your senses never switch off. That's why you hear prey before anyone else in the pack. It's a gift.\n\nBut out on the plains, when everything comes at you at once, it can swamp you. You freeze, or you bolt.\n\nI know a way through. One thing at a time." },
+    body: "Your senses never switch off. That's why you hear prey before anyone else in the pack. It's a gift, and it can swamp you too.\n\nBut out on the plains, when everything comes at you at once, it can swamp you. You freeze, or you bolt.\n\nI know a way through. One thing at a time." },
   toolCard: { title: 'ONE THING', sub: 'When everything is too much, your brain needs one thing to hold on to.',
     body: 'GET TO COVER: tap somewhere safe.\n\nThen notice ONE thing you SEE, ONE you HEAR, ONE you FEEL. Say each one out loud, then tap it.\n\nThen pick ONE next step. Just one.' },
   practice: { kind: 'practice', meters: ['overload'], primary: 'overload', startValue: 0.4, mentor: 'echo',
@@ -123,7 +123,7 @@ export default {
     ],
     mission: 'Try One Thing once this week when it gets loud: one thing you see, one you hear, one you feel.',
     phrase: 'Too much at once? One Thing.',
-    strengthLine: 'Your senses never switch off. Aimed well, that means you notice things nobody else does.',
+    strengthLine: 'Your senses never switch off. That can be a lot, but aimed well it means you notice things nobody else does.',
     planTitle: 'MY ONE THING PLAN',
     planSteps: [
       { head: 'NOTICE MY SIGNS', lines: ['{signsList}', 'Use One Thing at the FIRST one.'], col: '#fde68a' },

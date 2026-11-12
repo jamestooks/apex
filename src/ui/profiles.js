@@ -10,7 +10,7 @@ export function registerProfiles(app) {
     const scr = h('div', { class: 'screen over-canvas-screen' },
       h('div', { style: { height: '4vh' } }),
       h('h1', { class: 'title' }, 'APEX'),
-      h('div', { class: 'kicker' }, 'The strongest hunter controls the fire inside'),
+      h('div', { class: 'kicker' }, 'The strongest hunter steers the fire inside'),
       h('div', { class: 'spacer' }),
       h('div', { class: 'card' },
         h('h3', {}, list.length ? "Who's playing?" : 'Welcome to the valley'),

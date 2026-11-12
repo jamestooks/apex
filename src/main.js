@@ -27,8 +27,8 @@ app.titleScene = valleyScene(app, null, 'dusk');
 Object.defineProperty(app, 'profile', { get: () => app.store.active() });
 
 app.applySettings = p => {
-  const s = p ? p.settings : { sound: true, vibration: true, intensity: 'normal', largeText: false };
-  audio.configureAudio({ sound: s.sound, vibration: s.vibration, intensity: s.intensity });
+  const s = p ? p.settings : { sound: true, vibration: true, largeText: false };
+  audio.configureAudio({ sound: s.sound, vibration: s.vibration });
   setLargeText(!!s.largeText);
   document.documentElement.classList.toggle('large-text', !!s.largeText);
 };

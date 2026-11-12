@@ -32,7 +32,7 @@ export default {
     () => ({ title: 'FIRE SEASON ENDS', sub: 'The rains come. The valley turns green again.', body: '"A whole year. Look at you."' }),
     p => ({ title: p.raptorName.toUpperCase(), sub: 'Full grown. Every scar earned.', body: '"You came to this pack a restless young outsider. Too impatient to hunt, they said. Look who led them out of the fire."' }),
     (p, sh) => sh.stats.finaleCalm || p.finaleCalm
-      ? { title: 'APEX', sub: 'Leader of the pack', good: true, body: '"The strongest hunter controls the fire inside. That is you now."' }
+      ? { title: 'APEX', sub: 'Leader of the pack', good: true, body: '"The strongest hunter steers the fire inside. That is you now."' }
       : { title: 'THE PACK IS SAFE', sub: 'Fang still needs someone to show him the way.', body: '"Play the Burning Valley again when you are ready. There is one more thing only you can do."' },
     () => ({ title: 'OLD SCAR', sub: 'One last thing',
       body: '"Your brain is not broken. It is fast, and loud, and full of fire. You know how to aim it now.\n\nEvery tool you learned here works out there too. In the car, at school, at bedtime. No screen needed."' }),
@@ -85,7 +85,7 @@ export default {
           { who: 'fang', at: 7, enter: 330, meter: 'rage', spike: 0.25, simmer: 0.04, intro: 'And Fang shoves right past you both. "Out of my way!"', hint: 'Two meters. Which first?' },
         ], target: 'fang',
         outcomes: {
-          snap: { trust: -1, hurtPack: true, injure: true, line: 'You whirl and snap at everyone. Nip lets go, crying. Fang snaps back. Nobody moves forward.' },
+          snap: { hurtPack: true, injure: true, line: 'You whirl and snap at everyone. Nip lets go, crying. Fang snaps back. Nobody moves forward.' },
           stand: { line: 'You plant your feet, tall and steady. Fang hesitates and goes round you. Nip lets go of your tail.' },
           calm: { line: 'You turn to Nip, slow and calm: "With me." He lets go and follows. Fang is not your problem right now.' },
           scar: { line: 'Scar is there in a heartbeat. He takes Nip. You keep the pack moving.' },
@@ -105,7 +105,7 @@ export default {
           hint: 'He has spent all year winding you up. And now he needs you. What will you choose?' }],
         target: 'fang',
         outcomes: {
-          attack: { trust: -1, injure: true, stays: true, line: 'You lunge at him. Smoke, sparks, a burn on your leg. Scar drags the log off Fang himself.' },
+          attack: { injure: true, stays: true, line: 'You lunge at him. Smoke, sparks, a burn on your leg. Scar drags the log off Fang himself.' },
           leave: { stays: true, line: 'You walk away. Scar goes back for Fang. Everyone gets out, but Fang never looks at you.' },
           help: { finaleCalm: true, strength: 'Knowing your own brain: you chose calm when it mattered most.', line: 'You breathe, plant your feet and heave. The log rolls away. Fang stares at you. Then he lowers his head. The pack follows you out.' },
           scar: { line: 'You call Scar and together you shift the log. Fang limps out, quiet for once.' },

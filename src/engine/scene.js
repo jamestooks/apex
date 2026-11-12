@@ -11,6 +11,8 @@ const BREATH_LINES = ["That's it. Slow out-breaths tell your body the fight is o
 const KEYS = ['q', 'w', 'e', 'r', 't'];
 // The clear band in the scene: below Scar's speech box (up to 3 lines) and above the bottom prompt banner.
 export const SAFE_TOP = 104, SAFE_BOTTOM = 74;
+// Feel settings: how strongly the heartbeat/growl, red edges and screen shake play. Effects soften while a tool is in use, so calm feels like the reward.
+const FEEL = { off: 0, soft: 0.5, full: 1 }, CALMING = 0.35;
 const SHORT = { longExhale: 'BREATHE', oneThing: 'ONE THING', parkIt: 'PARK IT', burstRest: 'BURST & REST', waitSignal: 'RIDE IT' };
 
 export function actor(x, face, s, extra) { return { x, tx: x, face, s, sp: 110, on: true, ...extra }; }
@@ -33,7 +35,10 @@ export function createShell(env) {
       mealsKept: 0, mealsLost: 0, injured: false, repaired: false, needsRepair: false, strengths: [], parked: [] },
     get settings() { return settings; },
     get rm() { return !!settings.reducedMotion; },
-    get low() { return settings.intensity === 'low'; },
+    feelK(name) { const v = FEEL[settings[name] || 'soft']; return v == null ? 0.5 : v; },
+    get shakeK() { return sh.rm ? 0 : sh.feelK('feelShake'); },
+    get calmF() { const le = sh.runs.longExhale; return (sh.activeTool || (le && le.phase && le.phase !== 'idle')) ? CALMING : 1; },
+    redAlpha() { const r = sh.heat; if (sh.meterHidden || r <= 0.3) return 0; return (r - 0.3) * 0.8 * (0.6 + sh.beat * 0.4) * sh.feelK('feelRed') * sh.calmF; },
 
     // Meters persist across scenes in a session, so rage left over from one scene carries into the next.
     meterPool: {},
@@ -181,11 +186,12 @@ export function createShell(env) {
       if (sh.shake > 0) sh.shake -= dt;
       for (const f of sh.floats) f.t += dt; sh.floats = sh.floats.filter(f => f.t < 2.2);
       const heat = sh.heat;
-      audio.setGrowl(sh.meterHidden ? 0 : heat);
+      const soundK = sh.feelK('feelSound') * sh.calmF;
+      audio.setGrowl(sh.meterHidden ? 0 : Math.max(0, heat - 0.3) * soundK);
       sh.hbT -= dt;
       if (sh.hbT <= 0) {
         sh.hbT = 60 / (64 + heat * 90);
-        if (heat > 0.15 && !sh.meterHidden) { SFX.lubdub(0.4 + heat * 0.6); if (heat > 0.5) audio.vibrate(18); }
+        if (heat > 0.15 && !sh.meterHidden && soundK > 0) { SFX.lubdub((0.4 + heat * 0.6) * soundK); if (heat > 0.5) audio.vibrate(18); }
         sh.beat = 1;
       }
       for (const m of sh.meters.list) for (const i of m.crossings()) {
@@ -240,7 +246,7 @@ export function createShell(env) {
         sh.say("Parked. It'll still be there after. Back to the trail.", 3, 1);
       } else if (e === 'start') SFX.click();
     },
-    noteTrigger() { sh.shake = sh.rm || sh.low ? 0 : 0.4; SFX.snarl(); },
+    noteTrigger() { sh.shake = 0.4 * sh.shakeK; SFX.snarl(); },
 
     // ---------- drawing ----------
     drawRaptorActor(a, opts) {
@@ -265,7 +271,7 @@ export function createShell(env) {
     drawWorldBack() {
       const sx = sh.shake > 0 ? Math.sin(sh.T * 90) * sh.shake * 8 : 0;
       ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, SH()); ctx.clip(); ctx.translate(sx, 0);
-      drawWorld(sh.theme, sh.cx, sh.meterHidden ? 0 : sh.heat, sh.T, { reducedMotion: sh.rm });
+      drawWorld(sh.theme, sh.cx, sh.meterHidden ? 0 : sh.heat * sh.feelK('feelRed') * sh.calmF, sh.T, { reducedMotion: sh.rm });
     },
     drawWorldFront() {
       drawForeground(sh.theme, sh.cx, sh.T, { reducedMotion: sh.rm });
@@ -274,9 +280,8 @@ export function createShell(env) {
       for (const f of sh.floats) { const k = f.t / 2.2; ctx.globalAlpha = 1 - k; ctx.fillStyle = '#fca5a5'; ctx.font = FH(16); ctx.textAlign = 'center'; ctx.fillText(String(f.text).toUpperCase(), f.x, f.y - k * 30); }
       ctx.globalAlpha = 1;
       for (const id of sh.tools) { const r = sh.runs[id]; if (r && r.draw && id !== 'parkIt') r.draw(sh.T); }
-      const r = sh.heat;
-      if (r > 0.3 && !sh.meterHidden) {
-        const a = (r - 0.3) * 0.8 * (0.6 + sh.beat * 0.4) * (sh.low ? 0.5 : 1);
+      const a = sh.redAlpha();
+      if (a > 0) {
         const v = ctx.createRadialGradient(W / 2, SH() / 2, SH() * 0.3, W / 2, SH() / 2, SH() * 0.8);
         v.addColorStop(0, 'rgba(127,29,29,0)'); v.addColorStop(1, `rgba(127,29,29,${a})`); ctx.fillStyle = v; ctx.fillRect(0, 0, W, SH());
       }

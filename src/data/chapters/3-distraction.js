@@ -17,7 +17,7 @@ export default {
   theme: 'ferns', season: 'Green season', strength: 'Noticing what others miss', blurb: 'Distraction. Park It.',
   legs: [['teach', 'test'], ['mix', 'big']],
   intro: { title: 'ECHO', sub: 'Tracker of the pack',
-    body: "You notice things nobody else does. A twitch in the ferns. A feather on the path. That's a tracker's gift.\n\nThe trick is choosing WHEN to look. In the Fern Maze, the shiny things will try to pull you off the trail.\n\nI don't ignore them. I park them, and come back later." },
+    body: "You notice things nobody else does. A twitch in the ferns. A feather on the path. That's a tracker's gift, but it's tiring when everything grabs you at once.\n\nThe trick is choosing WHEN to look. In the Fern Maze, the shiny things will try to pull you off the trail.\n\nI don't ignore them. I park them, and come back later." },
   toolCard: { title: 'PARK IT', sub: "Interesting things aren't the problem. Chasing them in the middle of a hunt is.",
     body: "When something shiny pulls at you, say 'LATER' out loud.\n\nThen DRAG it onto your scent map. It's saved. You can explore it after the hunt.\n\nThen tap the next glowing print and carry on." },
   practice: { kind: 'track', meters: ['drift'], primary: 'drift', prints: 4, fadeSec: 9, practice: true,
@@ -92,7 +92,7 @@ export default {
     ],
     mission: "Park one distracting thing this week: say 'later', write or draw it down, and come back to it after.",
     phrase: 'Park it.',
-    strengthLine: 'You notice what others miss. Aimed well, that is how trackers find trails nobody else can see.',
+    strengthLine: 'You notice what others miss. It can pull you off track, but aimed well that is how trackers find trails nobody else can see.',
     planTitle: 'MY PARK IT PLAN',
     planSteps: [
       { head: 'NOTICE MY SIGNS', lines: ['{signsList}', 'Park it at the FIRST one.'], col: '#bbf7d0' },

@@ -64,7 +64,7 @@ export default {
     ],
     mission: 'Wait for the signal once this week: feel the urge, count to 5, then jump in.',
     phrase: 'Wait for the signal.',
-    strengthLine: 'Your speed is explosive. Aimed well, it is the fastest, best-timed pounce in the valley.',
+    strengthLine: 'Your speed is explosive. Too soon, it scares the herd away; aimed well, it is the fastest, best-timed pounce in the valley.',
     planTitle: 'MY WAIT FOR IT PLAN',
     planSteps: [
       { head: 'NOTICE MY SIGNS', lines: ['{signsList}', 'Hold still at the FIRST one.'], col: '#e9d5ff' },
