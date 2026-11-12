@@ -24,14 +24,15 @@ let last = 0;
 function loop(now) {
   const dt = Math.min(0.05, Math.max(0, (now - (last || now)) / 1000)) * app.speed; last = now;
   if (!app.paused) app.T += dt;
-  app.input.beginFrame();
   beginDraw();
   const s = app.canvasScene;
   if (app.session && app.current === 'play' && !app.paused && !(s && s.shell && s.shell.paused)) app.session.tick(dt * 1000);
   if (s) {
     if (!app.paused && s.update) s.update(dt);
+    // Clear taps only after the scene has read them (they arrive between frames), then redraw re-registers buttons.
+    app.input.beginFrame();
     s.draw();
-  } else { ctx.fillStyle = '#0a0508'; ctx.fillRect(0, 0, W, view.H); }
+  } else { app.input.beginFrame(); ctx.fillStyle = '#0a0508'; ctx.fillRect(0, 0, W, view.H); }
   requestAnimationFrame(loop);
 }
 export function startLoop() {
