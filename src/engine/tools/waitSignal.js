@@ -21,7 +21,7 @@ export function createRun({ mode = 'ride' } = {}) {
       } else if (r.phase === 'riding') r.phase = 'paused';
       return { relief, events };
     },
-    label() { return r.done ? 'DONE' : r.phase === 'idle' ? 'HOLD STILL TO RIDE IT' : r.phase === 'paused' ? 'KEEP HOLDING' : 'RIDING THE WAVE…'; },
+    label() { return r.done ? 'DONE' : r.phase === 'idle' ? 'HOLD TO RIDE IT' : r.phase === 'paused' ? 'KEEP HOLDING' : 'RIDING THE WAVE…'; },
     draw() {
       if (r.phase === 'idle' || r.done) return;
       const cy = SH() * 0.42, x0 = 60, x1 = W - 60;

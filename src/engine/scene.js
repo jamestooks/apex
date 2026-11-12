@@ -50,7 +50,7 @@ export function createShell(env) {
       if (tools) sh.tools = tools;
       if (theme) sh.theme = theme;
       if (mentor) sh.mentor = mentor;
-      sh.chooseTool = !!chooseTool; sh.targets = targets || {};
+      sh.chooseTool = !!chooseTool; sh.targets = targets || {}; sh.spaceTaken = false; sh.cx = 0;
       sh.resetTools();
       for (const m of sh.meters.list) m.crossings();
     },
@@ -173,7 +173,7 @@ export function createShell(env) {
         const T = TOOLS[id].TOOL; let run = sh.runs[id];
         if (!run) return;
         const free = !sh.activeTool || sh.activeTool === id;
-        const held = free && T.kind === 'hold' && !sh.card && (input.held(sh.tileRect(i), i === 0 ? 'Space' : KEYS[i]) || input.keys.has(KEYS[i]));
+        const held = free && T.kind === 'hold' && !sh.card && (input.held(sh.tileRect(i), i === 0 && !sh.spaceTaken ? 'Space' : KEYS[i]) || input.keys.has(KEYS[i]));
         const io = { held, taps: T.kind === 'tap' && sh.activeTool === id ? input.taps : [], drag: input.drag, targets: sh.targets };
         const out = run.update(dt, io);
         if (out.relief > 0) sh.meters.relieve(T.instinct, out.relief);

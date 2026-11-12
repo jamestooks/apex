@@ -41,7 +41,7 @@ function createBreak() {
       } else if (r.phase === 'stretch') r.phase = 'paused';
       return { relief, events };
     },
-    label() { return r.done ? 'DONE' : r.phase === 'idle' ? 'HOLD FOR A MOVEMENT BREAK' : r.phase === 'paused' ? 'KEEP HOLDING' : 'STRETCH…'; },
+    label() { return r.done ? 'DONE' : r.phase === 'idle' ? 'HOLD TO STRETCH' : r.phase === 'paused' ? 'KEEP HOLDING' : 'STRETCH…'; },
     draw(t) {
       if (r.phase === 'idle' || r.done) return;
       const cx = W / 2, cy = SH() * 0.4, up = r.t < 2.5;

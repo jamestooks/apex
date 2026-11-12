@@ -22,7 +22,7 @@ export function createMoment(sc, sh) {
   };
   // Fresh per-scene bookkeeping on the (persistent) meters.
   for (const mm of sh.meters.list) { mm.firstToolAt = null; mm.peak = mm.value; }
-  me.tx = me.x; me.limp = false; me.standT = 0;
+  me.tx = me.x; me.limp = false; me.standT = 0; me.lying = false;
   if (sc.mentor) sh.mentor = sc.mentor;
   const mentor = A[sc.ally || sh.mentor || 'scar'];
   if (sc.ally === 'echo' || sh.mentor === 'echo') { A.echo.on = true; if (A.echo.x < 0) { A.echo.x = 40; A.echo.tx = 40; } }
@@ -101,6 +101,7 @@ export function createMoment(sc, sh) {
     else if (anim === 'lead') { me.tx = (A.nip.x || 300) - 30; me.sp = 120; }
     else if (anim === 'help') { me.tx = (tgt ? tgt.x : 300) - 50; me.sp = 100; }
     else if (anim === 'wait') { pieces.calm(); }
+    else if (anim === 'lie') { me.lying = true; pieces.calm(); }
     if (!(m.c && m.c.instinct)) SFX.swell();
   }
 
@@ -163,6 +164,7 @@ export function createMoment(sc, sh) {
     if ((heat < GAP_CALM && m.gapT > 2.5) || m.gapT > maxGap) finish();
   }
   function finish() {
+    me.lying = false;
     if (m.carcass && m.meat) sh.stats.mealsKept += 1;
     if (m.carcass && !m.meat) sh.stats.mealsLost += 1;
     pieces.stop(); m.done = true; m.phase = 'done'; sh.panelText = '';
@@ -209,7 +211,7 @@ export function createMoment(sc, sh) {
       const pose = a.pinned ? 'lie' : moving ? (a.sp > 140 ? 'run' : 'walk') : taunting ? (Math.sin(sh.T * 4) > 0 ? 'crouch' : 'stand') : (who === 'nip' ? 'crouch' : 'stand');
       drawRaptor(a.x, GY() + 2, a.s, pose, moving ? sh.T : sh.T * 0.6, a.tx > a.x + 1 ? 1 : (moving ? -1 : a.face), { eye: who === 'fang' ? '#ef4444' : '#fbbf24', snarl: who === 'fang' && !moving, hk: who === 'fang' ? 0.6 : 0 });
     }
-    sh.drawMe(m.phase === 'resolve' && (m.animName === 'shelter' || m.animName === 'follow') && Math.abs(me.tx - me.x) < 1 ? { pose: 'crouch' } : null);
+    sh.drawMe(me.lying && m.phase !== 'live' ? { pose: 'lie' } : m.phase === 'resolve' && (m.animName === 'shelter' || m.animName === 'follow') && Math.abs(me.tx - me.x) < 1 ? { pose: 'crouch' } : null);
     if (m.dust) { const d = m.dust, k = d.t / 1.4; for (let i = 0; i < 9; i++) { ctx.fillStyle = `rgba(110,80,70,${0.55 * (1 - k)})`; ctx.beginPath(); ctx.arc(d.x + Math.sin(i * 2.3 + d.t * 9) * 24, GY() - 18 + Math.cos(i * 1.7 + d.t * 7) * 14, 10 + k * 18 + (i % 3) * 4, 0, 7); ctx.fill(); } }
     pieces.drawFront();
     sh.drawWorldFront();

@@ -4,10 +4,11 @@ import { createMoment } from '../engine/kinds/moment.js';
 import { createRepair } from '../engine/kinds/repair.js';
 import { createPractice } from '../engine/kinds/practice.js';
 import { createTrack } from '../engine/kinds/track.js';
+import { createRun } from '../engine/kinds/run.js';
 import { TOOL_ORDER } from '../engine/tools/index.js';
 import { completeLeg, recordSession, appearance } from '../model/progress.js';
 
-export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack };
+export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun };
 export function registerKind(name, fn) { KINDS[name] = fn; }
 
 const WRAP_CARD = { title: 'TIME TO REST', sub: "The sun's going down. That's enough hunting for today.",
