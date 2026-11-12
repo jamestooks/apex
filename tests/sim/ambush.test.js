@@ -88,3 +88,20 @@ test('breathing with the other thumb while hiding does not break cover', () => {
   });
   assert.equal(r.outcome, 'success');
 });
+
+test('coming back from a pause mid-hide lets you settle again instead of failing as too soon', () => {
+  const s = setup(lookout);
+  const { shell, fi, scene } = s;
+  let t = 0;
+  const tick = () => { shell.update(1 / 20); if (!shell.card) scene.update(1 / 20); shell.input.beginFrame(); t += 1 / 20; };
+  fi.down(200, 200, 7);
+  while (scene.heldT < 3) tick();
+  shell.pause();               // app backgrounded: input cleared
+  for (let i = 0; i < 20; i++) tick();
+  shell.dismissCard();         // tap to carry on (finger lifted)
+  for (let i = 0; i < 10; i++) tick();
+  assert.notEqual(scene.phase, 'end'); assert.equal(scene.result, null);
+  // thumb back down (play() presses it), then let go on the signal
+  const { r } = play(s, sc => (sc.signalOn ? 'release' : 'hold'));
+  assert.equal(r.outcome, 'success');
+});

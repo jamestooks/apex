@@ -61,3 +61,14 @@ test('drag tracks a pointer from down to move', () => {
   assert.equal(input.drag.active, true);
   assert.equal(input.drag.x, 40); assert.equal(input.drag.startX, 5);
 });
+
+test('keys typed into a text field are left alone (spaces work, no game shortcuts)', () => {
+  const el = new EventTarget(), keys = new EventTarget();
+  keys.matches = sel => sel.includes('input');
+  const input = createInput({ el, keyTarget: keys, toLogical: (x, y) => ({ x, y }) });
+  let prevented = false, got = null;
+  input.onKey = k => { got = k; };
+  const e = new Event('keydown'); Object.assign(e, { key: ' ' }); e.preventDefault = () => { prevented = true; };
+  keys.dispatchEvent(e);
+  assert.equal(prevented, false); assert.equal(got, null); assert.equal(input.keys.size, 0);
+});

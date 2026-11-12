@@ -1,13 +1,13 @@
-// Session length cap and the rest that follows it.
+// Session length cap (counts play time only, not time on menus) and the rest that follows it.
 const MIN = 60000;
 export const REST_MINUTES = 60;
-export function createSession(profile, now) {
-  const start = now;
+export function createSession(profile) {
+  let played = 0;
   return {
-    start,
-    elapsed: t => t - start,
-    capReached: t => t - start >= (profile.settings.sessionMinutes || 15) * MIN,
-    minutes: t => Math.round((t - start) / MIN),
+    tick(ms) { played += ms; },
+    elapsed: () => played,
+    capReached: () => played >= (profile.settings.sessionMinutes || 15) * MIN,
+    minutes: () => Math.round(played / MIN),
   };
 }
 export function restRemaining(p, now) { return Math.max(0, (p.restUntil || 0) - now); }

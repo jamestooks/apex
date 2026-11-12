@@ -1,4 +1,5 @@
 :root {
+  --sai-top: env(safe-area-inset-top, 0px); --sai-bottom: env(safe-area-inset-bottom, 0px);
   --bg: #0a0508; --panel: #16100f; --panel2: #1c1917; --line: #2a1a1f; --line2: #44403c;
   --amber: #f59e0b; --amber-hi: #fde68a; --cream: #fef3c7; --text: #e7e5e4; --muted: #a8a29e; --dim: #78716c;
   --red: #f87171; --sky: #38bdf8; --sky-hi: #7dd3fc; --green: #86efac; --pink: #fca5a5;

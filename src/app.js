@@ -10,8 +10,11 @@ export const app = {
   T: 0,
   register(name, fn) { app.screens[name] = fn; },
   show(name, params) {
-    app.current = name;
     if (!app.screens[name]) throw new Error('No screen ' + name);
+    // Leaving a scene: release its keyboard/pointer hooks so menus can't trigger game keys.
+    const cs = app.canvasScene;
+    if (name !== 'play' && cs && cs.shell) { cs.shell.dispose(); app.canvasScene = null; }
+    app.current = name;
     app.screens[name](params || {});
   },
   onPause: null,
@@ -24,6 +27,7 @@ function loop(now) {
   app.input.beginFrame();
   beginDraw();
   const s = app.canvasScene;
+  if (app.session && app.current === 'play' && !app.paused && !(s && s.shell && s.shell.paused)) app.session.tick(dt * 1000);
   if (s) {
     if (!app.paused && s.update) s.update(dt);
     s.draw();

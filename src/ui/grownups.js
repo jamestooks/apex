@@ -156,7 +156,13 @@ function data(body, app, p, rerender) {
   const st = app.store;
   const file = h('input', { type: 'file', accept: 'application/json,.json' }), msg = h('p', { class: 'small' });
   body.append(h('div', { class: 'card' }, h('h3', {}, 'Backup'), h('p', { class: 'small' }, 'Everything lives on this device only. Export now and then so progress is never lost.'),
-    h('button', { onClick: () => { const blob = new Blob([st.exportJSON()], { type: 'application/json' }); const a = h('a', { href: URL.createObjectURL(blob), download: `apex-backup-${new Date().toISOString().slice(0, 10)}.json` }); document.body.append(a); a.click(); a.remove(); } }, 'Export backup'),
+    h('button', { onClick: async () => {
+      const name = `apex-backup-${new Date().toISOString().slice(0, 10)}.json`, json = st.exportJSON();
+      // Installed iPhone/iPad apps can't download files; the share sheet (Save to Files, AirDrop, email) works.
+      try { const f = new File([json], name, { type: 'application/json' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: 'Apex backup' }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+      const a = h('a', { href: URL.createObjectURL(new Blob([json], { type: 'application/json' })), download: name }); document.body.append(a); a.click(); a.remove();
+    } }, 'Export backup'),
+    h('button', { class: 'quiet', id: 'show-backup', onClick: e => { const ta = h('textarea', { id: 'backup-text', readonly: true, style: { minHeight: '140px' } }); ta.value = st.exportJSON(); const cp = h('button', { class: 'ghost', onClick: () => { ta.select(); try { navigator.clipboard.writeText(ta.value); cp.textContent = 'Copied'; } catch (_) { document.execCommand && document.execCommand('copy'); } } }, 'Copy'); e.currentTarget.replaceWith(h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } }, h('p', { class: 'small' }, 'If Export does nothing, copy this text and paste it into a note or email to yourself.'), ta, cp)); } }, 'Show backup as text'),
     file, h('button', { class: 'ghost', onClick: async () => { const f = file.files[0]; if (!f) { msg.textContent = 'Choose a backup file first.'; return; } try { st.importJSON(await f.text()); msg.textContent = 'Backup restored.'; rerender(); } catch (e) { msg.textContent = "That file isn't an Apex backup. Nothing was changed."; } } }, 'Import backup'), msg));
   if (p) {
     const cn = h('input', { type: 'text', value: p.childName, maxlength: 20 }), rn = h('input', { type: 'text', value: p.raptorName, maxlength: 16 });

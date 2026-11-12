@@ -13,17 +13,25 @@ export function initCanvas(el) {
   addEventListener('resize', resize);
   return ctx;
 }
+// iPhone notch / home bar: read env(safe-area-inset-*) through a probe element (custom properties stay unresolved).
+let probe = null;
+function safeInsets() {
+  if (!probe) { probe = document.createElement('div'); probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;padding-top:var(--sai-top);padding-bottom:var(--sai-bottom)'; document.body.appendChild(probe); }
+  const cs = getComputedStyle(probe);
+  return { top: parseFloat(cs.paddingTop) || 0, bottom: parseFloat(cs.paddingBottom) || 0 };
+}
 // Draw into another 2D context (gallery, previews). Logical height h.
 export function useContext(c, h) { ctx = c; if (h) view.H = h; }
 export function resize() {
   const el = view.el; if (!el) return;
-  const vw = innerWidth, vh = innerHeight;
+  const ins = safeInsets();
+  const vw = innerWidth, vh = innerHeight - ins.top - ins.bottom;
   view.H = Math.max(600, Math.min(880, Math.round(W * vh / vw)));
   view.scale = Math.min(vw / W, vh / view.H);
   view.dpr = Math.min(2, window.devicePixelRatio || 1);
   el.style.width = W * view.scale + 'px';
   el.style.height = view.H * view.scale + 'px';
-  el.style.marginTop = Math.max(0, (vh - view.H * view.scale) / 2) + 'px';
+  el.style.marginTop = ins.top + Math.max(0, (vh - view.H * view.scale) / 2) + 'px';
   el.width = Math.round(W * view.scale * view.dpr);
   el.height = Math.round(view.H * view.scale * view.dpr);
 }

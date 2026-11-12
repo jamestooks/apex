@@ -43,20 +43,20 @@ app.play = (n, mode, leg) => app.show('play', { n, mode, leg: leg || 0 });
 app.register('play', ({ n, mode, leg, only }) => {
   const p = app.profile, base = chapterByN(n), ch = only ? { ...base, __only: only } : base;
   if (!p || !ch) return app.show('home');
-  if (!app.session) app.session = createSession(p, Date.now());
+  if (!app.session) app.session = createSession(p);
   unmount();
   const shell = createShell({ profile: p, theme: ch.theme, tools: [], audio, input: app.input, difficulty: { simmerMul: 1, gapMul: 1, spikeAdd: 0 } });
   const runner = createRunner({
     profile: p, chapter: ch, mode, leg, shell, session: app.session, save: () => app.store.save(),
     pickSigns: inst => new Promise(res => { app.paused = true; showSigns(app, p, inst, { onDone: () => { unmount(); app.paused = false; res(); } }); }),
-    onDone: summary => { app.store.save(); app.canvasScene = null; app.show('den', summary); },
+    onDone: summary => { app.store.save(); app.show('den', summary); },
   });
   shell.onMenu = () => {
     app.paused = true; app.input.clearAll();
     mount(h('div', { class: 'screen', style: { justifyContent: 'center' } }, h('div', { class: 'card' },
       h('h2', {}, 'Paused'), h('p', { class: 'scar' }, '"Take your time. The valley will wait."'),
-      h('button', { id: 'resume-scene', onClick: () => { unmount(); app.paused = false; } }, 'Carry on'),
-      h('button', { class: 'ghost', id: 'leave-scene', onClick: () => { app.paused = false; app.store.save(); app.canvasScene = null; app.show('home'); } }, 'Back to the valley'),
+      h('button', { id: 'resume-scene', onClick: () => { unmount(); app.paused = false; shell.resumedAt = shell.T; } }, 'Carry on'),
+      h('button', { class: 'ghost', id: 'leave-scene', onClick: () => { app.paused = false; app.store.save(); app.show('home'); } }, 'Back to the valley'),
       h('p', { class: 'small' }, 'Leaving now keeps your signs, but this part of the chapter starts again next time.'))));
   };
   app.canvasScene = { update: runner.update, draw: runner.draw, pause: runner.pause, runner, shell };

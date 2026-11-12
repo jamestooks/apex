@@ -18,3 +18,9 @@ test('the manifest is installable: standalone, portrait, 192 and 512 icons', () 
   assert.ok(sizes.includes('192x192') && sizes.includes('512x512'));
   assert.ok(m.icons.some(i => (i.purpose || '').includes('maskable')));
 });
+
+test('the cache name matches the current app files, so installed copies update after a deploy', async () => {
+  const { contentHash } = await import('../../scripts/sw-hash.mjs');
+  const sw = readFileSync('sw.js', 'utf8');
+  assert.ok(sw.includes(`const CACHE = 'apex-${contentHash()}';`), 'sw.js is stale: run npm run sw');
+});

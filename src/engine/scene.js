@@ -143,7 +143,7 @@ export function createShell(env) {
       for (const id of ['burstRest', 'waitSignal']) { const r = sh.runs[id]; if (r && r.phase && r.phase !== 'idle' && !r.done) r.phase = 'paused'; }
       sh.paused = true;
       const prev = sh.card;
-      sh.showCard({ title: 'PAUSED', sub: 'The valley waits for you.', body: 'Tap to carry on.', cb: () => { sh.paused = false; if (prev) sh.showCard(prev); } });
+      sh.showCard({ title: 'PAUSED', sub: 'The valley waits for you.', body: 'Tap to carry on.', cb: () => { sh.paused = false; sh.resumedAt = sh.T; if (prev) sh.showCard(prev); } });
       sh.cardBorn = sh.T - 0.7;
     },
 
@@ -373,8 +373,9 @@ export function createShell(env) {
       }
     },
   };
-  input.onDown = p => sh.handleDown(p);
-  input.onKey = name => sh.handleKey(name);
+  sh.dispose = () => { if (input.onDown === hDown) input.onDown = null; if (input.onKey === hKey) input.onKey = null; sh.onMenu = null; };
+  const hDown = p => sh.handleDown(p), hKey = name => sh.handleKey(name);
+  input.onDown = hDown; input.onKey = hKey;
   return sh;
 }
 

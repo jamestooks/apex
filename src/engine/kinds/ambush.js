@@ -113,6 +113,7 @@ export function createAmbush(sc, sh) {
       for (const t of trig) if (t.fired && t.left > 0) { t.left -= dt; if (t.left <= 0) { const a = A[t.who]; if (a) { a.tx = 480; } rates[t.meter || 'rage'] = 0; } }
       const full = sh.meters.list.find(m => m !== urge && m.full);
       if (full) takeover(full);
+      else if (!h && sh.resumedAt != null && sh.T - sh.resumedAt < 2) { k.phase = 'settle'; sh.say('Welcome back. Thumb down to hide again.', 3, 2); }
       else if (!h) early(sc.earlyLine || 'Too soon. The herd scatters before you get close.');
       else if (k.heldT >= sc.signalAt) {
         k.phase = 'signal'; k.signalOn = true; k.signalT = 0; k.urgeAtSignal = urge ? urge.value : 0; sh.stonesSettled = true;

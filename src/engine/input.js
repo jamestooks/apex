@@ -2,6 +2,8 @@
 import { inR } from './canvas.js';
 
 const KEY_NAMES = { ' ': 'Space', Enter: 'Enter', Escape: 'Escape' };
+// Typing in a text box (names, Den answers, Grown-ups) must never trigger game keys.
+const editable = t => !!(t && t.matches && t.matches('input, textarea, select, [contenteditable], [contenteditable] *'));
 
 export function createInput({ el, keyTarget, toLogical }) {
   const input = {
@@ -45,6 +47,7 @@ export function createInput({ el, keyTarget, toLogical }) {
   el.addEventListener('pointercancel', up);
   el.addEventListener('contextmenu', e => e.preventDefault && e.preventDefault());
   keyTarget.addEventListener('keydown', e => {
+    if (editable(e.target)) return;
     const name = KEY_NAMES[e.key] || e.key;
     if (name === 'Space') e.preventDefault();
     if (e.repeat) return;

@@ -77,3 +77,10 @@ test('an abandoned One Thing times out so other tools and the meters work again'
   assert.equal(shell.activeTool, null);
   assert.equal(shell.runs.oneThing, null);
 });
+
+test('dispose releases the keyboard and pointer hooks', () => {
+  const { shell } = makeShell();
+  assert.ok(shell.input.onKey);
+  shell.dispose();
+  assert.equal(shell.input.onKey, null); assert.equal(shell.input.onDown, null);
+});
