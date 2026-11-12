@@ -107,7 +107,7 @@ export default {
           hint: 'Everything at once, and Nip needs you. One Thing first. Then one step.' }],
         target: 'nip',
         outcomes: {
-          bolt: { injure: true, line: 'You panic and bolt for the trees. Echo has to go back for Nip herself. You are both safe, but you were not there for him.' },
+          bolt: { injure: true, line: 'You panic and bolt for the trees. Echo goes back for Nip herself, and everyone is safe. Next time, you could be the one who helps.' },
           lead: { strength: 'Sharp senses: you found the gap in the herd that nobody else saw.', line: 'You spot a gap between the giants, dart through, and guide Nip back across. Your sharp senses found the gap in the herd.', stays: true },
           high: { line: 'You get to the high rocks and shout to Nip which way to go. He makes it, shaking, but safe.' },
           wait: { line: 'You call Echo with one sharp chirp. She is there in a heartbeat, and together you bring Nip home.' },

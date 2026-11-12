@@ -75,3 +75,16 @@ test('never hiding at all lets the urge take over', () => {
   const { r } = play(s, () => 'none', 90);
   assert.equal(r.forced, true);
 });
+
+test('breathing with the other thumb while hiding does not break cover', () => {
+  const sc = CH.scenarios.mix[0];
+  const s = setup(sc);
+  let holding = false, breathing = false;
+  const { r } = play(s, scn => {
+    const rage = s.shell.meters.get('rage'), le = s.shell.runs.longExhale;
+    if (rage.value > 0.3 && le.phase === 'idle' && !breathing) { s.fi.keyDown('q'); breathing = true; }
+    if (breathing && le.phase === 'full') { s.fi.keyUp('q'); breathing = false; }
+    return scn.signalOn ? 'release' : 'hold';
+  });
+  assert.equal(r.outcome, 'success');
+});

@@ -70,3 +70,11 @@ test('mix with Fang: rage rises too, and a breathing tracker still succeeds', ()
   assert.equal(scene.result.success, true);
   assert.ok(shell.stats.toolUses.longExhale >= 1);
 });
+
+test('a player who stops tapping is walked along by Echo after three missed prints', () => {
+  const sc = CH.scenarios.test[0];
+  const { shell, scene } = setup(sc);
+  const before = scene.printIndex;
+  step(shell, scene, (sc.fadeSec || 6) * 3 + 1);
+  assert.equal(scene.printIndex, before + 1);
+});

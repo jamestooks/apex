@@ -59,3 +59,10 @@ for (const sc of CH.scenarios.test.filter(s => s.kind === 'run')) {
     assert.equal(scene.done, true); assert.equal(scene.result.success, true);
   });
 }
+
+test('after a run you start the next one rested (fuel at most 0.1)', () => {
+  const sc = CH.scenarios.test[0];
+  const { shell, fi, scene } = setup(sc);
+  runScene(shell, scene, rhythm(fi, 2, 3), { dt: 1 / 20, maxSecs: 200 });
+  assert.ok(shell.meters.get('fuel').value <= 0.1 + 1e-9);
+});

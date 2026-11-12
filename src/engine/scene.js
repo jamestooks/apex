@@ -181,6 +181,11 @@ export function createShell(env) {
         const free = !sh.activeTool || sh.activeTool === id;
         const held = free && T.kind === 'hold' && !sh.card && (input.held(sh.tileRect(i), i === 0 && !sh.spaceTaken ? 'Space' : KEYS[i]) || input.keys.has(KEYS[i]));
         const io = { held, taps: T.kind === 'tap' && sh.activeTool === id ? input.taps : [], drag: input.drag, targets: sh.targets };
+        if (T.kind === 'tap' && !run.done && run.t > 10) {
+          sh.runs[id] = null; if (sh.activeTool === id) sh.activeTool = null;
+          sh.say("Let's leave that for now. Tap ONE THING again whenever you need it.", 3.5, 2);
+          return;
+        }
         const out = run.update(dt, io);
         if (out.relief > 0) sh.meters.relieve(T.instinct, out.relief);
         for (const e of out.events) sh.toolEvent(id, e);

@@ -30,7 +30,8 @@ export function createAmbush(sc, sh) {
   if (sc.intro) sh.say(sc.intro, 5, 3, 'narr');
   sh.sayNext(sc.hint || 'Hold anywhere to hide. Stay still.', 4, 'scar');
 
-  const held = () => !sh.activeTool && input.held({ x: 0, y: 70, w: W, h: SH() - 70 }, 'Space');
+  // Hiding is a finger resting on the scene. Using a tool tile with the other thumb doesn't break cover.
+  const held = () => input.held({ x: 0, y: 70, w: W, h: SH() - 70 }, 'Space');
   const waveLevel = t => {
     let lv = 0;
     for (const w of waves) {

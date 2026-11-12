@@ -65,3 +65,15 @@ test('calm choices are refused above the lock line', () => {
   m.choose('attack');
   assert.equal(m.phase, 'resolve');
 });
+
+test('an abandoned One Thing times out so other tools and the meters work again', async () => {
+  const CH2 = (await import('../../src/data/chapters/2-overwhelm.js')).default;
+  const sc = CH2.scenarios.test[0];
+  const { shell } = makeShell({ tools: ['longExhale', 'oneThing'] });
+  shell.setStage({ instincts: sc.meters, tools: ['longExhale', 'oneThing'], targets: { oneThing: sc.oneThing } });
+  shell.startTapTool('oneThing');
+  assert.equal(shell.activeTool, 'oneThing');
+  step(shell, null, 10.5);
+  assert.equal(shell.activeTool, null);
+  assert.equal(shell.runs.oneThing, null);
+});

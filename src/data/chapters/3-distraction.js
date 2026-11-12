@@ -28,15 +28,16 @@ export default {
   repair: false,
   scenarios: {
     test: [
-      { ...base, id: 'trail-one', prints: 9, fadeSec: 7,
+      { ...base, id: 'trail-one', prints: 14, fadeSec: 7,
         intro: 'The pack needs a trail to a herd of plant-eaters. Echo has found the first print.', hint: 'Tap the glowing print. One at a time.',
         distractions: [
           { at: 2, type: 'beetle', simmer: 0.06, find: find('Jewel beetle'), intro: 'A jewel beetle crawls across a leaf, flashing green and gold.', hint: "Interesting! Park it. You can come back." },
           { at: 6, type: 'butterfly', simmer: 0.06, find: find('Blue butterfly'), intro: 'A blue butterfly dances right past your nose.' },
+          { at: 10, type: 'amber', simmer: 0.06, find: find('Shiny stone'), intro: 'Something glints under a fern.' },
         ],
         success: { line: 'You follow the last print to the herd. The pack will eat tonight because of you.' },
         onTakeover: { line: "You chase the shiny thing into the ferns. When you look up, the trail has gone cold. Echo finds you. \"It happens. Let's go home.\"" } },
-      { ...base, id: 'trail-two', prints: 11, fadeSec: 5.5,
+      { ...base, id: 'trail-two', prints: 16, fadeSec: 5.5,
         intro: 'A faster trail this time. The prints are fading quickly in the damp air.', hint: 'Quick and steady. Park anything shiny straight away.',
         distractions: [
           { at: 2, type: 'call', simmer: 0.07, find: find('Strange call'), intro: 'A strange call echoes through the ferns. What was THAT?' },
@@ -45,17 +46,18 @@ export default {
         ],
         success: { line: 'The trail ends at a herd grazing by a pool. Echo nods at you. "Fast and focused."' },
         onTakeover: { line: 'You wander off to investigate. By the time you come back, the prints have faded. Echo walks you home. "It happens. Tomorrow."' } },
-      { ...base, id: 'nip-pesters', prints: 9, fadeSec: 7,
+      { ...base, id: 'nip-pesters', prints: 14, fadeSec: 7,
         intro: 'Nip has tagged along on the hunt. He keeps bouncing around you.', hint: "Nip wants to play. Park it: 'Not now, Nip. After the hunt.'",
         distractions: [
           { at: 2, type: 'nip', simmer: 0.07, find: { ...find('Nip'), parkLine: 'Not now, Nip. After the hunt. Promise.' }, intro: 'Nip leaps in front of you. "Play with me! Play with me!"' },
           { at: 6, type: 'beetle', simmer: 0.06, find: find('Jewel beetle'), intro: 'And now a beetle, right on the trail.' },
+          { at: 10, type: 'call', simmer: 0.06, find: find('Strange call'), intro: 'A strange call rings out. Nip looks at you. You look at the trail.' },
         ],
         success: { line: 'You reach the herd. Then you turn to Nip: "Right. Now we play." His tail goes mad.' },
         onTakeover: { line: 'You end up chasing Nip round a tree. Fun, but the trail is gone. Echo sighs and smiles. "After, next time."' } },
     ],
     mix: [
-      { ...base, id: 'fang-in-the-ferns', meters: ['drift', 'rage'], prints: 10, fadeSec: 7,
+      { ...base, id: 'fang-in-the-ferns', meters: ['drift', 'rage'], prints: 15, fadeSec: 7,
         intro: 'Fang is lurking in the Fern Maze, following you.', hint: 'Watch both meters. Park the shiny things. Breathe if Fang gets to you.',
         distractions: [
           { at: 2, type: 'beetle', simmer: 0.06, find: find('Jewel beetle'), intro: 'A jewel beetle catches your eye.' },
@@ -67,7 +69,7 @@ export default {
         onTakeover: { line: 'You lose the trail. Echo finds you and walks you home. "Tomorrow."' } },
     ],
     big: [
-      { ...base, id: 'lost-hatchling', prints: 13, fadeSec: 6,
+      { ...base, id: 'lost-hatchling', prints: 20, fadeSec: 6,
         strength: 'Noticing what others miss: you found Nip when nobody else could.',
         intro: 'Dusk. Nip has wandered into the Fern Maze and not come back. Only you can pick out his tiny prints.',
         hint: 'Everything in here will try to pull you away. Park it all. Nip needs you.',
@@ -76,6 +78,7 @@ export default {
           { at: 5, type: 'call', simmer: 0.07, find: find('Strange call'), intro: 'Something calls in the dark. Not Nip.' },
           { at: 8, type: 'amber', simmer: 0.09, spike: 0.22, find: find('Glowing amber'), intro: 'A lump of amber GLOWS on a fallen tree. The most amazing thing you have ever seen.' },
           { at: 11, type: 'beetle', simmer: 0.07, find: find('Jewel beetle'), intro: 'A beetle glitters on the path.' },
+          { at: 15, type: 'butterfly', simmer: 0.07, find: find('Odd feather'), intro: 'A pale feather drifts down. Nobody has seen a bird like that before.' },
         ],
         success: { title: 'YOU FOUND NIP', line: 'The last print leads to Nip, curled up under a fern. He runs to you. You found him because you stayed on the trail.' },
         onTakeover: { line: 'You get pulled off the trail. Echo finds Nip in the end, and finds you too. Everyone is safe. "Tomorrow, you\'ll be the one who finds him."' } },

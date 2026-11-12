@@ -59,7 +59,7 @@ export function createRun(sc, sh) {
     else body = '"Not this time. Pace yourself: burst, rest, burst."';
     if (r.dTrust > 0 && sc.strength && (!sc.nip || r.nipOk)) body += `\n\nStrength: ${sc.strength}`;
     sh.showCard({ title, sub: r.success ? sc.success.line : sc.fail.line, good: r.dTrust > 0, bad: !r.success && k.burntOut,
-      body: body + `\n\nPack trust: ${r.dTrust > 0 ? 'rising' : 'steady'}`, cb: () => { k.done = true; k.phase = 'done'; sh.panelText = ''; if (fuel) fuel.set(Math.min(fuel.value, 0.3)); pieces.stop(); A.nip.on = false; } });
+      body: body + `\n\nPack trust: ${r.dTrust > 0 ? 'rising' : 'steady'}`, cb: () => { k.done = true; k.phase = 'done'; sh.panelText = ''; if (fuel) fuel.set(Math.min(fuel.value, 0.1)); pieces.stop(); A.nip.on = false; } });
   }
   k.tookOverAtStart = sh.stats.tookOver;
 

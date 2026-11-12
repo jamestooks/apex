@@ -127,7 +127,13 @@ export function createTrack(sc, sh) {
         }
       }
       k.fadeT += dt;
-      if (k.fadeT > (sc.fadeSec || 6)) { k.fadeT = 0; k.misses++; if (k.misses >= 3) { k.misses = 0; sh.say("The trail's going cold. Here, I've marked it again. One print at a time.", 4, 2, 'echo'); } }
+      if (k.fadeT > (sc.fadeSec || 6)) {
+        k.fadeT = 0; k.misses++;
+        if (k.misses >= 3) {
+          k.misses = 0; k.printIndex++; k.camTarget = worldX(k.printIndex - 1) - ME_X - 20;
+          sh.say("The trail's going cold. Come on, I'll walk you to the next one. Tap the glowing print.", 4, 2, 'echo');
+        }
+      }
       const full = sh.meters.list.find(m => m.full);
       if (full) takeover(full);
       else if (k.printIndex >= sc.prints) succeed();
