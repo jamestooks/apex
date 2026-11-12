@@ -70,3 +70,23 @@ export function calmBot(fi, { attack = false } = {}) {
     }
   };
 }
+
+// Plays One Thing for real: starts it when overload is past the first sign, taps one target per step after the dwell.
+export function oneThingBot(fi, { attack = false, start = 0.27, chooseBelow = 0.5, onlyExhale = false } = {}) {
+  let wait = 0, holding = false;
+  return ({ shell }) => {
+    if (attack) { if (shell.choices) { const c = shell.choices.find(x => x.instinct); if (c) shell.choiceCb(c.k); } return; }
+    const ov = shell.meters.get('overload'), run = shell.runs.oneThing, le = shell.runs.longExhale;
+    if (!onlyExhale && ov && ov.value >= start && (!run || run.done) && !shell.activeTool && shell.targets.oneThing && !(run && run.done && shell.choices)) shell.startTapTool('oneThing');
+    const r = shell.runs.oneThing;
+    if (r && !r.done && shell.activeTool === 'oneThing') {
+      wait += 1 / 20;
+      if (r.t > 1.3) { const b = r.targets[r.phase][0]; fi.tap(b.x + 2, b.y + 2); }
+    }
+    if (le && (onlyExhale || (shell.meters.get('rage') && shell.meters.get('rage').value > 0.3)) && !shell.activeTool || holding) {
+      if (le.phase === 'idle' && !holding && shell.heat > 0.22) { fi.keyDown('Space'); holding = true; }
+      if (holding && le.phase === 'full') { fi.keyUp('Space'); holding = false; }
+    }
+    if (shell.choices && shell.heat < chooseBelow && !shell.activeTool && !holding) { const c = shell.choices.find(x => !x.instinct); if (c) shell.choiceCb(c.k); }
+  };
+}

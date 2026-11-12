@@ -48,3 +48,9 @@ test('MeterSet relief for an instinct not in the scene still helps at a quarter'
   new MeterSet([r]).relieve('drift', 0.4);
   near(r.value, 0.4);
 });
+test('MeterSet: firstToolAt only marks the meter whose own tool was used', () => {
+  const r = new Meter('rage', signs), o = new Meter('overload', signs);
+  r.value = 0.5; o.value = 0.5;
+  new MeterSet([r, o]).relieve('rage', 0.2);
+  assert.equal(r.firstToolAt, 0.5); assert.equal(o.firstToolAt, null);
+});

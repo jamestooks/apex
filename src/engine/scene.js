@@ -124,7 +124,9 @@ export function createShell(env) {
       if (sh.runs[id] && !sh.runs[id].done) return;
       const tgt = sh.targets[id];
       if (!tgt) { sh.say(id === 'oneThing' ? "Nothing's too much right now. Save One Thing for when it is." : 'Not now.', 3, 2); return; }
-      sh.runs[id] = TOOLS[id].createRun({ targets: tgt });
+      const resolved = {};
+      for (const [step, list] of Object.entries(tgt)) resolved[step] = list.map(b => ({ ...b, y: b.y != null ? b.y : b.gy != null ? GY() + b.gy : SH() + (b.sy || 0) }));
+      sh.runs[id] = TOOLS[id].createRun({ targets: resolved });
       sh.activeTool = id; SFX.click();
     },
 
@@ -310,7 +312,7 @@ export function createShell(env) {
       if (big) {
         ctx.font = FH(22); ctx.fillText(id === 'longExhale' ? 'BREATHE' : T.name.toUpperCase(), R.x + R.w / 2, R.y + 50);
         ctx.font = FB(11, 600); ctx.fillStyle = T.col; ctx.fillText(run && run.label ? run.label() : 'TAP TO START', R.x + R.w / 2, R.y + 72);
-        ctx.fillStyle = '#57534e'; ctx.font = FB(10); ctx.fillText(id === 'longExhale' ? 'IN 3 · OUT 5' : T.how.toUpperCase().slice(0, 26), R.x + R.w / 2, R.y + 92);
+        ctx.fillStyle = '#57534e'; ctx.font = FB(10); ctx.fillText(T.tile, R.x + R.w / 2, R.y + 92);
       } else if (!small) {
         ctx.font = FH(17); ctx.fillText(id === 'longExhale' ? 'BREATHE' : T.name.toUpperCase(), R.x + R.w / 2, R.y + 24);
         ctx.font = FB(10, 600); ctx.fillStyle = T.col; ctx.fillText(run && run.label ? run.label() : T.kind === 'tap' ? 'TAP TO START' : T.kind === 'drag' ? 'DRAG IT TO THE MAP' : '', R.x + R.w / 2, R.y + 40);

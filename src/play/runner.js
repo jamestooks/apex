@@ -24,7 +24,9 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
   if (mode === 'hunt' || leg > 0) addTool(chapter.tool);
 
   const steps = [];
-  if (mode === 'hunt') {
+  if (mode === 'single') {
+    steps.push({ type: 'scenario', sc: chapter.__only });
+  } else if (mode === 'hunt') {
     if (inst !== 'all') steps.push({ type: 'signs', instinct: inst });
     const pool = [...chapter.scenarios.test, ...chapter.scenarios.mix];
     const picks = []; while (picks.length < Math.min(2, pool.length)) { const s = pool[Math.floor(rng() * pool.length)]; if (!picks.includes(s)) picks.push(s); }

@@ -155,7 +155,7 @@ export function createMoment(sc, sh) {
     m.gapT += dt;
     me.tx = sc.homeX || 150; me.face = 1; me.sp = 70; sh.move(me, dt);
     if (mentor && mentor.on && !sc.mentorStays) { mentor.tx = mentor === A.scar ? 58 : 40; mentor.sp = 70; sh.move(mentor, dt); }
-    if (!sh.activeTool) for (const x of sh.meters.list) x.relieve(0.012 * dt);
+    if (!sh.activeTool) for (const x of sh.meters.list) x.relieve(0.012 * dt, false);
     const heat = sh.heat;
     if (heat >= GAP_CALM && !m.gapHinted && m.gapT > 1) { m.gapHinted = true; sh.say('Still feeling it? Check your signs. Calm down before anything else happens.', 5, 2); }
     const maxGap = (c => (c && c.instinct ? 22 : 12))(m.c) * (sh.difficulty.gapMul || 1) * (m.result && m.result.forced ? 1.8 : 1);

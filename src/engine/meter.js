@@ -20,7 +20,7 @@ export class Meter {
   // A single trigger can never fill the meter by itself.
   spike(a) { if (this.value < SPIKE_CAP) this.set(Math.min(SPIKE_CAP, this.value + a)); }
   simmer(rate, dt) { this.set(this.value + rate * this.simmerMul * dt); }
-  relieve(a) { if (this.firstToolAt === null && a > 0) this.firstToolAt = this.value; this.set(this.value - a); }
+  relieve(a, own = true) { if (own && this.firstToolAt === null && a > 0) this.firstToolAt = this.value; this.set(this.value - a); }
   crossings() {
     const out = [];
     for (let i = 0; i < SIGN_T.length; i++) if (this.prev < SIGN_T[i] && this.value >= SIGN_T[i]) out.push(i);
@@ -38,7 +38,7 @@ export class MeterSet {
   get(instinct) { return this.list.find(m => m.instinct === instinct); }
   relieve(instinct, amount) {
     if (amount <= 0) return;
-    for (const m of this.list) m.relieve(m.instinct === instinct ? amount : amount * OTHER_RELIEF);
+    for (const m of this.list) m.instinct === instinct ? m.relieve(amount, true) : m.relieve(amount * OTHER_RELIEF, false);
   }
   get hottest() { return this.list.reduce((a, m) => (m.value > a ? m.value : a), 0); }
 }

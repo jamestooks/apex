@@ -7,7 +7,7 @@ import { createStore } from './store.js';
 import { createSession, startRest } from './model/session.js';
 import { createShell } from './engine/scene.js';
 import { createRunner } from './play/runner.js';
-import { chapterByN } from './data/chapters/index.js';
+import { chapterByN, CHAPTERS } from './data/chapters/index.js';
 import { registerProfiles } from './ui/profiles.js';
 import { registerHome, valleyScene } from './ui/home.js';
 import { registerDen } from './ui/den.js';
@@ -39,8 +39,8 @@ app.endSessionIfCapped = () => {
 };
 app.play = (n, mode, leg) => app.show('play', { n, mode, leg: leg || 0 });
 
-app.register('play', ({ n, mode, leg }) => {
-  const p = app.profile, ch = chapterByN(n);
+app.register('play', ({ n, mode, leg, only }) => {
+  const p = app.profile, base = chapterByN(n), ch = only ? { ...base, __only: only } : base;
   if (!p || !ch) return app.show('home');
   if (!app.session) app.session = createSession(p, Date.now());
   unmount();
@@ -53,6 +53,15 @@ app.register('play', ({ n, mode, leg }) => {
   app.canvasScene = { update: runner.update, draw: runner.draw, pause: runner.pause, runner, shell };
 });
 app.register('grownups', () => mount(h('div', { class: 'screen solid' }, h('h2', {}, 'Grown-ups'), h('p', { class: 'muted' }, 'Coming soon.'), h('button', { class: 'ghost', onClick: () => app.show(app.profile ? 'home' : 'profiles') }, 'Back'))));
+
+// Dev hooks (with ?debug=1): list and jump straight into any scenario.
+app.listScenes = () => CHAPTERS.flatMap(c => ['test', 'mix', 'big'].flatMap(b => c.scenarios[b].map((_, i) => [c.n, b, i])));
+app.goto = (n, beat, i) => {
+  const p = app.profile, ch = chapterByN(n);
+  for (const k of Object.keys(p.signs)) if (p.signs[k].length !== 3) p.signs[k] = ['First sign', 'Second sign', 'Third sign'];
+  if (ch.tool && !p.toolbelt.includes(ch.tool)) p.toolbelt.push(ch.tool);
+  app.show('play', { n, mode: 'single', only: ch.scenarios[beat][i] });
+};
 
 registerProfiles(app);
 registerHome(app);
