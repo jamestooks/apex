@@ -29,7 +29,7 @@ test('tapping a decoy does not park it; dragging it to the map does, and stops i
   assert.equal(d.parked, false);
   const drift = shell.meters.get('drift');
   const v0 = drift.value; step(shell, scene, 1); assert.ok(drift.value > v0, 'unparked decoy simmers');
-  fi.down(d.x, d.y, 3); fi.move(30, 90, 3); fi.up(3); step(shell, scene, 0.1);
+  const mr = shell.runs.parkIt.mapRect; fi.down(d.x, d.y, 3); fi.move(mr.x + 20, mr.y + 20, 3); fi.up(3); step(shell, scene, 0.1);
   assert.equal(d.parked, true);
   const v1 = drift.value; step(shell, scene, 1); assert.ok(drift.value <= v1 + 1e-9, 'parked decoy no longer simmers');
 });
