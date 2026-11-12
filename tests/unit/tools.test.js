@@ -114,3 +114,11 @@ test('waitSignal ride: 6 s held completes with 0.36 relief', () => {
   const o = run(r, 6.02, io(true));
   near(o.relief, 0.36, 0.002); assert.equal(r.done, true); assert.ok(o.events.includes('done'));
 });
+test('parkIt: a quick flick (down, drag, up between frames) still parks', () => {
+  const mapRect = { x: 0, y: 0, w: 60, h: 60 };
+  const d = { id: 'beetle', x: 200, y: 200, r: 20, parked: false };
+  const r = TOOLS.parkIt.createRun({ mapRect });
+  const drag = { active: false, released: true, startX: 202, startY: 199, x: 20, y: 20 };
+  const o = r.update(0.016, { held: false, taps: [], drag, targets: { distractions: [d] } });
+  assert.equal(d.parked, true); assert.equal(o.relief, 0.25);
+});

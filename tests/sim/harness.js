@@ -17,6 +17,7 @@ export function fakeInput() {
     tap: (x, y) => { el.dispatchEvent(ev('pointerdown', { pointerId: 9, clientX: x, clientY: y })); el.dispatchEvent(ev('pointerup', { pointerId: 9 })); },
     down: (x, y, id = 7) => el.dispatchEvent(ev('pointerdown', { pointerId: id, clientX: x, clientY: y })),
     up: (id = 7) => el.dispatchEvent(ev('pointerup', { pointerId: id })),
+    move: (x, y, id = 7) => el.dispatchEvent(ev('pointermove', { pointerId: id, clientX: x, clientY: y })),
   };
 }
 
@@ -88,5 +89,24 @@ export function oneThingBot(fi, { attack = false, start = 0.27, chooseBelow = 0.
       if (holding && le.phase === 'full') { fi.keyUp('Space'); holding = false; }
     }
     if (shell.choices && shell.heat < chooseBelow && !shell.activeTool && !holding) { const c = shell.choices.find(x => !x.instinct); if (c) shell.choiceCb(c.k); }
+  };
+}
+
+// Fern Maze player: taps the glowing print; optionally parks each distraction by dragging it to the scent map.
+export function trackBot(fi, { park = true, tapDecoy = false, breathe = true } = {}) {
+  let dragging = null, holding = false, cool = 0;
+  return ({ shell, scene }) => {
+    cool -= 1 / 20;
+    const ds = (shell.targets.distractions || []).filter(d => !d.parked && d.on !== false);
+    if (park && ds.length && !dragging && cool <= 0) { const d = ds[0]; fi.down(d.x, d.y, 3); dragging = d; return; }
+    if (dragging) { const m = shell.runs.parkIt.mapRect; fi.move(m.x + 20, m.y + 20, 3); fi.up(3); dragging = null; cool = 0.3; return; }
+    if (tapDecoy && ds.length) { fi.tap(ds[0].x, ds[0].y); }
+    const le = shell.runs.longExhale, rage = shell.meters.get('rage');
+    if (breathe && le && rage) {
+      if (le.phase === 'idle' && !holding && rage.value > 0.25) { fi.keyDown('Space'); holding = true; }
+      if (holding && le.phase === 'full') { fi.keyUp('Space'); holding = false; }
+    }
+    const p = scene.nextPrint && scene.nextPrint();
+    if (p && cool <= 0 && !holding && (!le || le.phase === 'idle')) { fi.tap(p.x, p.y); cool = 0.25; }
   };
 }

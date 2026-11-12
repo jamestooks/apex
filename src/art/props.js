@@ -113,9 +113,10 @@ export function drawCallBubble(x, y, text, t) {
 function sparkle(x, y, t) {
   for (let i = 0; i < 3; i++) { const a = t * 3 + i * 2.1, r = 14 + Math.sin(t * 5 + i) * 3; ctx.fillStyle = `rgba(255,255,220,${0.5 + 0.5 * Math.sin(t * 6 + i)})`; ctx.fillRect(x + Math.cos(a) * r - 1, y + Math.sin(a) * r - 1, 2, 2); }
 }
-export function drawFootprint(x, y, glow, alpha) {
+export function drawFootprint(x, y, glow, alpha, scale) {
   ctx.save(); ctx.globalAlpha = alpha == null ? 1 : alpha;
-  if (glow > 0) { const g = ctx.createRadialGradient(x, y, 1, x, y, 22); g.addColorStop(0, `rgba(134,239,172,${0.55 * glow})`); g.addColorStop(1, 'rgba(134,239,172,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 22, 0, 7); ctx.fill(); }
+  if (scale && scale !== 1) { ctx.translate(x, y); ctx.scale(scale, scale); x = 0; y = 0; }
+  if (glow > 0) { const g = ctx.createRadialGradient(x, y, 1, x, y, 22); g.addColorStop(0, `rgba(134,239,172,${0.75 * glow})`); g.addColorStop(1, 'rgba(134,239,172,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 22, 0, 7); ctx.fill(); }
   ctx.strokeStyle = glow > 0 ? '#bbf7d0' : 'rgba(187,247,208,0.35)'; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
   ctx.beginPath(); ctx.moveTo(x - 4, y + 5); ctx.lineTo(x, y - 6); ctx.moveTo(x - 4, y + 5); ctx.lineTo(x + 6, y - 2); ctx.moveTo(x - 4, y + 5); ctx.lineTo(x - 7, y - 4); ctx.stroke();
   ctx.restore();

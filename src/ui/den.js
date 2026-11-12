@@ -5,6 +5,7 @@ import { TOOLS, TOOL_ORDER } from '../engine/tools/index.js';
 import { trophies, nextLeg, chapterOpen } from '../model/progress.js';
 import { showPlanCard } from './plancard.js';
 import { showSigns } from './signs.js';
+import { FINDS } from '../data/chapters/3-distraction.js';
 
 function row(label, value) { return h('div', { class: 'r' }, h('span', {}, label), h('b', {}, String(value))); }
 
@@ -67,8 +68,11 @@ export function registerDen(app) {
     const tr = trophies(p);
     parts.push(h('div', { class: 'card', id: 'trophies' }, h('h3', {}, 'Trophies'),
       tr.length ? h('div', { class: 'row' }, tr.map(t => h('div', { class: 'tile', style: { flex: 'none' } }, `${t.icon} ${t.name}`))) : h('p', { class: 'muted' }, 'Finish a chapter and do its outside mission to earn a trophy.')));
-    if (p.parked.length) parts.push(h('div', { class: 'card' }, h('h3', {}, 'Parked finds'), h('p', { class: 'muted' }, 'Things you noticed and saved for later. Noticing what others miss is a tracker\'s gift.'),
-      h('div', { class: 'row' }, p.parked.map(x => h('span', { class: 'tile', style: { flex: 'none' } }, x)))));
+    if (p.parked.length) {
+      const reveal = h('p', { class: 'scar', id: 'find-line' }, 'Tap a find to explore it.');
+      parts.push(h('div', { class: 'card', id: 'parked-finds' }, h('h3', {}, 'Parked finds'), h('p', { class: 'muted' }, "Things you noticed and saved for later. Now's the time to explore them."),
+        h('div', { class: 'row' }, p.parked.map(x => h('button', { class: 'tile', style: { flex: 'none' }, onClick: () => { reveal.textContent = FINDS[x] || 'You noticed something nobody else did.'; } }, x))), reveal));
+    }
     // Plan cards + signs
     const opened = CHAPTERS.filter(c => chapterOpen(p, c.n) && (p.chapters[c.n] && (p.chapters[c.n].leg > 0 || p.chapters[c.n].done)));
     parts.push(h('div', { class: 'card' }, h('h3', {}, 'My plan cards'),

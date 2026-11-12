@@ -1,12 +1,13 @@
 // Park It: drag the distracting thing onto the scent map. Come back to it after the task.
 import { ctx, FH, rr } from '../canvas.js';
 export const TOOL = { id: 'parkIt', name: 'Park It', instinct: 'drift', kind: 'drag', how: "Say 'later', then drag it to your map.", phrase: 'Park it.', col: '#86efac', past: 'parked it', again: 'park it', verb: 'park it', tile: "SAY 'LATER' · DRAG IT" };
-export const MAP_RECT = { x: 10, y: 74, w: 84, h: 64 };
+export const MAP_RECT = { x: 10, y: 104, w: 84, h: 64 };
 
 export function createRun({ mapRect = MAP_RECT } = {}) {
   const r = {
     phase: 'ready', carrying: null, done: false, pausesSimmer: false, mapRect, lastDrag: null,
     get active() { return !!r.carrying; },
+    label() { return r.carrying ? 'DROP IT ON THE MAP' : 'DRAG SHINY THINGS TO THE MAP'; },
     update(dt, io) {
       const events = []; let relief = 0;
       const ds = (io.targets && io.targets.distractions) || [];
@@ -14,6 +15,12 @@ export function createRun({ mapRect = MAP_RECT } = {}) {
       if (d && d.active && !r.carrying && d !== r.lastDrag) {
         const hit = ds.find(x => !x.parked && x.on !== false && Math.hypot(d.startX - x.x, d.startY - x.y) <= (x.r || 20) + 10);
         if (hit) { r.carrying = hit; r.lastDrag = d; }
+      }
+      if (!r.carrying && d && !d.active && d.released && d !== r.lastDrag) {
+        r.lastDrag = d;
+        const hit = ds.find(x => !x.parked && x.on !== false && Math.hypot(d.startX - x.x, d.startY - x.y) <= (x.r || 20) + 10);
+        const inside = d.x >= mapRect.x && d.x <= mapRect.x + mapRect.w && d.y >= mapRect.y && d.y <= mapRect.y + mapRect.h;
+        if (hit && inside) { hit.parked = true; relief = 0.25; events.push('parked:' + hit.id); }
       }
       if (r.carrying && d) {
         if (d.active) { r.carrying.dragX = d.x; r.carrying.dragY = d.y; }

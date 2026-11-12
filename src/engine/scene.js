@@ -311,7 +311,7 @@ export function createShell(env) {
       ctx.textAlign = 'center'; ctx.fillStyle = '#f5f5f4';
       if (big) {
         ctx.font = FH(22); ctx.fillText(id === 'longExhale' ? 'BREATHE' : T.name.toUpperCase(), R.x + R.w / 2, R.y + 50);
-        ctx.font = FB(11, 600); ctx.fillStyle = T.col; ctx.fillText(run && run.label ? run.label() : 'TAP TO START', R.x + R.w / 2, R.y + 72);
+        ctx.font = FB(id === 'parkIt' ? 9 : 11, 600); ctx.fillStyle = T.col; ctx.fillText(run && run.label ? run.label() : 'TAP TO START', R.x + R.w / 2, R.y + 72);
         ctx.fillStyle = '#57534e'; ctx.font = FB(10); ctx.fillText(T.tile, R.x + R.w / 2, R.y + 92);
       } else if (!small) {
         ctx.font = FH(17); ctx.fillText(id === 'longExhale' ? 'BREATHE' : T.name.toUpperCase(), R.x + R.w / 2, R.y + 24);
