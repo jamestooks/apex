@@ -31,6 +31,12 @@ RIMS.forEach((rim, ri) => {
   poses.forEach((p, i) => drawRaptor(560 + i * 90, 120, 0.8, p, 1.2, 1, { rim }));
 });
 {
+  const looks = [{ crest: 'fern', markings: 'stripes', tail: 'plume', neck: 'teeth' }, { crest: 'sail', markings: 'spots', tail: 'band', neck: 'claw', eye: '#4ade80' }, { crest: 'golden', markings: 'lightning', tail: 'comet', neck: 'ember', eye: '#f43f5e' }];
+  const c = panel('raptors', 1100, 200); __setCtxForGallery(c, 200 + 190);
+  c.fillStyle = '#2a1520'; c.fillRect(0, 0, 1100, 200);
+  looks.forEach((look, i) => drawRaptor(150 + i * 340, 170, 2.2, 'stand', 1, 1, { rim: RIMS[i], feathers: 10, look, eye: look.eye }));
+}
+{
   const c = panel('props', 1100, 700); __setCtxForGallery(c, 700 + 190);
   c.fillStyle = '#3a2030'; c.fillRect(0, 0, 1100, 700);
   P.drawCarcass(80, 120); P.drawHerd(200, 130, 3, 1, true); P.drawHadrosaur(560, 140, 1, 1, 1, true); P.drawTrex(800, 200, 1, 1, 1, true);

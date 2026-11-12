@@ -258,10 +258,10 @@ export function createShell(env) {
       const me = sh.actors.me, r = sh.heat, p = sh.profile, moving = Math.abs(me.tx - me.x) > 1;
       const ap = sh.appearance || { scale: 1, feathers: 8, scars: 0, rim: p && p.rim };
       const pose = (extra && extra.pose) || (moving ? (me.sp > 200 ? 'run' : 'walk') : (me.standT > 0 ? 'stand' : (r > 0.55 ? 'stand' : 'crouch')));
-      const eye = r > SIGN_T[1] ? `rgb(${Math.round(251 - 10 * r)},${Math.round(191 - 170 * r)},${Math.round(36 - 20 * r)})` : '#fbbf24';
+      const eye = r > SIGN_T[1] ? `rgb(${Math.round(251 - 10 * r)},${Math.round(191 - 170 * r)},${Math.round(36 - 20 * r)})` : ((ap.look && ap.look.eye) || '#fbbf24');
       drawRaptor(me.x, GY() + 2, ap.scale * (me.standT > 0 ? 1.12 : 1), pose, sh.T, moving ? (me.tx > me.x ? 1 : -1) : me.face,
         { hk: r, tail: sh.T * (1 + r * 3), eye, eyeR: 1.4 + r * 0.8, snarl: r > 0.55, lean: me.limp && !moving ? 0.06 : 0,
-          rim: ap.rim, feathers: ap.feathers, scars: ap.scars, ...(extra || {}) });
+          rim: ap.rim, feathers: ap.feathers, scars: ap.scars, look: ap.look, ...(extra || {}) });
     },
     drawMentors() {
       const { scar, echo } = sh.actors;

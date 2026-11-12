@@ -6,6 +6,7 @@ import { restRemaining } from '../model/session.js';
 import { ctx, W, GY, SH, view } from '../engine/canvas.js';
 import { drawWorld, drawForeground } from '../art/world.js';
 import { drawRaptor } from '../art/raptor.js';
+import { journeyStrip } from './look.js';
 
 export function valleyScene(app, profile, theme) {
   const ap = profile ? appearance(profile) : { scale: 1.6, feathers: 8, scars: 0, rim: '#fb923c' };
@@ -17,7 +18,7 @@ export function valleyScene(app, profile, theme) {
       drawWorld(theme, t * 6, 0, t, { reducedMotion: rm });
       const gy = GY();
       ctx.fillStyle = '#0a0407'; ctx.beginPath(); ctx.moveTo(90, gy + 6); ctx.lineTo(120, gy - 30); ctx.lineTo(170, gy - 44); ctx.lineTo(230, gy - 38); ctx.lineTo(270, gy - 12); ctx.lineTo(290, gy + 6); ctx.closePath(); ctx.fill();
-      drawRaptor(190, gy - 42, 1.5 * ap.scale, 'stand', t, 1, { hk: 0.3 + 0.2 * Math.sin(t), rim: ap.rim, feathers: ap.feathers, scars: ap.scars });
+      drawRaptor(190, gy - 42, 1.5 * ap.scale, 'stand', t, 1, { hk: 0.3 + 0.2 * Math.sin(t), rim: ap.rim, feathers: ap.feathers, scars: ap.scars, look: ap.look, eye: ap.look && ap.look.eye });
       drawForeground(theme, t * 6, t, { reducedMotion: rm });
       ctx.fillStyle = '#0a0508'; ctx.fillRect(0, SH(), W, view.H - SH());
       ctx.restore();
@@ -52,7 +53,8 @@ export function registerHome(app) {
       h('div', { class: 'row', style: { justifyContent: 'space-between', alignItems: 'center' } },
         h('div', { style: { flex: 'none' } }, h('h2', { style: { color: p.rim } }, p.raptorName), h('div', { class: 'kicker', style: { textAlign: 'left' } }, allDone && p.finaleCalm ? 'APEX · LEADER OF THE PACK' : `${rank.name} · ${allDone ? 'Green season' : curCh.season}`)),
         h('button', { class: 'quiet', style: { flex: 'none' }, id: 'switch-player', onClick: () => app.switchPlayer() }, 'Switch player')),
-      h('div', { style: { height: '46vh', flex: 'none' } }),
+      journeyStrip(p),
+      h('div', { style: { height: '34vh', flex: 'none' } }),
       rest > 0 ? h('div', { class: 'warn', id: 'resting' }, `Scar is resting. Back in ${fmtMins(rest)} minutes.`) : null,
       h('div', { class: 'card', style: { background: 'rgba(22,16,15,0.94)' } }, ...tiles),
       h('div', { class: 'row' },

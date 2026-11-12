@@ -1,5 +1,5 @@
 // Offline support: precache the whole app; cache Google Fonts as they load. Regenerate the list with: npm run sw
-const CACHE = 'apex-1p3q1ou';
+const CACHE = 'apex-q0h5wl';
 const PRECACHE = [
   './',
   './index.html',
@@ -39,6 +39,8 @@ const PRECACHE = [
   './src/engine/tools/parkIt.js',
   './src/engine/tools/waitSignal.js',
   './src/main.js',
+  './src/model/cosmetics.js',
+  './src/model/journey.js',
   './src/model/progress.js',
   './src/model/session.js',
   './src/play/runner.js',
@@ -48,6 +50,7 @@ const PRECACHE = [
   './src/ui/grownups-model.js',
   './src/ui/grownups.js',
   './src/ui/home.js',
+  './src/ui/look.js',
   './src/ui/plancard.js',
   './src/ui/profiles.js',
   './src/ui/signs.js',

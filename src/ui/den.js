@@ -6,6 +6,8 @@ import { trophies, nextLeg, chapterOpen } from '../model/progress.js';
 import { showPlanCard } from './plancard.js';
 import { showSigns } from './signs.js';
 import { FINDS } from '../data/chapters/3-distraction.js';
+import { dressingRoom, newUnlockNotice } from './look.js';
+import { newUnlocks, markSeen } from '../model/cosmetics.js';
 
 // Instant acknowledgement when a real-world mission is logged: a delayed trophy alone motivates weakly.
 export function missionAck(ch) {
@@ -37,7 +39,8 @@ export function registerDen(app) {
     const n = summary.chapter || Math.max(1, ...Object.keys(p.chapters).map(Number).filter(k => p.chapters[k].leg > 0 || p.chapters[k].done), 1);
     const ch = chapterByN(n) || CHAPTERS[0];
     const back = () => app.show('den', summary);
-    const parts = [h('h2', {}, 'The Den'), h('p', { class: 'small', id: 'den-privacy' }, 'Grown-ups can see your field notes and plan cards. Your answers stay private unless you tick Share.')];
+    const fresh = newUnlocks(p);
+    const parts = [h('h2', {}, 'The Den'), newUnlockNotice(fresh), h('p', { class: 'small', id: 'den-privacy' }, 'Grown-ups can see your field notes and plan cards. Your answers stay private unless you tick Share.')];
     if (summary.stats) {
       parts.push(h('div', { class: 'notes', id: 'field-notes' },
         h('div', { class: 'row', style: { justifyContent: 'space-between', alignItems: 'baseline' } }, h('h2', { style: { flex: 'none' } }, 'Field notes'), h('span', { class: 'scar', style: { color: '#7c5a3a', flex: 'none' } }, summary.mode === 'hunt' ? 'Hunt' : ch.title)),
@@ -84,6 +87,8 @@ export function registerDen(app) {
       opened.length ? h('div', { class: 'row' }, opened.map(c => h('button', { class: 'ghost', 'data-plan': c.n, onClick: () => showPlanCard(app, p, c.n, back) }, c.den.planTitle.replace('MY ', '')))) : h('p', { class: 'muted' }, 'Your first plan card arrives after your first hunt.'),
       h('div', { class: 'row' }, ['rage', 'overload', 'drift', 'fuel', 'urge'].filter(k => p.signs[k] && p.signs[k].length).map(k =>
         h('button', { class: 'quiet', onClick: () => showSigns(app, p, k, { onDone: back, onBack: back }) }, `Change ${k} signs`)))));
+    parts.push(dressingRoom(app, p, fresh));
+    if (fresh.length) app.store.updateProfile(p.id, q => markSeen(q));
     parts.push(h('button', { class: 'quiet', id: 'watch-story', onClick: () => app.play(1, 'prologue') }, 'Watch the story again'));
     // Continue
     const next = summary.chapter && !summary.capped ? nextLeg(p, summary.chapter) : null;

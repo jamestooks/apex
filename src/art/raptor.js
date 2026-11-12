@@ -33,7 +33,11 @@ export function raptorShape(col, pose, t, o) {
   if (o.snarl) { ctx.beginPath(); ctx.moveTo(30, hy + 4); ctx.lineTo(44, hy + 3); ctx.lineTo(42, hy + 9); ctx.closePath(); ctx.fill(); }
   ctx.beginPath(); ctx.moveTo(8, by - 1); ctx.lineTo(22, by + 9); ctx.lineTo(6, by + 7); ctx.closePath(); ctx.fill();
   leg(2, by + 6, lp, amp, lift, 6, true);
-  return { ex: 31, ey: hy - 1, by };
+  const look = o.look || {}, tip = { x: -64, y: by - 6 + tw };
+  if (look.crest === 'fern' || look.crest === 'golden') { ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(25, hy - 3); ctx.lineTo(16, hy - 14); ctx.moveTo(29, hy - 4); ctx.lineTo(22, hy - 17); ctx.moveTo(33, hy - 3); ctx.lineTo(29, hy - 14); ctx.stroke(); }
+  if (look.crest === 'sail') { ctx.beginPath(); ctx.moveTo(-16, by - 7); ctx.quadraticCurveTo(-4, by - 26, 12, by - 12); ctx.lineTo(14, by - 6); ctx.closePath(); ctx.fill(); }
+  if (look.tail === 'plume' || look.tail === 'comet') { ctx.lineWidth = 2; ctx.beginPath(); for (let i = -2; i <= 2; i++) { ctx.moveTo(tip.x + 4, tip.y); ctx.lineTo(tip.x - 9, tip.y + i * 4 - 2); } ctx.stroke(); }
+  return { ex: 31, ey: hy - 1, by, hy, tip };
 }
 function lyingShape(col, t, o) {
   ctx.fillStyle = col; ctx.strokeStyle = col; ctx.lineCap = 'round';
@@ -51,11 +55,29 @@ export function drawRaptor(x, y, s, pose, t, face, o) {
   if (o.alpha != null) ctx.globalAlpha = o.alpha;
   ctx.save(); ctx.translate(-1.4, -1.4); ctx.globalAlpha *= 0.6; raptorShape(o.rim || RIM, pose, t, o); ctx.restore();
   const e = raptorShape(o.body || COL, pose, t, o);
+  if (e.tip) drawLookDetails(e, o.look || {}, o.rim || RIM, t);
   if (o.scar) { ctx.strokeStyle = 'rgba(254,215,170,0.85)'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(e.ex - 5, e.ey - 5); ctx.lineTo(e.ex + 6, e.ey + 6); ctx.stroke(); }
   for (let i = 0; i < (o.scars || 0); i++) {
     ctx.strokeStyle = 'rgba(254,215,170,0.55)'; ctx.lineWidth = 1.1; ctx.beginPath();
     const sx = -10 + i * 7; ctx.moveTo(sx, e.by - 4); ctx.lineTo(sx + 5, e.by + 3); ctx.stroke();
   }
   ctx.fillStyle = o.eye || '#fbbf24'; ctx.beginPath(); ctx.arc(e.ex, e.ey, o.eyeR || 1.4, 0, 7); ctx.fill();
+  ctx.restore();
+}
+
+// Markings and small accessories drawn on top of the silhouette, in the raptor's own colours.
+function drawLookDetails(e, look, rim, t) {
+  const by = e.by;
+  ctx.save(); ctx.lineCap = 'round';
+  if (look.markings === 'stripes') { ctx.strokeStyle = rim; ctx.globalAlpha = 0.6; ctx.lineWidth = 1.6; ctx.beginPath(); for (let i = 0; i < 5; i++) { const x = -14 + i * 6; ctx.moveTo(x, by - 7); ctx.lineTo(x + 3, by + 3); } for (let i = 0; i < 3; i++) { const x = -26 - i * 9; ctx.moveTo(x, by - 6); ctx.lineTo(x + 2, by + 1); } ctx.stroke(); }
+  if (look.markings === 'spots') { ctx.fillStyle = rim; ctx.globalAlpha = 0.6; for (const [x, y, r] of [[-12, -4, 1.6], [-5, -6, 1.3], [2, -3, 1.5], [-8, 1, 1.2], [8, -5, 1.1], [-22, -3, 1.2], [-32, -2, 1]]) { ctx.beginPath(); ctx.arc(x, by + y, r, 0, 7); ctx.fill(); } }
+  if (look.markings === 'lightning') { ctx.strokeStyle = '#e0f2fe'; ctx.globalAlpha = 0.85; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(-20, by - 3); ctx.lineTo(-12, by - 6); ctx.lineTo(-8, by - 1); ctx.lineTo(0, by - 5); ctx.lineTo(4, by); ctx.lineTo(12, by - 4); ctx.stroke(); }
+  ctx.globalAlpha = 1;
+  if (look.crest === 'golden') { ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(25, e.hy - 3); ctx.lineTo(16, e.hy - 14); ctx.moveTo(29, e.hy - 4); ctx.lineTo(22, e.hy - 17); ctx.moveTo(33, e.hy - 3); ctx.lineTo(29, e.hy - 14); ctx.stroke(); }
+  if (look.tail === 'band') { ctx.strokeStyle = rim; ctx.globalAlpha = 0.75; ctx.lineWidth = 2.2; ctx.beginPath(); for (const x of [-38, -46, -54]) { ctx.moveTo(x, by - 8); ctx.lineTo(x, by + 1); } ctx.stroke(); ctx.globalAlpha = 1; }
+  if (look.tail === 'comet') { const g = ctx.createRadialGradient(e.tip.x - 4, e.tip.y, 1, e.tip.x - 4, e.tip.y, 16); g.addColorStop(0, 'rgba(186,230,253,0.9)'); g.addColorStop(1, 'rgba(186,230,253,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(e.tip.x - 4, e.tip.y, 16, 0, 7); ctx.fill(); }
+  if (look.neck === 'teeth') { ctx.fillStyle = '#f5f5f4'; for (let i = 0; i < 4; i++) { const x = 13 + i * 2.6, y = by + 1 + Math.sin(i * 0.9) * 1.2; ctx.beginPath(); ctx.moveTo(x - 1, y); ctx.lineTo(x + 1, y); ctx.lineTo(x, y + 3.4); ctx.closePath(); ctx.fill(); } }
+  if (look.neck === 'claw') { ctx.strokeStyle = '#e7e5e4'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(17, by + 4, 3, -0.3, 2.2); ctx.stroke(); }
+  if (look.neck === 'ember') { const p = 0.7 + 0.3 * Math.sin((t || 0) * 4); const g = ctx.createRadialGradient(17, by + 3, 0.5, 17, by + 3, 6); g.addColorStop(0, `rgba(255,170,60,${p})`); g.addColorStop(1, 'rgba(255,90,20,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(17, by + 3, 6, 0, 7); ctx.fill(); }
   ctx.restore();
 }

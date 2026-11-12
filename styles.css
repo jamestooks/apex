@@ -93,3 +93,24 @@ th { font-family: var(--head); font-weight: 500; color: var(--muted); text-trans
   .plan * { color: #111 !important; }
   .plan .dot { border: 2px solid #111; }
 }
+/* raptor look + journey */
+.raptor-preview { display: block; margin: 0 auto; border-radius: 12px; }
+.look-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.look-item { min-height: 56px; }
+.look-item .look-text { display: flex; flex-direction: column; }
+.look-item small { font-family: var(--body); font-size: 0.72rem; color: var(--dim); text-transform: none; font-weight: 400; }
+.look-item.locked { opacity: 0.55; }
+.look-swatch { width: 22px; height: 22px; border-radius: 50%; flex: none; border: 2px solid rgba(255,255,255,0.3); }
+.look-new { position: absolute; top: -6px; right: -4px; background: #86efac; color: #052e16; font-size: 0.65rem; padding: 2px 6px; border-radius: 8px; }
+.look-notice { border-color: #166534; }
+.journey { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; padding: 40px 4px 6px; background: rgba(10,5,8,0.62); border-radius: 14px; }
+.journey-line { position: absolute; left: 8%; right: 8%; top: 55px; height: 3px; background: rgba(245,158,11,0.35); }
+.journey-stop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; }
+.journey-dot { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-family: var(--head); font-weight: 700; font-size: 0.9rem;
+  background: #1c1917; color: var(--dim); border: 2px solid var(--season, #78716c); }
+.journey-stop.done .journey-dot { background: var(--season, #f59e0b); color: #1c0a00; }
+.journey-stop.current .journey-dot { color: var(--amber-hi); box-shadow: 0 0 0 3px rgba(253,230,138,0.35); }
+.journey-stop canvas.raptor-preview { position: absolute; top: -36px; border-radius: 0; background: transparent; pointer-events: none; }
+.journey-season { font-family: var(--head); font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+.journey-unlock { font-size: 0.62rem; color: var(--dim); line-height: 1.1; }
+.journey-unlock.owned { color: var(--green); }

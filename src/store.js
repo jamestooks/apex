@@ -1,6 +1,7 @@
 // Local persistence: everything lives on this device under one localStorage key.
+import { defaultLook, RIMS } from './model/cosmetics.js';
+export { RIMS };
 const KEY = 'apex.v1';
-export const RIMS = ['#fb923c', '#38bdf8', '#a3e635', '#f472b6', '#facc15'];
 const INSTINCT_KEYS = ['rage', 'overload', 'drift', 'fuel', 'urge'];
 const perInstinct = () => Object.fromEntries(INSTINCT_KEYS.map(k => [k, []]));
 
@@ -9,7 +10,7 @@ export function defaultSettings() {
   return { sessionMinutes: 15, chaptersOpen: null, sound: true, vibration: true, reducedMotion: false, largeText: false, feelSound: 'soft', feelRed: 'soft', feelShake: 'soft' };
 }
 export function newProfile({ childName = 'Player', raptorName = 'Raptor', rim = RIMS[0] } = {}) {
-  return {
+  const p = {
     id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
     childName, raptorName, rim, createdAt: Date.now(),
     settings: defaultSettings(),
@@ -17,7 +18,10 @@ export function newProfile({ childName = 'Player', raptorName = 'Raptor', rim = 
     trust: 0, scars: 0, mealsKept: 0, finaleCalm: false,
     chapters: {}, toolbelt: [], sessions: [], denAnswers: [], missions: {}, log: [],
     restUntil: 0, strengths: {}, parked: [], waitSecs: 4, parentSigns: perInstinct(),
+    look: null, calmCount: 0, seenUnlocks: [],
   };
+  p.look = defaultLook(rim);
+  return p;
 }
 function emptyData() { return { version: 1, pin: null, activeId: null, profiles: {} }; }
 
@@ -36,6 +40,7 @@ function upgradeProfile(p) {
   if (old.intensity === 'low' && old.feelShake === undefined) p.settings.feelShake = 'off';
   delete p.settings.intensity;
   for (const k of INSTINCT_KEYS) { p.signs[k] ||= []; p.customSigns[k] ||= []; p.parentSigns[k] ||= []; }
+  if (!p.look) p.look = defaultLook(p.rim);
   return p;
 }
 

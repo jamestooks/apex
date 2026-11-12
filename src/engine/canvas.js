@@ -22,6 +22,8 @@ function safeInsets() {
 }
 // Draw into another 2D context (gallery, previews). Logical height h.
 export function useContext(c, h) { ctx = c; if (h) view.H = h; }
+// Draw a one-off picture (e.g. a raptor preview) without disturbing the game canvas.
+export function withContext(c, h, fn) { const oc = ctx, oh = view.H; ctx = c; view.H = h; try { fn(); } finally { ctx = oc; view.H = oh; } }
 export function resize() {
   const el = view.el; if (!el) return;
   const ins = safeInsets();

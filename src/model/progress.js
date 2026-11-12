@@ -1,4 +1,5 @@
 // Pure progress rules: ranks, unlocks, legs, growth, trophies.
+import { lookOf } from './cosmetics.js';
 export const RANKS = [
   { name: 'Hatchling', at: 0 }, { name: 'Runner', at: 3 }, { name: 'Hunter', at: 7 },
   { name: 'Tracker', at: 12 }, { name: 'Elder', at: 18 }, { name: 'Apex', at: 24 },
@@ -38,13 +39,15 @@ export function recordSession(p, s) {
   p.trust += s.trustDelta || 0;
   if (s.injured) p.scars += 1;
   p.mealsKept += s.mealsKept || 0;
+  p.calmCount = (p.calmCount || 0) + (s.early || 0);
   p.sessions.push({ date: s.date || new Date().toISOString().slice(0, 10), chapter: s.chapter, kind: s.kind || 'leg',
     minutes: s.minutes || 0, toolUses: s.toolUses || {}, tookOver: s.tookOver || 0, early: s.early || 0, earlyOf: s.earlyOf || 0 });
   if (p.sessions.length > 300) p.sessions.splice(0, p.sessions.length - 300);
 }
 export function appearance(p) {
   const d = chaptersDone(p);
-  return { scale: 1 + 0.06 * d, feathers: 4 + 2 * d, scars: Math.min(3, p.scars || 0), rim: p.rim };
+  const look = lookOf(p);
+  return { scale: 1 + 0.06 * d, feathers: 4 + 2 * d, scars: Math.min(3, p.scars || 0), rim: look.rim, look };
 }
 export function seasonName(n) { return SEASONS[(n - 1) % SEASONS.length]; }
 export function trophies(p) {
