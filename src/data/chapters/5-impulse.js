@@ -1,0 +1,81 @@
+// Chapter 5: Ambush Ridge. Impulse, and Wait for the Signal. Mentor: Scar.
+const herd = { type: 'hadrosaurs', x: 250, n: 3, lookout: true };
+const base = { kind: 'ambush', meters: ['urge'], primary: 'urge', mentor: 'scar', setpieces: [herd] };
+const O = (success, early, late) => ({ success: { line: success }, early: { line: early }, late: { line: late },
+  takeover: { line: 'You burst out of the ferns before you even decided to. The herd is gone in a heartbeat.' },
+  blown: { line: 'You snap at Fang, and the whole herd hears it. Hunt over.' } });
+
+export default {
+  n: 5, id: 'impulse', title: 'Ambush Ridge', place: 'Ambush Ridge', instinct: 'urge', tool: 'waitSignal', mentor: 'scar',
+  theme: 'moon', season: 'Cold season', strength: 'Explosive speed, at the right moment', blurb: 'Impulse. Wait for the Signal.',
+  legs: [['teach', 'test'], ['mix', 'big']],
+  intro: { title: 'OLD SCAR', sub: 'On the ridge, under the moon',
+    body: 'Your pounce is the fastest in the valley. Nobody moves like you.\n\nBut fast is only useful at the right moment. Jump too soon and the herd is gone.\n\nThe urge comes like a wave. It rises, it peaks, and if you hold still, it falls. Then you wait for my signal.' },
+  toolCard: { title: 'WAIT FOR THE SIGNAL', sub: 'Feel the urge. Ride it out. Act on the cue.',
+    body: "HOLD anywhere to stay hidden. Keep your thumb there.\n\nThe URGE meter will rise in waves. Notice where you feel it. Let it peak and pass.\n\nWhen my tail flicks and you see NOW!, LET GO to pounce. Not before." },
+  practice: { ...base, id: 'practice', practice: true, waves: [{ at: 1.5, peak: 0.3, rise: 2, fall: 2.5 }], signalAt: 7, meal: false,
+    intro: 'Scar settles into the ferns beside you. "Practice. Hide, and wait for my tail."', hint: 'Hold anywhere to hide.',
+    outcomes: O('You waited, then went. Exactly right.', 'Too soon. That is all right. That is what practice is for.', 'Watch my tail. When it flicks, go.') },
+  legIntro: [null, { title: 'THE LONG NIGHT', sub: 'Moonlight on the ridge.', body: '"Fang is out tonight. So is the Shadow. Hold still, ride it out, wait for the signal."' }],
+  repair: false,
+  scenarios: {
+    test: [
+      { ...base, id: 'the-lookout', signalAt: 13,
+        waves: [{ at: 2, peak: 0.35, rise: 2.5, fall: 3 }, { at: 8, peak: 0.45, rise: 2, fall: 3 }], twitches: [{ at: 5, spike: 0.15, line: 'The lookout jerks its head up. Your whole body wants to GO.' }],
+        intro: 'A herd of duck-bills grazes below the ridge. One of them, the lookout, keeps raising its head to check.', hint: 'Hold anywhere to hide. Wait for my tail.',
+        outcomes: O('You wait until the lookout dips its head, then fly. The pack eats well tonight.', 'The lookout spots you and honks. The whole herd bolts.', 'You hold so still you miss your moment. The herd drifts away.') },
+      { ...base, id: 'false-signal', signalAt: 14, nip: true,
+        waves: [{ at: 2, peak: 0.4, rise: 2, fall: 3 }, { at: 9, peak: 0.4, rise: 2, fall: 3 }], falseSignals: [{ at: 6, line: 'Nip chirps: "Now? Now?!" That is not the signal.' }],
+        intro: 'Nip is hiding with you. He is fizzing with excitement.', hint: "Only Scar's tail is the signal. Not Nip. Not your urge.",
+        outcomes: O("You ignored Nip and waited for Scar. Perfect timing. Nip watches you, impressed.", "You jumped on Nip's chirp. Scar hadn't signalled. The herd scatters.", 'You waited so long you missed the real signal.') },
+      { ...base, id: 'long-wait', signalAt: 20,
+        waves: [{ at: 2, peak: 0.35, rise: 2, fall: 3 }, { at: 8, peak: 0.45, rise: 2, fall: 3 }, { at: 14, peak: 0.5, rise: 2, fall: 3 }],
+        twitches: [{ at: 11, spike: 0.12, line: 'A twig snaps. Hold still.' }],
+        intro: 'The herd is wary tonight. This will be a long wait.', hint: 'Three waves, maybe more. Every one passes.',
+        outcomes: O('Three waves of urge, and you rode every one. Then you went, right on the signal.', 'The wait was too long and the urge won. It happens. Next time, notice each wave peak.', 'So still, so patient, and just a beat late.') },
+    ],
+    mix: [
+      { ...base, id: 'fang-taunts-the-hide', meters: ['urge', 'rage'], signalAt: 17,
+        waves: [{ at: 2, peak: 0.35, rise: 2, fall: 3 }, { at: 11, peak: 0.4, rise: 2, fall: 3 }],
+        triggers: [{ at: 4, who: 'fang', meter: 'rage', spike: 0.3, simmer: 0.04, stay: 9, intro: 'Fang strolls along the ridge, right past your hiding spot. "Scared, little hunter?"', hint: 'Keep hiding. Hold BREATHE with your other thumb if rage climbs.' }],
+        intro: 'Back on the ridge. The herd is grazing again.', hint: 'Hold to hide. Watch both meters.',
+        outcomes: O("Fang couldn't shake you. You waited, and you got the herd. He slinks away.", 'You broke cover too soon. Fang laughs as the herd runs.', 'You kept your cool with Fang, and just missed the signal.') },
+    ],
+    big: [
+      { ...base, id: 'the-shadow-passes', signalAt: 21, meal: false, setpieces: [{ type: 'trex', speed: 22, sniff: true, sniffAt: 200, delay: 1 }],
+        strength: 'Explosive speed, held back until it was safe. Waiting was the bravest thing.',
+        waves: [{ at: 2, peak: 0.4, rise: 3, fall: 3 }, { at: 9, peak: 0.55, rise: 2, fall: 4 }, { at: 15, peak: 0.45, rise: 2, fall: 3 }],
+        twitches: [{ at: 9, spike: 0.2, line: 'The Shadow stops. It sniffs the air. Right above you.' }],
+        intro: 'The ground trembles. The Shadow, a huge tyrannosaur, is walking along the ridge towards you.',
+        hint: 'Do NOT move. Hold still until my signal. The urge to run will be huge. Let it pass.',
+        signalLine: "Scar's tail flicks. It's gone. Move!", pounceLabel: 'MOVE!',
+        earlyLine: 'You bolt. The Shadow turns its head. Scar drags you behind a rock just in time.',
+        outcomes: { success: { title: 'YOU WAITED', line: 'The Shadow passes so close you could touch it. You wait for the signal, then slip away. Waiting was the bravest thing in the valley tonight.' },
+          early: { line: 'You bolt. The Shadow turns its head. Scar drags you behind a rock just in time. Everyone is safe, just.' },
+          late: { line: 'The Shadow is long gone, and you are still frozen. Scar nudges you. "It\'s over. You did it. Now we go."' },
+          takeover: { line: 'You run before you even decide to. Scar gets you to safety.' }, blown: { line: '' } } },
+    ],
+  },
+  den: {
+    questions: [
+      'When was it hard to wait your turn this week? What did you want to do?',
+      'Where do you feel the urge in your body when you want to jump in?',
+      'What is your signal at school or at home that it is your turn?',
+    ],
+    mission: 'Wait for the signal once this week: feel the urge, count to 5, then jump in.',
+    phrase: 'Wait for the signal.',
+    strengthLine: 'Your speed is explosive. Aimed well, it is the fastest, best-timed pounce in the valley.',
+    planTitle: 'MY WAIT FOR IT PLAN',
+    planSteps: [
+      { head: 'NOTICE MY SIGNS', lines: ['{signsList}', 'Hold still at the FIRST one.'], col: '#e9d5ff' },
+      { head: 'RIDE THE WAVE', lines: ['The urge rises, peaks, and falls. Count to 5.'], col: '#c084fc' },
+      { head: 'WAIT FOR THE SIGNAL', lines: ['My turn, a hand up, a nod, a gap in talking.'], col: '#f59e0b' },
+      { head: 'THEN GO', lines: ['Fast and confident, at the right moment.'], col: '#86efac' },
+    ],
+  },
+  coach: {
+    say: ['Wait for the signal.', 'Feel that wave? Let it pass. Then go.'],
+    avoid: ['"Stop interrupting."', 'Making them wait without a clear signal for when it is their turn.'],
+    alongside: 'Agree a signal together (a raised finger, a nod) that means "your turn now". Count to 5 together while the urge passes. Praise the wait, not just the answer.',
+  },
+};

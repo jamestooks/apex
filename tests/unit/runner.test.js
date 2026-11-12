@@ -86,3 +86,21 @@ test('leg 1 plays mix + big and marks the chapter done', () => {
   assert.equal(s.summary.chapterDone, true);
   assert.equal(p.chapters[1].done, true);
 });
+
+test('practice never counts toward trust, field notes or difficulty', async () => {
+  const CH5 = (await import('../../src/data/chapters/5-impulse.js')).default;
+  const p = makeProfile({ chapters: {} });
+  const { shell } = makeShell({ profile: p });
+  let stepSeen = false;
+  const runner = createRunner({ profile: p, chapter: CH5, mode: 'leg', leg: 0, shell, now: () => 0, session: { capReached: () => false }, pickSigns: async () => {}, onDone: () => {} });
+  // never hide during practice: the urge takes over
+  for (let t = 0; t < 120 && !(runner.step !== 'practice' && stepSeen); t += 1 / 20) {
+    if (shell.card) { if (shell.T - shell.cardBorn > 0.75) shell.dismissCard(); }
+    runner.update(1 / 20); shell.input.beginFrame();
+    if (runner.step === 'practice') stepSeen = true;
+  }
+  assert.ok(stepSeen);
+  assert.equal(shell.stats.tookOver, 0);
+  assert.equal(shell.stats.earlyOf, 0);
+  assert.equal(shell.difficulty.simmerMul, 1);
+});

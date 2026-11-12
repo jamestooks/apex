@@ -9,6 +9,7 @@ import { drawRaptor } from '../art/raptor.js';
 const MENTOR = { scar: 'SCAR', echo: 'ECHO', narr: 'NOW', nip: 'NIP', fang: 'FANG' };
 const BREATH_LINES = ["That's it. Slow out-breaths tell your body the fight is over.", 'Good. Feel it drop?', "Again if you need it. There's no rush.", "That's the Long Exhale. Your best weapon."];
 const KEYS = ['q', 'w', 'e', 'r', 't'];
+const SHORT = { longExhale: 'BREATHE', oneThing: 'ONE THING', parkIt: 'PARK IT', burstRest: 'BURST & REST', waitSignal: 'RIDE IT' };
 
 export function actor(x, face, s, extra) { return { x, tx: x, face, s, sp: 110, on: true, ...extra }; }
 
@@ -113,6 +114,7 @@ export function createShell(env) {
     handleKey(name) {
       if (sh.card) { if (name === 'Space' || name === 'Enter') { input.keys.delete('Space'); sh.dismissCard(); } return; }
       if (name === 'm' || name === 'M') audio.toggleMute();
+      if (name === 'Enter' && sh.choices && sh.choices.length === 1 && sh.choiceCb) sh.choiceCb(sh.choices[0].k);
       if (sh.choices && sh.choiceCb && '1234'.includes(name) && name.length === 1) {
         const c = sh.choices[+name - 1]; if (c) sh.choiceCb(c.k);
       }
@@ -310,14 +312,14 @@ export function createShell(env) {
       if (active && k > 0) { ctx.fillStyle = hexA(T.col, 0.25); rr(R.x, R.y + R.h * (1 - k), R.w, R.h * k, 12); ctx.fill(); }
       ctx.textAlign = 'center'; ctx.fillStyle = '#f5f5f4';
       if (big) {
-        ctx.font = FH(22); ctx.fillText(id === 'longExhale' ? 'BREATHE' : T.name.toUpperCase(), R.x + R.w / 2, R.y + 50);
+        ctx.font = FH(22); ctx.fillText(SHORT[id], R.x + R.w / 2, R.y + 50);
         ctx.font = FB(id === 'parkIt' ? 9 : 11, 600); ctx.fillStyle = T.col; ctx.fillText(run && run.label ? run.label() : 'TAP TO START', R.x + R.w / 2, R.y + 72);
         ctx.fillStyle = '#57534e'; ctx.font = FB(10); ctx.fillText(T.tile, R.x + R.w / 2, R.y + 92);
       } else if (!small) {
-        ctx.font = FH(17); ctx.fillText(id === 'longExhale' ? 'BREATHE' : T.name.toUpperCase(), R.x + R.w / 2, R.y + 24);
+        ctx.font = FH(17); ctx.fillText(SHORT[id], R.x + R.w / 2, R.y + 24);
         ctx.font = FB(10, 600); ctx.fillStyle = T.col; ctx.fillText(run && run.label ? run.label() : T.kind === 'tap' ? 'TAP TO START' : T.kind === 'drag' ? 'DRAG IT TO THE MAP' : '', R.x + R.w / 2, R.y + 40);
       } else {
-        const short = { longExhale: 'BREATHE', oneThing: 'ONE THING', parkIt: 'PARK IT', burstRest: 'REST', waitSignal: 'RIDE IT' }[id];
+        const short = { ...SHORT, burstRest: 'REST' }[id];
         ctx.font = FH(13); ctx.fillText(short, R.x + R.w / 2, R.y + 20);
         ctx.font = FB(9, 600); ctx.fillStyle = T.col; ctx.fillText(T.kind === 'tap' ? 'TAP' : T.kind === 'drag' ? 'DRAG' : 'HOLD', R.x + R.w / 2, R.y + 36);
       }

@@ -5,10 +5,11 @@ import { createRepair } from '../engine/kinds/repair.js';
 import { createPractice } from '../engine/kinds/practice.js';
 import { createTrack } from '../engine/kinds/track.js';
 import { createRun } from '../engine/kinds/run.js';
+import { createAmbush } from '../engine/kinds/ambush.js';
 import { TOOL_ORDER } from '../engine/tools/index.js';
 import { completeLeg, recordSession, appearance } from '../model/progress.js';
 
-export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun };
+export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun, ambush: createAmbush };
 export function registerKind(name, fn) { KINDS[name] = fn; }
 
 const WRAP_CARD = { title: 'TIME TO REST', sub: "The sun's going down. That's enough hunting for today.",
@@ -74,6 +75,7 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
       Promise.resolve(pickSigns(k)).then(() => { delete shell.meterPool[k]; r.waiting = false; save && save(); next(); });
     } else if (st.type === 'practice') {
       addTool(chapter.tool);
+      r.saved = { stats: JSON.parse(JSON.stringify(shell.stats)), difficulty: { ...shell.difficulty } };
       stageFor(st.sc);
       r.scene = KINDS[st.sc.kind](st.sc, shell);
     } else if (st.type === 'scenario') {
@@ -93,6 +95,14 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
   }
   function sceneDone() {
     const st = steps[si];
+    if (st.type === 'practice' && r.saved) {
+      // Practice is for learning: keep the tool uses, drop everything that would count.
+      const keepUses = shell.stats.toolUses;
+      Object.assign(shell.stats, r.saved.stats, { toolUses: keepUses });
+      Object.assign(shell.difficulty, r.saved.difficulty);
+      for (const m of Object.values(shell.meterPool)) { m.simmerMul = shell.difficulty.simmerMul; m.set(Math.min(m.value, 0.2)); }
+      r.saved = null;
+    }
     if (st.type === 'scenario') {
       played++;
       const res = r.scene.result || {};
