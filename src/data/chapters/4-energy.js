@@ -2,8 +2,8 @@
 const T = (x, gy, label, w = 64, h = 46) => ({ x, gy, w, h, label });
 const S = (x, sy, label, w = 116, h = 36) => ({ x, sy, w, h, label });
 const riverTargets = {
-  cover: [T(30, -50, 'Boulder', 80, 52), T(290, -50, 'Reeds', 84, 50)],
-  see: [T(250, -240, 'The sun', 70, 60), T(150, -60, 'The river', 80, 40), T(40, -160, 'A tree', 64, 54)],
+  cover: [T(30, -50, 'Reeds', 84, 52), T(290, -50, 'The bank', 84, 50)],
+  see: [{ at: 'sun', w: 74, h: 70, label: 'The sun' }, { at: 'river', w: 110, h: 40, label: 'The river' }, T(40, -200, 'Clouds', 70, 50)],
   hear: [T(40, -310, 'Thunder'), T(180, -330, 'Water'), T(310, -300, 'The pack')],
   feel: [S(18, -110, 'Rain on me'), S(142, -110, 'Mud underfoot'), S(266, -110, 'My heartbeat')],
 };

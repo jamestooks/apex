@@ -31,3 +31,20 @@ test('Fern Maze: tapping the glowing print moves along the trail', async ({ page
   await page.waitForTimeout(200);
   expect(await page.evaluate(() => window.__apex.canvasScene.runner.scene.printIndex)).toBe(1);
 });
+
+test('Fern Maze: Nip can be dragged onto the scent map with a real drag', async ({ page }) => {
+  await page.goto('/?debug=1');
+  await newPlayer(page);
+  await page.evaluate(() => window.__apex.goto(3, 'test', 2));
+  await page.waitForTimeout(500); await clearCard(page);
+  await page.evaluate(() => { window.__apex.canvasScene.runner.scene.printIndex = 2; });
+  await page.waitForTimeout(3000);
+  const g = await page.evaluate(() => { const sh = window.__apex.canvasScene.shell, n = sh.actors.nip, m = sh.runs.parkIt.mapRect; return { nx: n.x, mx: m.x + m.w / 2, my: m.y + m.h / 2 }; });
+  const from = await toClient(page, g.nx, await page.evaluate(() => Math.round((window.__apex.canvasScene.shell.P0()) * 0.82) - 12));
+  const to = await toClient(page, g.mx, g.my);
+  await page.mouse.move(from.x, from.y); await page.mouse.down();
+  await page.mouse.move((from.x + to.x) / 2, (from.y + to.y) / 2, { steps: 5 }); await page.mouse.move(to.x, to.y, { steps: 5 });
+  await page.mouse.up();
+  await page.waitForTimeout(200);
+  expect(await page.evaluate(() => window.__apex.canvasScene.shell.targets.distractions.find(d => d.type === 'nip').parked)).toBe(true);
+});

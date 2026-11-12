@@ -2,6 +2,8 @@
 import { ctx, FH, rr } from '../canvas.js';
 export const TOOL = { id: 'parkIt', name: 'Park It', instinct: 'drift', kind: 'drag', how: "Say 'later', then drag it to your map.", phrase: 'Park it.', col: '#86efac', past: 'parked it', again: 'park it', verb: 'park it', tile: "SAY 'LATER' · DRAG IT" };
 export const MAP_RECT = { x: 10, y: 104, w: 84, h: 64 };
+// A distraction can define its own grab area (e.g. Nip: his bubble and his body); otherwise a generous circle.
+const grabs = (x, px, py) => (x.hit ? x.hit(px, py) : Math.hypot(px - x.x, py - x.y) <= (x.r || 20) + 10);
 
 export function createRun({ mapRect = MAP_RECT } = {}) {
   const r = {
@@ -13,12 +15,12 @@ export function createRun({ mapRect = MAP_RECT } = {}) {
       const ds = (io.targets && io.targets.distractions) || [];
       const d = io.drag;
       if (d && d.active && !r.carrying && d !== r.lastDrag) {
-        const hit = ds.find(x => !x.parked && x.on !== false && Math.hypot(d.startX - x.x, d.startY - x.y) <= (x.r || 20) + 10);
+        const hit = ds.find(x => !x.parked && x.on !== false && grabs(x, d.startX, d.startY));
         if (hit) { r.carrying = hit; r.lastDrag = d; }
       }
       if (!r.carrying && d && !d.active && d.released && d !== r.lastDrag) {
         r.lastDrag = d;
-        const hit = ds.find(x => !x.parked && x.on !== false && Math.hypot(d.startX - x.x, d.startY - x.y) <= (x.r || 20) + 10);
+        const hit = ds.find(x => !x.parked && x.on !== false && grabs(x, d.startX, d.startY));
         const inside = d.x >= mapRect.x && d.x <= mapRect.x + mapRect.w && d.y >= mapRect.y && d.y <= mapRect.y + mapRect.h;
         if (hit && inside) { hit.parked = true; relief = 0.25; events.push('parked:' + hit.id); }
       }

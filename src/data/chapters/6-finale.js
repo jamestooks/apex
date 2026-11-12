@@ -5,7 +5,7 @@ const T = (x, gy, label, w = 64, h = 46) => ({ x, gy, w, h, label });
 const S = (x, sy, label, w = 116, h = 36) => ({ x, sy, w, h, label });
 const ashTargets = {
   cover: [T(20, -50, 'Rocks', 84, 52), T(296, -50, 'Ridge', 84, 50)],
-  see: [T(170, -110, 'Scar', 64, 54), T(40, -250, 'The volcano', 76, 60), T(290, -200, 'A path', 64, 54)],
+  see: [{ at: 'scar', w: 70, h: 60, label: 'Scar' }, { at: 'volcano', w: 90, h: 70, label: 'The volcano' }, T(290, -40, 'A path', 64, 46)],
   hear: [T(40, -320, 'Rumbling'), T(180, -340, 'The pack'), T(310, -310, 'Wind')],
   feel: [S(18, -110, 'Warm ground'), S(142, -110, 'Ash on me'), S(266, -110, 'My heartbeat')],
 };

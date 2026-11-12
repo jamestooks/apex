@@ -1,5 +1,5 @@
 // One Thing: get to cover, then notice one thing you see, one you hear, one you feel. Then pick one next step.
-import { ctx, W, SH, FH, FB, rr, inR } from '../canvas.js';
+import { ctx, W, SH, FH, FB, rr, inR, wrap } from '../canvas.js';
 export const TOOL = { id: 'oneThing', name: 'One Thing', instinct: 'overload', kind: 'tap', how: 'Cover. See one. Hear one. Feel one. Then one next step.', phrase: 'Too much at once? One Thing.', col: '#fbbf24', past: 'found your One Thing', again: 'One Thing', verb: 'find your One Thing', tile: "COVER · SEE · HEAR · FEEL" };
 const STEPS = ['cover', 'see', 'hear', 'feel'];
 const RELIEF = { cover: 0.10, see: 0.15, hear: 0.15, feel: 0.15 };
@@ -35,13 +35,15 @@ export function createRun({ targets } = {}) {
     },
     draw(t) {
       const sh = SH();
-      ctx.fillStyle = 'rgba(10,5,8,0.82)'; rr(12, sh - 62, W - 24, 50, 10); ctx.fill();
-      ctx.fillStyle = '#fbbf24'; ctx.fillRect(12, sh - 58, 3, 42);
-      ctx.textAlign = 'left'; ctx.font = FH(11, 500); ctx.fillStyle = '#fbbf24'; ctx.fillText('ONE THING', 24, sh - 44);
-      ctx.font = FB(13, 600); ctx.fillStyle = '#fef3c7'; ctx.fillText(PROMPTS[r.phase] || '', 24, sh - 24);
+      // Banner stops short of the pause/mute buttons in the bottom-right corner.
+      const bw = W - 96;
+      ctx.fillStyle = 'rgba(10,5,8,0.82)'; rr(12, sh - 70, bw, 58, 10); ctx.fill();
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(12, sh - 66, 3, 50);
+      ctx.textAlign = 'left'; ctx.font = FH(11, 500); ctx.fillStyle = '#fbbf24'; ctx.fillText('ONE THING', 24, sh - 53);
+      ctx.font = FB(13, 600); ctx.fillStyle = '#fef3c7'; wrap(PROMPTS[r.phase] || '', 24, sh - 36, bw - 22, 16);
       STEPS.forEach((s, i) => {
         ctx.fillStyle = r.picked[s] ? '#fbbf24' : s === r.phase ? 'rgba(251,191,36,0.5)' : '#44403c';
-        ctx.beginPath(); ctx.arc(W - 70 + i * 14, sh - 47, 4, 0, 7); ctx.fill();
+        ctx.beginPath(); ctx.arc(12 + bw - 52 + i * 12, sh - 57, 4, 0, 7); ctx.fill();
       });
       if (r.done) return;
       const ready = r.t >= DWELL, pulse = 0.5 + 0.5 * Math.sin((t || 0) * 5);

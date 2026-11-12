@@ -37,9 +37,13 @@ export function createTrack(sc, sh) {
 
   function spawn(d) {
     d.spawned = true;
-    const obj = { id: d.find.name, type: d.type, x: 230 + hash(d.at * 7 + 1) * 110, y: GY() - 120 - hash(d.at * 3 + 2) * 70, r: 24,
+    const obj = { id: d.find.name, type: d.type, x: 230 + hash(d.at * 7 + 1) * 110, y: GY() - 120 - hash(d.at * 3 + 2) * 70, r: 30,
       parked: false, on: true, simmer: d.simmer || 0.06, find: d.find, born: sh.T };
-    if (d.type === 'nip') { A.nip.on = true; A.nip.x = 470; A.nip.tx = obj.x + 30; A.nip.sp = 120; obj.y = GY() - 70; }
+    if (d.type === 'nip') {
+      A.nip.on = true; A.nip.x = 470; A.nip.tx = obj.x + 30; A.nip.sp = 120; obj.y = GY() - 70; obj.x = Math.min(obj.x, W - 70);
+      // Grab Nip by his "PLAY WITH ME!" bubble or by Nip himself.
+      obj.hit = (px, py) => (Math.abs(px - obj.x) <= 66 && py >= obj.y - 28 && py <= obj.y + 18) || (Math.abs(px - A.nip.x) <= 42 && py >= GY() - 44 && py <= GY() + 10);
+    }
     ds.push(obj);
     if (drift) drift.spike((d.spike != null ? d.spike : 0.18) + (sh.difficulty.spikeAdd || 0));
     if (d.intro) sh.say(d.intro, 4, 3, 'narr');

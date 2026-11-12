@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { makeShell, runScene, trackBot, makeProfile } from './harness.js';
 import { createTrack } from '../../src/engine/kinds/track.js';
+import { GY } from '../../src/engine/canvas.js';
 import CH from '../../src/data/chapters/3-distraction.js';
 
 function setup(sc, tools = ['longExhale', 'oneThing', 'parkIt']) {
@@ -77,4 +78,19 @@ test('a player who stops tapping is walked along by Echo after three missed prin
   const before = scene.printIndex;
   step(shell, scene, (sc.fadeSec || 6) * 3 + 1);
   assert.equal(scene.printIndex, before + 1);
+});
+
+test('Nip can be parked by dragging Nip himself, or the edge of his bubble', () => {
+  const sc = CH.scenarios.test.find(s => s.id === 'nip-pesters');
+  for (const grab of ['body', 'bubble-edge']) {
+    const { shell, fi, scene } = setup(sc);
+    for (let i = 0; i < 300 && !(shell.targets.distractions || []).some(d => d.type === 'nip'); i++) { const p = scene.nextPrint(); if (p) fi.tap(p.x, p.y); step(shell, scene, 0.3); }
+    step(shell, scene, 3); // let Nip run in
+    const d = shell.targets.distractions.find(x => x.type === 'nip');
+    const n = shell.actors.nip;
+    const at = grab === 'body' ? { x: n.x, y: GY() - 12 } : { x: d.x + 48, y: d.y };
+    const mr = shell.runs.parkIt.mapRect;
+    fi.down(at.x, at.y, 3); step(shell, scene, 0.05); fi.move(mr.x + 20, mr.y + 20, 3); step(shell, scene, 0.05); fi.up(3); step(shell, scene, 0.1);
+    assert.equal(d.parked, true, `grabbing Nip by the ${grab}`);
+  }
 });

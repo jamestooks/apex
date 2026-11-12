@@ -7,9 +7,10 @@ const CHOICES = [
 ];
 const T = (x, gy, label, w = 64, h = 46) => ({ x, gy, w, h, label });
 const S = (x, sy, label, w = 110, h = 36) => ({ x, sy, w, h, label });
+const A = (at, label, w = 70, h = 56) => ({ at, w, h, label });
 const plainsTargets = (extra = {}) => ({
-  cover: [T(34, -48, 'Rock', 76, 52), T(300, -48, 'Ferns', 80, 50)],
-  see: [T(160, -150, 'Echo', 64, 54), T(250, -230, 'The sun', 70, 60), T(40, -100, 'Rock', 64, 46)],
+  cover: [A('rock', 'Rock', 84, 60), T(300, -48, 'Ferns', 80, 50)],
+  see: [A('echo', 'Echo', 70, 60), A('sun', 'The sun', 74, 70), T(250, -60, 'Grass', 64, 46)],
   hear: [T(40, -300, 'Hooves'), T(180, -320, 'Wind'), T(310, -290, 'Calls')],
   feel: [S(18, -110, 'Ground under you'), S(142, -110, 'Wind on my face', 116), S(266, -110, 'My heartbeat', 116)],
   ...extra,
@@ -101,7 +102,7 @@ export default {
         choices: [CHOICES[0], { k: 'lead', label: 'LEAD NIP', title: 'YOU LED NIP TO SAFETY', col: '#6ee7b7', anim: 'lead' },
           { k: 'high', label: 'HIGH GROUND', title: 'YOU FOUND HIGH GROUND', col: '#f59e0b', anim: 'shelter' }, { k: 'wait', label: 'CALL ECHO', title: 'YOU CALLED ECHO', col: '#38bdf8', anim: 'ally' }],
         setpieces: [{ type: 'rock', x: 72, w: 70 }, { type: 'herd', from: 'left', speed: 190, n: 5, delay: 1 }, { type: 'calls', texts: ['HELP!', 'NIP!', 'RUN!'], every: 0.9 }],
-        oneThing: plainsTargets({ see: [T(300, -80, 'Nip', 60, 50), T(250, -230, 'The sun', 70, 60), T(40, -100, 'Rock', 64, 46)] }),
+        oneThing: plainsTargets({ see: [A('nip', 'Nip', 64, 54), A('sun', 'The sun', 74, 70), A('echo', 'Echo', 70, 60)] }),
         triggers: [{ who: 'nip', enter: 320, sp: 60, spike: 0.42, simmer: 0.07, sfx: 'rumble',
           intro: 'The herd stampedes at the river crossing. Nip is stuck on the far bank, frozen, as the giants pour towards him.',
           hint: 'Everything at once, and Nip needs you. One Thing first. Then one step.' }],

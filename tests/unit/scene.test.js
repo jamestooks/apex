@@ -84,3 +84,53 @@ test('dispose releases the keyboard and pointer hooks', () => {
   shell.dispose();
   assert.equal(shell.input.onKey, null); assert.equal(shell.input.onDown, null);
 });
+
+import { view, GY, SH, W } from '../../src/engine/canvas.js';
+import { THEMES } from '../../src/art/world.js';
+import { SAFE_TOP, SAFE_BOTTOM } from '../../src/engine/scene.js';
+import { createSetpieces } from '../../src/engine/setpieces.js';
+
+async function stampedeOneThing(H) {
+  view.H = H;
+  const CH2 = (await import('../../src/data/chapters/2-overwhelm.js')).default;
+  const sc = CH2.scenarios.test[0];
+  const { shell } = makeShell({ tools: ['oneThing'], theme: 'dust' });
+  shell.setStage({ instincts: sc.meters, tools: ['oneThing'], theme: 'dust', targets: { oneThing: sc.oneThing } });
+  createMoment(sc, shell);
+  shell.startTapTool('oneThing');
+  return { shell, targets: shell.runs.oneThing.targets };
+}
+const centre = b => ({ x: b.x + b.w / 2, y: b.y + b.h / 2 });
+
+test('One Thing targets sit over the things they name (sun, rock, Echo)', async () => {
+  const { shell, targets } = await stampedeOneThing(865);
+  const sun = targets.see.find(b => b.label === 'The sun'), echo = targets.see.find(b => b.label === 'Echo'), rock = targets.cover.find(b => b.label === 'Rock');
+  const s = THEMES.dust.sun;
+  assert.ok(Math.abs(centre(sun).x - W * s.x) < 2 && Math.abs(centre(sun).y - (GY() - s.dy)) < 2, 'sun');
+  assert.ok(Math.abs(centre(echo).x - shell.actors.echo.x) < 30, 'echo x');
+  assert.ok(Math.abs(centre(rock).x - 72) < 2, 'rock x');
+  view.H = 700;
+});
+
+for (const H of [600, 700, 865]) {
+  test(`One Thing targets stay clear of the speech box and bottom prompt (screen height ${H})`, async () => {
+    const { targets } = await stampedeOneThing(H);
+    for (const list of Object.values(targets)) for (const b of list) {
+      assert.ok(b.y >= SAFE_TOP, `${b.label} top ${b.y} under the speech box`);
+      assert.ok(b.y + b.h <= SH() - SAFE_BOTTOM, `${b.label} bottom ${b.y + b.h} under the prompt`);
+      assert.ok(b.x >= 0 && b.x + b.w <= W, `${b.label} off screen`);
+    }
+    view.H = 700;
+  });
+}
+
+test('shouted call bubbles never appear under the speech box', () => {
+  view.H = 600;
+  const { shell } = makeShell();
+  const pieces = createSetpieces([{ type: 'calls', every: 0.01 }], shell);
+  const ys = [];
+  for (let i = 0; i < 400; i++) { pieces.update(0.05, true); for (const c of pieces.get('calls').state.list) ys.push(c.y); }
+  assert.ok(ys.length > 20);
+  assert.ok(Math.min(...ys) >= SAFE_TOP + 14, `lowest call at ${Math.min(...ys)}`);
+  view.H = 700;
+});

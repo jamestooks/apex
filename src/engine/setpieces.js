@@ -2,6 +2,7 @@
 // A scenario lists them as data: setpieces: [{ type: 'storm' }, { type: 'herd', from: 'right' }, ...].
 import { ctx, W, SH, GY, hash } from './canvas.js';
 import * as P from '../art/props.js';
+import { SAFE_TOP } from './scene.js';
 
 const TYPES = {
   herd(o, sh) {
@@ -34,6 +35,7 @@ const TYPES = {
   calls(o, sh) {
     const s = { list: [], next: 0.5, k: 1 };
     return {
+      state: s,
       update(dt, live) {
         for (const c of s.list) c.t += dt; s.list = s.list.filter(c => c.t < 1.3);
         if (!live && !o.always) return;
@@ -41,7 +43,7 @@ const TYPES = {
         if (s.next <= 0 && s.k > 0.3) {
           s.next = (o.every || 0.7) + Math.random() * 0.5;
           const texts = o.texts || ['LEFT!', 'GO!', 'WAIT!'];
-          s.list.push({ text: texts[Math.floor(Math.random() * texts.length)], x: 60 + Math.random() * (W - 120), y: 90 + Math.random() * (GY() - 200), t: 0 });
+          s.list.push({ text: texts[Math.floor(Math.random() * texts.length)], x: 60 + Math.random() * (W - 120), y: SAFE_TOP + 14 + Math.random() * Math.max(10, GY() - 90 - (SAFE_TOP + 14)), t: 0 });
           sh.env.audio.SFX.calls(1);
         }
       },
@@ -59,6 +61,7 @@ const TYPES = {
     };
   },
   rock(o, sh) {
+    sh.landmarks[o.name || 'rock'] = () => ({ x: o.x, y: GY() + 4 - (o.h || 46) / 2 });
     return { drawBack() { P.drawRock(o.x, GY() + 4, o.w || 90, o.h || 46); } };
   },
   trex(o, sh) {

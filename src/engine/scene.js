@@ -3,12 +3,14 @@
 import { ctx, W, PANEL, view, SH, GY, FH, FS, FB, rr, wrapLines, wrap, inR, hash } from './canvas.js';
 import { SIGN_T, LOCK, INSTINCTS, Meter, MeterSet } from './meter.js';
 import { TOOLS } from './tools/index.js';
-import { drawWorld, drawForeground } from '../art/world.js';
+import { drawWorld, drawForeground, THEMES } from '../art/world.js';
 import { drawRaptor } from '../art/raptor.js';
 
 const MENTOR = { scar: 'SCAR', echo: 'ECHO', narr: 'NOW', nip: 'NIP', fang: 'FANG' };
 const BREATH_LINES = ["That's it. Slow out-breaths tell your body the fight is over.", 'Good. Feel it drop?', "Again if you need it. There's no rush.", "That's the Long Exhale. Your best weapon."];
 const KEYS = ['q', 'w', 'e', 'r', 't'];
+// The clear band in the scene: below Scar's speech box (up to 3 lines) and above the bottom prompt banner.
+export const SAFE_TOP = 104, SAFE_BOTTOM = 74;
 const SHORT = { longExhale: 'BREATHE', oneThing: 'ONE THING', parkIt: 'PARK IT', burstRest: 'BURST & REST', waitSignal: 'RIDE IT' };
 
 export function actor(x, face, s, extra) { return { x, tx: x, face, s, sp: 110, on: true, ...extra }; }
@@ -51,7 +53,7 @@ export function createShell(env) {
       if (tools) sh.tools = tools;
       if (theme) sh.theme = theme;
       if (mentor) sh.mentor = mentor;
-      sh.chooseTool = !!chooseTool; sh.targets = targets || {}; sh.spaceTaken = false; sh.cx = 0; sh.onlyTool = null;
+      sh.chooseTool = !!chooseTool; sh.targets = targets || {}; sh.landmarks = {}; sh.spaceTaken = false; sh.cx = 0; sh.onlyTool = null;
       sh.resetTools();
       for (const m of sh.meters.list) m.crossings();
     },
@@ -131,11 +133,35 @@ export function createShell(env) {
       const tgt = sh.targets[id];
       if (!tgt) { sh.say(id === 'oneThing' ? "Nothing's too much right now. Save One Thing for when it is." : 'Not now.', 3, 2); return; }
       const resolved = {};
-      for (const [step, list] of Object.entries(tgt)) resolved[step] = list.map(b => ({ ...b, y: b.y != null ? b.y : b.gy != null ? GY() + b.gy : SH() + (b.sy || 0) }));
+      for (const [step, list] of Object.entries(tgt)) resolved[step] = sh.placeTargets(step, list);
       sh.runs[id] = TOOLS[id].createRun({ targets: resolved });
       sh.activeTool = id; SFX.click();
     },
 
+    // Where a named thing is drawn right now, so a target labelled "The sun" sits over the sun.
+    landmarks: {},
+    anchor(name) {
+      const a = sh.actors[name];
+      if (a) return a.on ? { x: a.x + 8 * (a.face || 1), y: GY() - 26 * a.s } : null;
+      if (name === 'sun') { const s = (THEMES[sh.theme] || {}).sun; return s ? { x: W * s.x, y: GY() - s.dy } : null; }
+      if (name === 'volcano') { const vx = ((260 - sh.cx * 0.12) % 1000 + 1000) % 1000 - 200; return vx > 20 && vx < W - 20 && (THEMES[sh.theme] || {}).volcano ? { x: vx, y: GY() - 150 } : null; }
+      if (name === 'river') return { x: W / 2, y: GY() + 14 };
+      const l = sh.landmarks[name]; return l ? l() : null;
+    },
+    placeTargets(step, list) {
+      const lo = SAFE_TOP, hi = SH() - SAFE_BOTTOM;
+      let out = list.map(b => {
+        let x = b.x, y;
+        if (b.at) { const a = sh.anchor(b.at); if (!a) return null; x = a.x - b.w / 2; y = a.y - b.h / 2; }
+        else y = b.y != null ? b.y : b.gy != null ? GY() + b.gy : SH() + (b.sy || 0);
+        return { ...b, x: Math.max(2, Math.min(W - b.w - 2, x)), y: Math.max(lo, Math.min(hi - b.h, y)) };
+      }).filter(Boolean);
+      if (step === 'hear') { // sounds have no place: a tidy row of sound bubbles just under the speech box
+        const n = out.length, slot = W / n;
+        out = out.map((b, i) => ({ ...b, x: i * slot + (slot - b.w) / 2, y: lo + 6 }));
+      }
+      return out;
+    },
     pause() {
       if (sh.paused) return;
       input.clearAll();
