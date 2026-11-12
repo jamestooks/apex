@@ -2,6 +2,7 @@
 import { createInput } from '../../src/engine/input.js';
 import { createShell } from '../../src/engine/scene.js';
 import { Meter, MeterSet } from '../../src/engine/meter.js';
+import { newProfile } from '../../src/store.js';
 
 export const silentAudio = new Proxy({}, { get: (t, k) => (k === 'SFX' ? new Proxy({}, { get: () => () => {} }) : () => {}) });
 
@@ -24,8 +25,9 @@ export const SIGNS = { rage: ['Hot face', 'Clenched fists', 'Tight chest'], over
   urge: ['Can\'t wait', 'Fidgety hands', 'Have to do it NOW'] };
 
 export function makeProfile(extra) {
-  return { id: 'p1', raptorName: 'Raptor', rim: '#fb923c', trust: 0, scars: 0, signs: SIGNS,
-    settings: { reducedMotion: false, intensity: 'normal' }, chapters: {}, toolbelt: [], parked: [], ...extra };
+  const p = newProfile({ childName: 'Test', raptorName: 'Raptor' });
+  p.signs = JSON.parse(JSON.stringify(SIGNS));
+  return Object.assign(p, extra || {});
 }
 
 export function makeShell({ tools = ['longExhale'], theme = 'dusk', profile } = {}) {
@@ -51,4 +53,20 @@ export function runScene(shell, scene, policy, { maxSecs = 120, dt = 1 / 30 } = 
     t += dt;
   }
   return t;
+}
+
+// A sensible calm player for any scene: uses the tool when hot, chooses the first calm option once cool.
+export function calmBot(fi, { attack = false } = {}) {
+  let holding = false;
+  return ({ shell }) => {
+    const le = shell.runs.longExhale;
+    if (attack) { if (shell.choices) { const c = shell.choices.find(x => x.instinct); if (c) shell.choiceCb(c.k); } return; }
+    if (le) {
+      if (le.phase === 'idle' && !holding && shell.heat > 0.22) { fi.keyDown('Space'); holding = true; }
+      if (holding && le.phase === 'full') { fi.keyUp('Space'); holding = false; }
+    }
+    if (shell.choices && shell.heat < 0.5 && (!le || le.phase === 'idle') && !holding) {
+      const c = shell.choices.find(x => !x.instinct); if (c) shell.choiceCb(c.k);
+    }
+  };
 }

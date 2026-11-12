@@ -1,15 +1,62 @@
-import { initCanvas, toLogical } from './engine/canvas.js';
+import { initCanvas, toLogical, setLargeText } from './engine/canvas.js';
 import { createInput } from './engine/input.js';
-import { audioInit } from './engine/audio.js';
+import * as audio from './engine/audio.js';
 import { app, startLoop } from './app.js';
-import { h, mount } from './ui/dom.js';
+import { h, mount, unmount } from './ui/dom.js';
+import { createStore } from './store.js';
+import { createSession, startRest } from './model/session.js';
+import { createShell } from './engine/scene.js';
+import { createRunner } from './play/runner.js';
+import { chapterByN } from './data/chapters/index.js';
+import { registerProfiles } from './ui/profiles.js';
+import { registerHome, valleyScene } from './ui/home.js';
+import { registerDen } from './ui/den.js';
+import { showSigns } from './ui/signs.js';
 
 const canvas = document.getElementById('game');
 initCanvas(canvas);
 app.input = createInput({ el: canvas, keyTarget: window, toLogical });
-addEventListener('pointerdown', audioInit, { capture: true });
-addEventListener('keydown', audioInit, { capture: true });
+app.audio = audio;
+addEventListener('pointerdown', audio.audioInit, { capture: true });
+addEventListener('keydown', audio.audioInit, { capture: true });
 
-app.register('placeholder', () => mount(h('div', { class: 'screen' }, h('h1', { class: 'title' }, 'APEX'))));
+app.store = createStore((() => { try { return window.localStorage; } catch (e) { return undefined; } })());
+app.session = null;
+app.titleScene = valleyScene(app, null, 'dusk');
+Object.defineProperty(app, 'profile', { get: () => app.store.active() });
+
+app.applySettings = p => {
+  const s = p ? p.settings : { sound: true, vibration: true, intensity: 'normal', largeText: false };
+  audio.configureAudio({ sound: s.sound, vibration: s.vibration, intensity: s.intensity });
+  setLargeText(!!s.largeText);
+  document.documentElement.classList.toggle('large-text', !!s.largeText);
+};
+app.selectProfile = id => { app.session = null; app.store.setActive(id); app.applySettings(app.profile); app.show('home'); };
+app.switchPlayer = () => { app.session = null; app.store.setActive(null); app.applySettings(null); app.show('profiles'); };
+app.endSessionIfCapped = () => {
+  const p = app.profile;
+  if (p && app.session && app.session.capReached(Date.now())) { app.store.updateProfile(p.id, q => startRest(q, Date.now())); app.session = null; }
+};
+app.play = (n, mode, leg) => app.show('play', { n, mode, leg: leg || 0 });
+
+app.register('play', ({ n, mode, leg }) => {
+  const p = app.profile, ch = chapterByN(n);
+  if (!p || !ch) return app.show('home');
+  if (!app.session) app.session = createSession(p, Date.now());
+  unmount();
+  const shell = createShell({ profile: p, theme: ch.theme, tools: [], audio, input: app.input, difficulty: { simmerMul: 1, gapMul: 1, spikeAdd: 0 } });
+  const runner = createRunner({
+    profile: p, chapter: ch, mode, leg, shell, session: app.session, save: () => app.store.save(),
+    pickSigns: inst => new Promise(res => { app.paused = true; showSigns(app, p, inst, { onDone: () => { unmount(); app.paused = false; res(); } }); }),
+    onDone: summary => { app.store.save(); app.canvasScene = null; app.show('den', summary); },
+  });
+  app.canvasScene = { update: runner.update, draw: runner.draw, pause: runner.pause, runner, shell };
+});
+app.register('grownups', () => mount(h('div', { class: 'screen solid' }, h('h2', {}, 'Grown-ups'), h('p', { class: 'muted' }, 'Coming soon.'), h('button', { class: 'ghost', onClick: () => app.show(app.profile ? 'home' : 'profiles') }, 'Back'))));
+
+registerProfiles(app);
+registerHome(app);
+registerDen(app);
+
 startLoop();
-app.show('placeholder');
+if (app.profile) { app.applySettings(app.profile); app.show('home'); } else app.show('profiles');
