@@ -35,7 +35,7 @@ export function createMoment(sc, sh) {
   function startTrigger(t) {
     t.started = true;
     if (t.who && A[t.who]) {
-      const a = A[t.who]; a.on = true;
+      const a = A[t.who]; a.on = true; a.pinned = !!t.pinned;
       if (t.fromX != null) a.x = t.fromX; else if (!t.keepX) a.x = 470;
       a.tx = t.enter != null ? t.enter : 280; a.face = -1; a.sp = t.sp || 110;
     } else t.wait = t.delay != null ? t.delay : 1.2;
@@ -79,6 +79,7 @@ export function createMoment(sc, sh) {
     if (o.hurtPack) st.needsRepair = true;
     if (o.meat === false) m.meat = false;
     if (calm && (o.strength || sc.strength)) st.strengths.push(o.strength || sc.strength);
+    if (calm && o.finaleCalm) st.finaleCalm = true;
     if (forced) {
       st.tookOver += 1;
       for (const x of sh.meters.list) if (x.full) x.adapt();

@@ -55,7 +55,7 @@ const TYPES = {
       state: s,
       update(dt) { if (s.free && s.roll < 1) s.roll = Math.min(1, s.roll + dt * 0.8); },
       free() { s.free = true; },
-      drawFront() { P.drawLog(s.x + s.roll * 90, GY() - 10 - Math.sin(s.roll * Math.PI) * 6, 120, o.burning, sh.T); },
+      drawFront() { P.drawLog(s.x + s.roll * 90, GY() - (o.lift || 10) - Math.sin(s.roll * Math.PI) * 6, o.w || 120, o.burning, sh.T); },
     };
   },
   rock(o, sh) {
@@ -73,6 +73,9 @@ const TYPES = {
       },
       drawBack() { if (s.on) P.drawTrex(s.x, GY() + 4, o.s || 1.1, sh.T, -1, o.sniff && Math.abs(s.x - (o.sniffAt || 220)) < 120); },
     };
+  },
+  lavaStones(o, sh) {
+    return { drawBack() { for (let i = 0; i < (o.n || 4); i++) P.drawLavaStone((o.x || 200) + i * 52, GY() + 6 - (i % 2) * 4, !!sh.stonesSettled, sh.T + i * 0.7, sh.stonesSettled && i === 0); } };
   },
   hadrosaurs(o, sh) {
     return { drawBack() { for (let i = 0; i < (o.n || 3); i++) P.drawHadrosaur((o.x || 260) + i * 60, GY() + 2 - i * 3, 0.8, sh.T + i, i % 2 ? 1 : -1, i === 0 && o.lookout); } };

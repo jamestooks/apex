@@ -32,7 +32,8 @@ export function registerHome(app) {
     const p = app.profile;
     if (!p) return app.show('profiles');
     const cur = currentChapter(p), curCh = CHAPTERS.find(c => c.n === cur) || CHAPTERS[0];
-    app.canvasScene = valleyScene(app, p, curCh.theme);
+    const allDone = CHAPTERS.every(c => p.chapters[c.n] && p.chapters[c.n].done);
+    app.canvasScene = valleyScene(app, p, allDone ? 'dusk' : curCh.theme);
     const rank = rankFor(p.trust, p.finaleCalm);
     const rest = restRemaining(p, Date.now());
     const tiles = [];
@@ -49,7 +50,7 @@ export function registerHome(app) {
     }
     mount(h('div', { class: 'screen' },
       h('div', { class: 'row', style: { justifyContent: 'space-between', alignItems: 'center' } },
-        h('div', { style: { flex: 'none' } }, h('h2', { style: { color: p.rim } }, p.raptorName), h('div', { class: 'kicker', style: { textAlign: 'left' } }, `${rank.name}${rank.next ? '' : ''} · ${curCh.season}`)),
+        h('div', { style: { flex: 'none' } }, h('h2', { style: { color: p.rim } }, p.raptorName), h('div', { class: 'kicker', style: { textAlign: 'left' } }, allDone && p.finaleCalm ? 'APEX · LEADER OF THE PACK' : `${rank.name} · ${allDone ? 'Green season' : curCh.season}`)),
         h('button', { class: 'quiet', style: { flex: 'none' }, id: 'switch-player', onClick: () => app.switchPlayer() }, 'Switch player')),
       h('div', { style: { height: '46vh', flex: 'none' } }),
       rest > 0 ? h('div', { class: 'warn', id: 'resting' }, `Scar is resting. Back in ${fmtMins(rest)} minutes.`) : null,

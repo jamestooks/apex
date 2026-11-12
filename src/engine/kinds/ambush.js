@@ -22,7 +22,7 @@ export function createAmbush(sc, sh) {
     pounce() { if (k.phase === 'signal') succeed(); else if (k.phase === 'hide') early('Too soon. The herd scatters before you get close.'); },
   };
   for (const m of sh.meters.list) { m.firstToolAt = null; m.peak = m.value; }
-  sh.spaceTaken = true; sh.clearChoices();
+  sh.spaceTaken = true; sh.clearChoices(); sh.stonesSettled = false;
   me.x = me.tx = 150; me.face = 1; me.limp = false;
   A.scar.on = true; A.scar.x = A.scar.tx = 58; A.echo.on = false; A.nip.on = !!sc.nip; A.fang.on = false;
   if (sc.nip) { A.nip.x = A.nip.tx = 100; }
@@ -114,7 +114,7 @@ export function createAmbush(sc, sh) {
       if (full) takeover(full);
       else if (!h) early(sc.earlyLine || 'Too soon. The herd scatters before you get close.');
       else if (k.heldT >= sc.signalAt) {
-        k.phase = 'signal'; k.signalOn = true; k.signalT = 0; k.urgeAtSignal = urge ? urge.value : 0;
+        k.phase = 'signal'; k.signalOn = true; k.signalT = 0; k.urgeAtSignal = urge ? urge.value : 0; sh.stonesSettled = true;
         SFX.signal(); audio.vibrate(60);
         sh.say(sc.signalLine || "Scar's tail flicks. NOW!", 2.5, 3, 'scar');
         sh.setChoices([{ k: 'pounce', label: sc.pounceLabel || 'POUNCE!', col: '#c084fc', always: true }], () => k.pounce());

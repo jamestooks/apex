@@ -6,10 +6,11 @@ import { createPractice } from '../engine/kinds/practice.js';
 import { createTrack } from '../engine/kinds/track.js';
 import { createRun } from '../engine/kinds/run.js';
 import { createAmbush } from '../engine/kinds/ambush.js';
+import { createTeachNip } from '../engine/kinds/teachNip.js';
 import { TOOL_ORDER } from '../engine/tools/index.js';
 import { completeLeg, recordSession, appearance } from '../model/progress.js';
 
-export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun, ambush: createAmbush };
+export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun, ambush: createAmbush, teachNip: (sc, sh) => createTeachNip(sh) };
 export function registerKind(name, fn) { KINDS[name] = fn; }
 
 const WRAP_CARD = { title: 'TIME TO REST', sub: "The sun's going down. That's enough hunting for today.",
@@ -52,6 +53,7 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     }
   }
   steps.push({ type: 'repair' });
+  if (mode === 'leg' && leg === chapter.legs.length - 1 && chapter.endingCards) steps.push(...chapter.endingCards.map(fn => ({ type: 'card', cardFn: fn })));
   let si = -1, played = 0;
 
   function stageFor(sc) {
@@ -66,8 +68,9 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     if (!st) return finish(false);
     r.step = st.type;
     if (st.type === 'card') {
-      if (!st.card) return next();
-      shell.showCard({ ...st.card, cb: () => { if (st.addTool) addTool(st.addTool); next(); } });
+      const card = st.cardFn ? st.cardFn(profile, shell) : st.card;
+      if (!card) return next();
+      shell.showCard({ ...card, cb: () => { if (st.addTool) addTool(st.addTool); next(); } });
     } else if (st.type === 'signs') {
       const k = st.instinct;
       if (profile.signs[k] && profile.signs[k].length === 3) return next();

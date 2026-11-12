@@ -51,7 +51,7 @@ export function createShell(env) {
       if (tools) sh.tools = tools;
       if (theme) sh.theme = theme;
       if (mentor) sh.mentor = mentor;
-      sh.chooseTool = !!chooseTool; sh.targets = targets || {}; sh.spaceTaken = false; sh.cx = 0;
+      sh.chooseTool = !!chooseTool; sh.targets = targets || {}; sh.spaceTaken = false; sh.cx = 0; sh.onlyTool = null;
       sh.resetTools();
       for (const m of sh.meters.list) m.crossings();
     },
@@ -122,6 +122,7 @@ export function createShell(env) {
       if (ti >= 0 && sh.tools[ti] && TOOLS[sh.tools[ti]].TOOL.kind === 'tap') sh.startTapTool(sh.tools[ti]);
     },
     startTapTool(id) {
+      if (sh.onlyTool && id !== sh.onlyTool) return;
       if (sh.activeTool && sh.activeTool !== id) return;
       if (sh.runs[id] && !sh.runs[id].done) return;
       const tgt = sh.targets[id];
@@ -173,7 +174,7 @@ export function createShell(env) {
       let pause = false;
       sh.tools.forEach((id, i) => {
         const T = TOOLS[id].TOOL; let run = sh.runs[id];
-        if (!run) return;
+        if (!run || (sh.onlyTool && id !== sh.onlyTool)) return;
         const free = !sh.activeTool || sh.activeTool === id;
         const held = free && T.kind === 'hold' && !sh.card && (input.held(sh.tileRect(i), i === 0 && !sh.spaceTaken ? 'Space' : KEYS[i]) || input.keys.has(KEYS[i]));
         const io = { held, taps: T.kind === 'tap' && sh.activeTool === id ? input.taps : [], drag: input.drag, targets: sh.targets };
