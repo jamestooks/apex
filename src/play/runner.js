@@ -8,10 +8,11 @@ import { createRun } from '../engine/kinds/run.js';
 import { createAmbush } from '../engine/kinds/ambush.js';
 import { createTeachNip } from '../engine/kinds/teachNip.js';
 import { createWinddown } from '../engine/kinds/winddown.js';
+import { createPrologue } from '../engine/kinds/prologue.js';
 import { TOOL_ORDER } from '../engine/tools/index.js';
 import { completeLeg, recordSession, appearance } from '../model/progress.js';
 
-export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun, ambush: createAmbush, teachNip: (sc, sh) => createTeachNip(sh) };
+export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun, ambush: createAmbush, teachNip: (sc, sh) => createTeachNip(sh), prologue: (sc, sh) => createPrologue(sh) };
 export function registerKind(name, fn) { KINDS[name] = fn; }
 
 const WRAP_CARD = { title: 'TIME TO REST', sub: "The sun's going down. That's enough hunting for today.",
@@ -29,7 +30,10 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
   if (mode === 'hunt' || leg > 0) addTool(chapter.tool);
 
   const steps = [];
-  if (mode === 'single') {
+  const PROLOGUE = { type: 'scene', prologue: true, sc: { kind: 'prologue', meters: [], tools: [] } };
+  if (mode === 'prologue') {
+    steps.push(PROLOGUE);
+  } else if (mode === 'single') {
     steps.push({ type: 'scenario', sc: chapter.__only });
   } else if (mode === 'hunt') {
     if (inst !== 'all') steps.push({ type: 'signs', instinct: inst });
@@ -38,6 +42,8 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     steps.push({ type: 'card', card: { title: 'HUNT', sub: chapter.place, body: '"A short hunt to keep your skills sharp. Same tools, new moments."' } });
     for (const sc of picks) steps.push({ type: 'scenario', sc });
   } else {
+    // A new player sees the opening story once, before Scar's first speech.
+    if (chapter.n === 1 && leg === 0 && !profile.seenPrologue) steps.push(PROLOGUE);
     const intro = chapter.legIntro && chapter.legIntro[leg];
     if (intro) steps.push({ type: 'card', card: intro });
     for (const beat of chapter.legs[leg]) {
@@ -54,7 +60,8 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     }
   }
   steps.push({ type: 'repair' });
-  if (mode !== 'single') steps.push({ type: 'winddown' });
+  if (mode !== 'single' && mode !== 'prologue') steps.push({ type: 'winddown' });
+  else if (mode === 'prologue') steps.pop(); // no repair step after a story replay
   if (mode === 'leg' && leg === chapter.legs.length - 1 && chapter.endingCards) steps.push(...chapter.endingCards.map(fn => ({ type: 'card', cardFn: fn })));
   let si = -1, played = 0;
 
@@ -103,6 +110,7 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
   }
   function sceneDone() {
     const st = steps[si];
+    if (st.prologue) { profile.seenPrologue = true; save && save(); }
     if (st.type === 'practice' && r.saved) {
       // Practice is for learning: keep the tool uses, drop everything that would count.
       const keepUses = shell.stats.toolUses;
@@ -135,6 +143,7 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     if (completedLeg) completeLeg(profile, chapter.n, leg);
     const minutes = Math.max(1, Math.round((now() - start) / 60000));
     const st = shell.stats;
+    if (mode === 'prologue') { save && save(); onDone && onDone({ chapter: chapter.n, mode, leg, completedLeg: false, chapterDone: false, capped, minutes, stats: st, results: [] }); return; }
     recordSession(profile, { chapter: chapter.n, kind: mode, trustDelta: st.trustDelta, minutes, injured: st.injured, mealsKept: st.mealsKept,
       toolUses: st.toolUses, tookOver: st.tookOver, early: st.early, earlyOf: st.earlyOf });
     if (chapter.instinct === 'all' && st.finaleCalm) profile.finaleCalm = true;

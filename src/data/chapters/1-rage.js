@@ -13,7 +13,7 @@ export default {
   blurb: 'Rage. The Long Exhale.',
   legs: [['teach', 'test'], ['mix', 'big']],
   intro: { title: 'OLD SCAR', sub: 'Leader of the pack',
-    body: "You brought down your first prey today. The pack will eat well.\n\nRage isn't bad. It tells you something matters to you. But when it takes over, it makes young hunters reckless. I know. I nearly lost everything to mine.\n\nTonight I'll teach you how I learned to steer it." },
+    body: "You're safe now. The Shadow won't come this far tonight.\n\nYour instincts are strong: rage, panic, the itch to run. We'll learn them one at a time, starting with the hardest.\n\nRage isn't bad. It tells you something matters to you. But when it takes over, it makes young hunters reckless. I know. I nearly lost everything to mine.\n\nTonight I'll teach you how I learned to steer it." },
   toolCard: { title: 'THE LONG EXHALE', sub: 'Rage gets your body ready to fight. A long, slow breath OUT tells it to stand down.',
     body: 'HOLD Breathe and breathe IN as the circle grows.\n\nLET GO and breathe OUT slowly as it shrinks.\n\nDo it for real, with your own lungs. Not just your thumb.' },
   practice: { kind: 'practice', meters: ['rage'], primary: 'rage', startValue: 0.45, carcass: { x: 218 },

@@ -49,7 +49,7 @@ app.register('play', ({ n, mode, leg, only }) => {
   const runner = createRunner({
     profile: p, chapter: ch, mode, leg, shell, session: app.session, save: () => app.store.save(),
     pickSigns: inst => new Promise(res => { app.paused = true; showSigns(app, p, inst, { onDone: () => { unmount(); app.paused = false; res(); } }); }),
-    onDone: summary => { app.store.save(); app.show('den', summary); },
+    onDone: summary => { app.store.save(); app.show(mode === 'prologue' ? 'home' : 'den', summary); },
   });
   shell.onMenu = () => {
     app.paused = true; app.input.clearAll();

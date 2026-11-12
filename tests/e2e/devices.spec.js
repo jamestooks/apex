@@ -11,6 +11,9 @@ test('two children on one device stay separate; leaving mid-chapter is safe', as
   await page.goto('/?debug=1');
   await newPlayer(page, 'Sam', 'Blaze');
   await page.click('[data-play="1"]');
+  // the opening story plays first: wait for it, then press Skip
+  await page.waitForFunction(() => { const c = window.__apex.canvasScene; return c && c.runner && c.runner.scene && c.runner.scene.kind === 'prologue'; });
+  await page.evaluate(() => window.__apex.canvasScene.runner.scene.skip());
   const cv = await page.locator('#game').boundingBox();
   await page.waitForTimeout(900); await page.mouse.click(cv.x + 60, cv.y + 200);
   await pickSigns(page);

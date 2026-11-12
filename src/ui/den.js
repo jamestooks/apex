@@ -84,6 +84,7 @@ export function registerDen(app) {
       opened.length ? h('div', { class: 'row' }, opened.map(c => h('button', { class: 'ghost', 'data-plan': c.n, onClick: () => showPlanCard(app, p, c.n, back) }, c.den.planTitle.replace('MY ', '')))) : h('p', { class: 'muted' }, 'Your first plan card arrives after your first hunt.'),
       h('div', { class: 'row' }, ['rage', 'overload', 'drift', 'fuel', 'urge'].filter(k => p.signs[k] && p.signs[k].length).map(k =>
         h('button', { class: 'quiet', onClick: () => showSigns(app, p, k, { onDone: back, onBack: back }) }, `Change ${k} signs`)))));
+    parts.push(h('button', { class: 'quiet', id: 'watch-story', onClick: () => app.play(1, 'prologue') }, 'Watch the story again'));
     // Continue
     const next = summary.chapter && !summary.capped ? nextLeg(p, summary.chapter) : null;
     const capNow = app.session && app.session.capReached(Date.now());
