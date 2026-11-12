@@ -93,3 +93,8 @@ test('the journey shows six seasons: done, current and ahead, each with its chap
   assert.ok(stops.every(s => s.unlock && s.unlock.name));
   assert.equal(stops[0].unlockOwned, true); assert.equal(stops[1].unlockOwned, false);
 });
+
+test('players from before this update keep credit for the early catches they already made', () => {
+  const s = memStorage({ 'apex.v1': JSON.stringify({ version: 1, profiles: { a: { id: 'a', childName: 'A', raptorName: 'R', rim: '#fb923c', createdAt: 1, settings: {}, signs: {}, customSigns: {}, chapters: {}, sessions: [{ early: 2 }, { early: 3 }] } } }) });
+  assert.equal(createStore(s).getProfile('a').calmCount, 5);
+});

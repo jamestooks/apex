@@ -33,6 +33,7 @@ function pinHash(pin) {
 }
 // Fill fields added in later versions so old saves keep working.
 function upgradeProfile(p) {
+  if (p.calmCount === undefined) p.calmCount = (p.sessions || []).reduce((n, x) => n + (x.early || 0), 0);
   const base = newProfile();
   for (const k of Object.keys(base)) if (p[k] === undefined) p[k] = base[k];
   const old = p.settings || {};
