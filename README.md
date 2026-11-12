@@ -8,7 +8,7 @@ A raptor survival game where every tool is a real coping skill. Built for phone,
 ## Run it locally
 
 ```sh
-npm start            # serves on http://localhost:4173
+npm start            # serves on http://localhost:4173 (no-cache dev server)
 ```
 
 Open http://localhost:4173 in a browser. No build step: the files in `src/` load directly.

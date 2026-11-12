@@ -5,7 +5,7 @@ export default defineConfig({
   retries: 1,
   workers: 2,
   use: { baseURL: 'http://localhost:4173' },
-  webServer: { command: 'python3 -m http.server 4173', port: 4173, reuseExistingServer: true, stdout: 'ignore', stderr: 'ignore' },
+  webServer: { command: 'node scripts/serve.mjs 4173', port: 4173, reuseExistingServer: true, stdout: 'ignore', stderr: 'ignore' },
   projects: [
     { name: 'phone', use: { ...devices['iPhone 13'], browserName: 'chromium' } },
     { name: 'tablet', testMatch: /devices\.spec/, use: { ...devices['iPad (gen 7)'], browserName: 'chromium' } },

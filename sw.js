@@ -1,5 +1,5 @@
 // Offline support: precache the whole app; cache Google Fonts as they load. Regenerate the list with: npm run sw
-const CACHE = 'apex-51kkpq';
+const CACHE = 'apex-kbz9oh';
 const PRECACHE = [
   './',
   './index.html',
@@ -62,7 +62,8 @@ const PRECACHE = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's HTTP cache, which can hand back a stale file and mix versions.
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
@@ -75,7 +76,7 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin && !font) return;
   e.respondWith(caches.match(req, { ignoreSearch: url.origin === location.origin }).then(hit => {
     if (hit) return hit;
-    return fetch(req).then(res => {
+    return fetch(req.mode === 'navigate' || url.origin !== location.origin ? req : new Request(req, { cache: 'no-cache' })).then(res => {
       if (res && (res.ok || res.type === 'opaque')) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
       return res;
     }).catch(() => (req.mode === 'navigate' ? caches.match('./index.html') : undefined));

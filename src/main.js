@@ -77,7 +77,12 @@ registerDen(app);
 registerGrownups(app);
 
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  // Check for a new version on every load (browsers otherwise check lazily).
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(reg => reg.update()).catch(() => {}));
+  // When an update takes over, reload once so the page never runs a mix of old and new files.
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloading) { reloading = true; location.reload(); } });
 }
 
 startLoop();
