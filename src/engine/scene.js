@@ -104,16 +104,19 @@ export function createShell(env) {
       return { x: 14 + i * (w + 6), y: P + 124, w, h: 56 };
     },
     muteRect() { return { x: W - 38, y: SH() - 38, w: 30, h: 30 }; },
+    menuRect() { return { x: W - 76, y: SH() - 38, w: 30, h: 30 }; },
 
     // ---------- input hooks ----------
     handleDown(p) {
       if (sh.card) { sh.dismissCard(); return true; }
       if (inR(p, sh.muteRect())) { audio.toggleMute(); return true; }
+      if (sh.onMenu && inR(p, sh.menuRect())) { sh.onMenu(); return true; }
       return false;
     },
     handleKey(name) {
       if (sh.card) { if (name === 'Space' || name === 'Enter') { input.keys.delete('Space'); sh.dismissCard(); } return; }
       if (name === 'm' || name === 'M') audio.toggleMute();
+      if (name === 'Escape' && sh.onMenu) sh.onMenu();
       if (name === 'Enter' && sh.choices && sh.choices.length === 1 && sh.choiceCb) sh.choiceCb(sh.choices[0].k);
       if (sh.choices && sh.choiceCb && '1234'.includes(name) && name.length === 1) {
         const c = sh.choices[+name - 1]; if (c) sh.choiceCb(c.k);
@@ -265,6 +268,11 @@ export function createShell(env) {
       ctx.globalAlpha = 1;
     },
     drawMute() {
+      if (sh.onMenu) {
+        const q = sh.menuRect();
+        ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.arc(q.x + 15, q.y + 15, 15, 0, 7); ctx.fill();
+        ctx.fillStyle = '#d6d3d1'; ctx.fillRect(q.x + 10, q.y + 9, 4, 12); ctx.fillRect(q.x + 17, q.y + 9, 4, 12);
+      }
       const r = sh.muteRect(), muted = audio.isMuted();
       ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.arc(r.x + 15, r.y + 15, 15, 0, 7); ctx.fill();
       ctx.fillStyle = '#d6d3d1'; ctx.beginPath(); ctx.moveTo(r.x + 8, r.y + 12); ctx.lineTo(r.x + 12, r.y + 12); ctx.lineTo(r.x + 17, r.y + 8); ctx.lineTo(r.x + 17, r.y + 22); ctx.lineTo(r.x + 12, r.y + 18); ctx.lineTo(r.x + 8, r.y + 18); ctx.closePath(); ctx.fill();

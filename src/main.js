@@ -51,6 +51,14 @@ app.register('play', ({ n, mode, leg, only }) => {
     pickSigns: inst => new Promise(res => { app.paused = true; showSigns(app, p, inst, { onDone: () => { unmount(); app.paused = false; res(); } }); }),
     onDone: summary => { app.store.save(); app.canvasScene = null; app.show('den', summary); },
   });
+  shell.onMenu = () => {
+    app.paused = true; app.input.clearAll();
+    mount(h('div', { class: 'screen', style: { justifyContent: 'center' } }, h('div', { class: 'card' },
+      h('h2', {}, 'Paused'), h('p', { class: 'scar' }, '"Take your time. The valley will wait."'),
+      h('button', { id: 'resume-scene', onClick: () => { unmount(); app.paused = false; } }, 'Carry on'),
+      h('button', { class: 'ghost', id: 'leave-scene', onClick: () => { app.paused = false; app.store.save(); app.canvasScene = null; app.show('home'); } }, 'Back to the valley'),
+      h('p', { class: 'small' }, 'Leaving now keeps your signs, but this part of the chapter starts again next time.'))));
+  };
   app.canvasScene = { update: runner.update, draw: runner.draw, pause: runner.pause, runner, shell };
 });
 
@@ -67,6 +75,10 @@ registerProfiles(app);
 registerHome(app);
 registerDen(app);
 registerGrownups(app);
+
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 
 startLoop();
 if (app.profile) { app.applySettings(app.profile); app.show('home'); } else app.show('profiles');

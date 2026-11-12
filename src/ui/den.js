@@ -56,7 +56,7 @@ export function registerDen(app) {
     }
     // Mission (once the chapter is done)
     for (const c of CHAPTERS) {
-      if (!(p.chapters[c.n] && p.chapters[c.n].done)) continue;
+      if (summary.mode === 'hunt' || !(p.chapters[c.n] && p.chapters[c.n].done)) continue;
       const status = p.missions[c.n] || 'none';
       if (status === 'confirmed' && !(summary.chapter === c.n)) continue;
       parts.push(h('div', { class: 'card', 'data-mission': c.n },
