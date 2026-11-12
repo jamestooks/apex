@@ -62,7 +62,7 @@ label.check input { width: 24px; height: 24px; accent-color: var(--amber); }
 .notes .r { display: flex; justify-content: space-between; font-family: var(--serif); font-style: italic; padding: 2px 0; }
 .notes .r b { font-family: var(--head); font-style: normal; font-weight: 500; }
 .notes .lab { font-family: var(--head); color: #9a3412; font-size: 0.85rem; margin-top: 10px; text-transform: uppercase; }
-.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 4px; }
 .tabs button { flex: 0 0 auto; min-height: 40px; font-size: 0.9rem; padding: 6px 12px; background: transparent; color: var(--muted); border-color: var(--line2); }
 .tabs button.on { color: #1c0a00; background: var(--amber); border-color: var(--amber); }
 table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }

@@ -12,6 +12,7 @@ import { registerProfiles } from './ui/profiles.js';
 import { registerHome, valleyScene } from './ui/home.js';
 import { registerDen } from './ui/den.js';
 import { showSigns } from './ui/signs.js';
+import { registerGrownups } from './ui/grownups.js';
 
 const canvas = document.getElementById('game');
 initCanvas(canvas);
@@ -52,7 +53,6 @@ app.register('play', ({ n, mode, leg, only }) => {
   });
   app.canvasScene = { update: runner.update, draw: runner.draw, pause: runner.pause, runner, shell };
 });
-app.register('grownups', () => mount(h('div', { class: 'screen solid' }, h('h2', {}, 'Grown-ups'), h('p', { class: 'muted' }, 'Coming soon.'), h('button', { class: 'ghost', onClick: () => app.show(app.profile ? 'home' : 'profiles') }, 'Back'))));
 
 // Dev hooks (with ?debug=1): list and jump straight into any scenario.
 app.listScenes = () => CHAPTERS.flatMap(c => ['test', 'mix', 'big'].flatMap(b => c.scenarios[b].map((_, i) => [c.n, b, i])));
@@ -66,6 +66,7 @@ app.goto = (n, beat, i) => {
 registerProfiles(app);
 registerHome(app);
 registerDen(app);
+registerGrownups(app);
 
 startLoop();
 if (app.profile) { app.applySettings(app.profile); app.show('home'); } else app.show('profiles');
