@@ -1,6 +1,6 @@
 // One Thing: get to cover, then notice one thing you see, one you hear, one you feel. Then pick one next step.
 import { ctx, W, SH, FH, FB, rr, inR } from '../canvas.js';
-export const TOOL = { id: 'oneThing', name: 'One Thing', instinct: 'overload', kind: 'tap', how: 'Cover. See one. Hear one. Feel one. Then one next step.', phrase: 'Too much at once? One Thing.', col: '#fbbf24' };
+export const TOOL = { id: 'oneThing', name: 'One Thing', instinct: 'overload', kind: 'tap', how: 'Cover. See one. Hear one. Feel one. Then one next step.', phrase: 'Too much at once? One Thing.', col: '#fbbf24', past: 'found your One Thing', again: 'One Thing', verb: 'find your One Thing' };
 const STEPS = ['cover', 'see', 'hear', 'feel'];
 const RELIEF = { cover: 0.10, see: 0.15, hear: 0.15, feel: 0.15 };
 const DWELL = 1.2;
@@ -14,7 +14,8 @@ const PROMPTS = {
 
 export function createRun({ targets } = {}) {
   const r = {
-    phase: 'cover', t: 0, done: false, picked: {}, pausesSimmer: true, targets: targets || {},
+    phase: 'cover', t: 0, done: false, picked: {},
+    get pausesSimmer() { return !r.done; }, targets: targets || {},
     get active() { return !r.done; },
     update(dt, io) {
       const events = []; let relief = 0;

@@ -1,12 +1,13 @@
 // Wait for the Signal: feel the urge, ride it out, act on the cue.
 // 'ride' mode is the short overlay version usable in any scene; the ambush kind drives the full version.
 import { ctx, W, SH, FH, FB } from '../canvas.js';
-export const TOOL = { id: 'waitSignal', name: 'Wait for the Signal', instinct: 'urge', kind: 'hold', how: 'Hold still. Let the urge rise and pass. Act on the cue.', phrase: 'Wait for the signal.', col: '#d8b4fe' };
+export const TOOL = { id: 'waitSignal', name: 'Wait for the Signal', instinct: 'urge', kind: 'hold', how: 'Hold still. Let the urge rise and pass. Act on the cue.', phrase: 'Wait for the signal.', col: '#d8b4fe', past: 'rode the wave', again: 'ride the wave', verb: 'ride it out' };
 const RIDE_SECS = 6, RIDE_RATE = 0.06;
 
 export function createRun({ mode = 'ride' } = {}) {
   const r = {
-    mode, phase: 'idle', t: 0, done: false, pausesSimmer: false,
+    mode, phase: 'idle', t: 0, done: false,
+    get pausesSimmer() { return r.phase === 'riding'; },
     get active() { return r.phase !== 'idle' && !r.done; },
     get k() { return r.t / RIDE_SECS; },
     update(dt, io) {

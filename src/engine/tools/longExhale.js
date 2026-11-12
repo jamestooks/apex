@@ -1,6 +1,6 @@
 // Long Exhale: hold to breathe in for 3, release and breathe out for 5. The meter drops only on the out-breath.
 import { ctx, W, SH, FH } from '../canvas.js';
-export const TOOL = { id: 'longExhale', name: 'Long Exhale', instinct: 'rage', kind: 'hold', how: 'In for 3. Out slowly for 5.', phrase: "Rage meter's rising. Long Exhale?", col: '#38bdf8' };
+export const TOOL = { id: 'longExhale', name: 'Long Exhale', instinct: 'rage', kind: 'hold', how: 'In for 3. Out slowly for 5.', phrase: "Rage meter's rising. Long Exhale?", col: '#38bdf8', past: 'breathed', again: 'one more Long Exhale', verb: 'breathe' };
 const IN = 3, OUT = 5, RATE = 0.075;
 
 export function createRun() {

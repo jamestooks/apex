@@ -1,6 +1,6 @@
 // Burst & Rest: go hard in short bursts, then recover. Constant sprinting always burns out.
 import { ctx, W, SH, FH, FB } from '../canvas.js';
-export const TOOL = { id: 'burstRest', name: 'Burst & Rest', instinct: 'fuel', kind: 'hold', how: 'Short bursts, then rest. Movement breaks.', phrase: 'Burst and rest.', col: '#7dd3fc' };
+export const TOOL = { id: 'burstRest', name: 'Burst & Rest', instinct: 'fuel', kind: 'hold', how: 'Short bursts, then rest. Movement breaks.', phrase: 'Burst and rest.', col: '#7dd3fc', past: 'took a movement break', again: 'a movement break', verb: 'rest' };
 const SPRINT_FUEL = 0.16, TROT_RELIEF = 0.10, REST_RELIEF = 0.16, REST_AFTER = 2;
 const BREAK_SECS = 5, BREAK_RATE = 0.08;
 
@@ -26,7 +26,8 @@ export function createRun({ mode = 'run' } = {}) {
 }
 function createBreak() {
   const r = {
-    mode: 'break', phase: 'idle', t: 0, done: false, pausesSimmer: false,
+    mode: 'break', phase: 'idle', t: 0, done: false,
+    get pausesSimmer() { return r.phase === 'stretch'; },
     get active() { return r.phase !== 'idle' && !r.done; },
     get k() { return r.t / BREAK_SECS; },
     update(dt, io) {

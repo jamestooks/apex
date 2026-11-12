@@ -3,11 +3,11 @@ export const SIGN_T = [0.3, 0.55, 0.8];
 export const LOCK = 0.7;
 export const SPIKE_CAP = 0.92;
 export const INSTINCTS = {
-  rage: { label: 'RAGE', tool: 'longExhale', col: ['#f59e0b', '#ef4444', '#991b1b'] },
-  overload: { label: 'OVERLOAD', tool: 'oneThing', col: ['#fbbf24', '#d97706', '#78350f'] },
-  drift: { label: 'DRIFT', tool: 'parkIt', col: ['#86efac', '#22c55e', '#14532d'] },
-  fuel: { label: 'FUEL', tool: 'burstRest', col: ['#7dd3fc', '#3b82f6', '#1e3a8a'] },
-  urge: { label: 'URGE', tool: 'waitSignal', col: ['#d8b4fe', '#a855f7', '#581c87'] },
+  rage: { label: 'RAGE', name: 'Rage', tool: 'longExhale', lockText: 'TOO ANGRY TO THINK', col: ['#f59e0b', '#ef4444', '#991b1b'] },
+  overload: { label: 'OVERLOAD', name: 'Overload', tool: 'oneThing', lockText: 'TOO MUCH TO THINK', col: ['#fde68a', '#f59e0b', '#b45309'] },
+  drift: { label: 'DRIFT', name: 'Drift', tool: 'parkIt', lockText: 'TOO FOGGY TO FOCUS', col: ['#bbf7d0', '#4ade80', '#15803d'] },
+  fuel: { label: 'FUEL', name: 'Fuel', tool: 'burstRest', lockText: 'RUNNING ON EMPTY', col: ['#bae6fd', '#38bdf8', '#1d4ed8'] },
+  urge: { label: 'URGE', name: 'The urge', tool: 'waitSignal', lockText: 'TOO JUMPY TO WAIT', col: ['#e9d5ff', '#c084fc', '#7e22ce'] },
 };
 const OTHER_RELIEF = 0.25;
 

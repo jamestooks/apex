@@ -1,6 +1,6 @@
 // Park It: drag the distracting thing onto the scent map. Come back to it after the task.
 import { ctx, FH, rr } from '../canvas.js';
-export const TOOL = { id: 'parkIt', name: 'Park It', instinct: 'drift', kind: 'drag', how: "Say 'later', then drag it to your map.", phrase: 'Park it.', col: '#86efac' };
+export const TOOL = { id: 'parkIt', name: 'Park It', instinct: 'drift', kind: 'drag', how: "Say 'later', then drag it to your map.", phrase: 'Park it.', col: '#86efac', past: 'parked it', again: 'park it', verb: 'park it' };
 export const MAP_RECT = { x: 10, y: 74, w: 84, h: 64 };
 
 export function createRun({ mapRect = MAP_RECT } = {}) {
