@@ -127,7 +127,7 @@ function settings(body, app, p) {
       h('label', {}, 'Session length (minutes). The game finishes the current moment, then rests.',
         h('select', { id: 'set-minutes', onChange: e => save(q => { q.settings.sessionMinutes = +e.target.value; }) }, [10, 15, 20, 30].map(m => h('option', { value: m, selected: S.sessionMinutes === m }, m)))),
       p.restUntil > Date.now() ? h('button', { class: 'ghost', onClick: () => { save(q => { q.restUntil = 0; }); app.show('grownups'); } }, 'End the rest now') : null),
-    h('div', { class: 'card' }, h('h3', {}, 'Sound and feel'), check('sound', 'Sound'), check('vibration', 'Vibration (phones that support it)'),
+    h('div', { class: 'card' }, h('h3', {}, 'Sound and feel'), check('sound', 'Sound'), check('voices', 'Voices: Scar, Echo and the narrator read the lines aloud'), check('vibration', 'Vibration (phones that support it)'),
       check('reducedMotion', 'Reduced motion (no screen shake, still backgrounds)'), check('largeText', 'Larger text'),
       h('p', { class: 'small' }, 'These effects rise as the meter rises and soften while a tool is being used. Watch the first sessions: if they wind your child up rather than help them notice, turn them down.'),
       ...[['feelSound', 'Heartbeat and growl'], ['feelRed', 'Red at the screen edges'], ['feelShake', 'Screen shake']].map(([key, label]) => h('label', {}, label, h('select', { id: 'set-' + key, onChange: e => save(q => { q.settings[key] = e.target.value; }) },

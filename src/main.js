@@ -13,11 +13,13 @@ import { registerHome, valleyScene } from './ui/home.js';
 import { registerDen } from './ui/den.js';
 import { showSigns } from './ui/signs.js';
 import { registerGrownups } from './ui/grownups.js';
+import * as voice from './engine/voice.js';
 
 const canvas = document.getElementById('game');
 initCanvas(canvas);
 app.input = createInput({ el: canvas, keyTarget: window, toLogical });
 app.audio = audio;
+app.voice = voice;
 addEventListener('pointerdown', audio.audioInit, { capture: true });
 addEventListener('keydown', audio.audioInit, { capture: true });
 
@@ -29,6 +31,7 @@ Object.defineProperty(app, 'profile', { get: () => app.store.active() });
 app.applySettings = p => {
   const s = p ? p.settings : { sound: true, vibration: true, largeText: false };
   audio.configureAudio({ sound: s.sound, vibration: s.vibration });
+  voice.configure({ enabled: s.voices !== false && s.sound !== false });
   setLargeText(!!s.largeText);
   document.documentElement.classList.toggle('large-text', !!s.largeText);
 };
@@ -45,7 +48,7 @@ app.register('play', ({ n, mode, leg, only }) => {
   if (!p || !ch) return app.show('home');
   if (!app.session) app.session = createSession(p);
   unmount();
-  const shell = createShell({ profile: p, theme: ch.theme, tools: [], audio, input: app.input, difficulty: { simmerMul: 1, gapMul: 1, spikeAdd: 0 } });
+  const shell = createShell({ profile: p, theme: ch.theme, tools: [], audio, input: app.input, difficulty: { simmerMul: 1, gapMul: 1, spikeAdd: 0 }, voice });
   const runner = createRunner({
     profile: p, chapter: ch, mode, leg, shell, session: app.session, save: () => app.store.save(),
     pickSigns: inst => new Promise(res => { app.paused = true; showSigns(app, p, inst, { onDone: () => { unmount(); app.paused = false; res(); } }); }),
@@ -85,5 +88,6 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !reloading) { reloading = true; location.reload(); } });
 }
 
+voice.loadVoices().then(() => setTimeout(() => voice.prefetchAll(), 8000));
 startLoop();
 if (app.profile) { app.applySettings(app.profile); app.show('home'); } else app.show('profiles');

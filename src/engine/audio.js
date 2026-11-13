@@ -29,6 +29,7 @@ export function audioInit() {
     rainG = AC.createGain(); rainG.gain.value = 0; rs.connect(rf); rf.connect(rainG); rainG.connect(MG); rs.start();
   } catch (e) { AC = null; }
 }
+export function audioOut() { return AC && MG ? { ac: AC, out: MG } : null; }
 export function suspend() { try { AC && AC.suspend(); } catch (e) {} }
 export function resume() { try { AC && AC.resume(); } catch (e) {} }
 // level 0..1, already scaled by the scene for heat, the child's sound setting and calming.

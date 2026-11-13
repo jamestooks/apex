@@ -7,7 +7,7 @@ const perInstinct = () => Object.fromEntries(INSTINCT_KEYS.map(k => [k, []]));
 
 export function defaultSettings() {
   // feel*: heartbeat/growl, red edges, screen shake. 'off' | 'soft' | 'full'; moderate by default.
-  return { sessionMinutes: 15, chaptersOpen: null, sound: true, vibration: true, reducedMotion: false, largeText: false, feelSound: 'soft', feelRed: 'soft', feelShake: 'soft' };
+  return { sessionMinutes: 15, chaptersOpen: null, sound: true, vibration: true, reducedMotion: false, largeText: false, voices: true, feelSound: 'soft', feelRed: 'soft', feelShake: 'soft' };
 }
 export function newProfile({ childName = 'Player', raptorName = 'Raptor', rim = RIMS[0] } = {}) {
   const p = {

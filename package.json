@@ -9,7 +9,8 @@
     "test": "node --test \"tests/unit/*.test.js\" \"tests/sim/*.test.js\"",
     "e2e": "playwright test",
     "icons": "node scripts/make-icons.mjs",
-    "sw": "node scripts/sw-list.mjs"
+    "sw": "node scripts/sw-list.mjs",
+    "voice": "node scripts/voice/collect.mjs && ~/.cache/apex-voice/kenv/bin/python scripts/voice/generate.py"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0"

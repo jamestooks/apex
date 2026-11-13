@@ -15,6 +15,7 @@ import { completeLeg, recordSession, appearance } from '../model/progress.js';
 export const KINDS = { moment: createMoment, practice: createPractice, track: createTrack, run: createRun, ambush: createAmbush, teachNip: (sc, sh) => createTeachNip(sh), prologue: (sc, sh) => createPrologue(sh) };
 export function registerKind(name, fn) { KINDS[name] = fn; }
 
+export const WARN_3 = 'Three more minutes of hunting today, then we rest.', WARN_1 = "One more minute. We'll stop at the next calm moment.";
 const WRAP_CARD = { title: 'TIME TO REST', sub: "The sun's going down. That's enough hunting for today.",
   body: '"Rest is part of being a hunter. Come back later and we will pick up right where we left off."' };
 
@@ -160,8 +161,8 @@ export function createRunner({ profile, chapter, mode = 'leg', leg = 0, shell, n
     // Warnings before the session cap, so stopping is never a surprise.
     if (session && session.remaining) {
       const left = session.remaining();
-      if (left <= 180000 && left > 60000 && !r.warned3) { r.warned3 = true; shell.say('Three more minutes of hunting today, then we rest.', 4, 2); }
-      if (left <= 60000 && !r.warned1) { r.warned1 = r.warned3 = true; shell.say("One more minute. We'll stop at the next calm moment.", 4, 2); }
+      if (left <= 180000 && left > 60000 && !r.warned3) { r.warned3 = true; shell.say(WARN_3, 4, 2); }
+      if (left <= 60000 && !r.warned1) { r.warned1 = r.warned3 = true; shell.say(WARN_1, 4, 2); }
     }
     if (r.waiting || shell.card || shell.paused) return;
     if (r.scene) { r.scene.update(dt); if (r.scene.done) sceneDone(); }

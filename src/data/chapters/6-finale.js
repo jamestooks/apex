@@ -10,17 +10,17 @@ const ashTargets = {
   feel: [S(18, -110, 'Warm ground'), S(142, -110, 'Ash on me'), S(266, -110, 'My heartbeat')],
 };
 const base = { chooseTool: true, mentor: 'scar' };
+const INTRO = { title: 'OLD SCAR', sub: 'The mountain is waking',
+  body: "The volcano is waking up. Soon the whole valley will burn, and the pack will need someone to lead them out.\n\nI can't tell you which tool any more. You know your own brain." };
 const MOMENT_HINT = 'Which tool does this moment need?';
 
 export default {
   n: 6, id: 'finale', title: 'The Burning Valley', place: 'The Burning Valley', instinct: 'all', tool: null, mentor: 'scar',
   theme: 'ash', season: 'Fire season', strength: 'Knowing your own brain', blurb: 'All of it. Choose your tool.',
   legs: [['teach', 'test'], ['mix', 'big']],
-  intro: { title: 'OLD SCAR', sub: 'The mountain is waking',
-    body: "The volcano is waking up. Soon the whole valley will burn, and the pack will need someone to lead them out.\n\nI can't tell you which tool any more. You know your own brain.\n\nRage, overload, drift, energy, the urge. You have a tool for every one." },
+  intro: INTRO,
   teachSteps: [
-    { type: 'card', card: null, cardFn: () => ({ title: 'OLD SCAR', sub: 'The mountain is waking',
-      body: "The volcano is waking up. Soon the whole valley will burn, and the pack will need someone to lead them out.\n\nI can't tell you which tool any more. You know your own brain." }) },
+    { type: 'card', card: INTRO },
     { type: 'card', cardFn: p => ({ title: 'YOUR SIGNS', sub: 'Your body, your warning signs.',
       body: ['rage', 'overload', 'drift', 'fuel', 'urge'].filter(k => p.signs[k] && p.signs[k].length === 3)
         .map(k => `${INSTINCTS[k].label}: ${p.signs[k].join(', ')}`).join('\n') + '\n\nYou can change them any time in the Den.' }) },

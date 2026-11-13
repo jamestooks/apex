@@ -31,10 +31,10 @@ export function makeProfile(extra) {
   return Object.assign(p, extra || {});
 }
 
-export function makeShell({ tools = ['longExhale'], theme = 'dusk', profile, audio } = {}) {
+export function makeShell({ tools = ['longExhale'], theme = 'dusk', profile, audio, voice } = {}) {
   const fi = fakeInput();
   const difficulty = { simmerMul: 1, gapMul: 1, spikeAdd: 0 };
-  const shell = createShell({ profile: profile || makeProfile(), theme, tools, audio: audio || silentAudio, input: fi.input, difficulty });
+  const shell = createShell({ profile: profile || makeProfile(), theme, tools, audio: audio || silentAudio, input: fi.input, difficulty, voice });
   return { shell, fi, difficulty };
 }
 

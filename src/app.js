@@ -13,7 +13,7 @@ export const app = {
     if (!app.screens[name]) throw new Error('No screen ' + name);
     // Leaving a scene: release its keyboard/pointer hooks so menus can't trigger game keys.
     const cs = app.canvasScene;
-    if (name !== 'play' && cs && cs.shell) { cs.shell.dispose(); app.canvasScene = null; }
+    if (name !== 'play' && cs && cs.shell) { cs.shell.dispose(); app.canvasScene = null; if (app.voice) app.voice.stop(); }
     app.current = name;
     app.screens[name](params || {});
   },

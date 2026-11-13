@@ -43,3 +43,7 @@ Once it's on the home screen it opens full screen and works offline.
 - Each child gets their own player: their own raptor, warning signs, progress, trophies and Den answers.
 - **Grown-ups** (PIN-locked, from the main screen or the valley) has per-child overview, outside-mission confirmation, custom warning signs, printable plan cards, settings (session length, chapters open, sound, vibration, reduced motion, intensity, larger text), coaching tips for each chapter, a real-life log, and backup/restore.
 - Forgot the PIN? Tap **Forgot PIN** and answer the multiplication question.
+
+## Voices
+
+Scar, Echo and the narrator read their lines aloud from clips recorded locally with the open-source Kokoro model (see [`scripts/voice/README.md`](scripts/voice/README.md)). After changing any wording, run `npm run voice`; `npm test` fails if a line has no clip. Each child can turn voices off in Grown-ups → Settings.

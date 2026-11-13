@@ -15,6 +15,18 @@ export const SAFE_TOP = 104, SAFE_BOTTOM = 74;
 const FEEL = { off: 0, soft: 0.5, full: 1 }, CALMING = 0.35;
 const SHORT = { longExhale: 'BREATHE', oneThing: 'ONE THING', parkIt: 'PARK IT', burstRest: 'BURST & REST', waitSignal: 'RIDE IT' };
 
+// Who reads each part of a card: the story line by the narrator; quoted words by the mentor; a card titled
+// with a mentor's name is that mentor speaking; labels like "Pack trust: rising" by the narrator.
+export function cardSpeech(card, mentor) {
+  const parts = [];
+  if (card.sub) parts.push({ who: 'narr', text: card.sub });
+  const speaker = /^OLD SCAR$/.test(card.title) ? 'scar' : /^ECHO$/.test(card.title) ? 'echo' : null;
+  for (const para of String(card.body || '').split(/\n\s*\n/)) {
+    const t = para.trim(); if (!t) continue;
+    parts.push({ who: /^["\u201C]/.test(t) ? (mentor || 'scar') : (speaker || 'narr'), text: t });
+  }
+  return parts;
+}
 export function actor(x, face, s, extra) { return { x, tx: x, face, s, sp: 110, on: true, ...extra }; }
 
 export function createShell(env) {
@@ -76,12 +88,23 @@ export function createShell(env) {
       prio = prio || 0;
       if (sh.msgT > 0 && prio < sh.msgPrio) return;
       sh.msg = text; sh.msgT = dur || 4; sh.msgPrio = prio; sh.msgWho = who || sh.mentor;
+      const v = env.voice && env.voice.speak(sh.msgWho, text, sh.voiceNames());
+      if (v) sh.msgT = Math.max(sh.msgT, v + 0.6);
     },
     sayNext(text, dur, who) { sh.queue.push({ text, dur, who: who || sh.mentor }); },
-    showCard(c) { sh.card = c; sh.cardBorn = sh.T; },
+    // Personal words the voice speaks as separate pieces: the child's warning signs and names.
+    voiceNames() {
+      const p = sh.profile || {};
+      return [...Object.values(p.signs || {}).flat(), ...Object.values(p.parentSigns || {}).flat(), p.raptorName, p.childName].filter(Boolean);
+    },
+    showCard(c) {
+      sh.card = c; sh.cardBorn = sh.T;
+      if (env.voice) { env.voice.stop(); cardSpeech(c, sh.mentor).forEach((part, i) => env.voice.speak(part.who, part.text, sh.voiceNames(), { queue: i > 0 })); }
+    },
     dismissCard() {
       if (!sh.card || sh.T - sh.cardBorn < 0.7) return;
       const c = sh.card; sh.card = null; SFX.click();
+      if (env.voice) env.voice.stop();
       if (c.cb) c.cb();
     },
     setChoices(list, cb) { sh.choices = list; sh.choiceCb = cb; },
@@ -170,6 +193,7 @@ export function createShell(env) {
     pause() {
       if (sh.paused) return;
       input.clearAll();
+      if (env.voice) env.voice.stop();
       const le = sh.runs.longExhale; if (le && (le.phase === 'in' || le.phase === 'full')) { le.phase = 'idle'; le.t = 0; }
       for (const id of ['burstRest', 'waitSignal']) { const r = sh.runs[id]; if (r && r.phase && r.phase !== 'idle' && !r.done) r.phase = 'paused'; }
       sh.paused = true;
