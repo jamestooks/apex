@@ -33,7 +33,7 @@ export function createPrologue(sh) {
       k.fade = Math.max(0, 1 - t / 2);
       once('o1', () => sh.say('A volcanic river valley, long ago. A pack of raptors hunts together here.', 5, 3, NARR));
       if (t > 5) once('o2', () => sh.say(`You are ${name}, the youngest hunter in the pack. Your senses never switch off.`, 5.5, 3, NARR));
-      if (t > 11) go('tempt');
+      if (t > 11 && sh.quiet) go('tempt');
     } else if (k.beat === 'tempt') {
       k.herdX = Math.max(330, k.herdX - 30 * dt);
       once('t1', () => { sh.say('A herd moves on the far ridge. Every part of you says GO.', 5, 3, NARR); SFX.rumble(); });
@@ -52,19 +52,19 @@ export function createPrologue(sh) {
     } else if (k.beat === 'lost') {
       once('l1', () => sh.say("The herd is gone. The light is going. This isn't pack land.", 4.5, 3, NARR));
       if (Math.floor(t / 0.8) !== Math.floor((t - dt) / 0.8)) SFX.lubdub(0.6 * sh.feelK('feelSound') + 0.2);
-      if (t > 4.5) go('shadow');
+      if (t > 4.5 && sh.quiet) go('shadow');
     } else if (k.beat === 'shadow') {
       once('s1', () => { sh.say('The ground shakes. Something huge is coming.', 4, 3, NARR); SFX.trexRoar(); sh.shake = 0.5 * sh.shakeK; });
       k.trexX = Math.max(305, k.trexX - 75 * dt);
       if (k.trexX <= 306) once('s2', () => sh.say("The Shadow. Your legs won't move.", 4, 3, NARR));
-      if (k.trexX <= 306 && t > 6.5) go('rescue');
+      if (k.trexX <= 306 && t > 6.5 && sh.quiet) go('rescue');
     } else if (k.beat === 'rescue') {
       if (!k.scarIn) { k.scarIn = true; A.scar.x = -70; A.scar.tx = 235; A.scar.sp = 280; A.scar.face = 1; }
       sh.move(A.scar, dt);
       if (Math.abs(A.scar.x - A.scar.tx) < 1) once('r1', () => { SFX.roar(); sh.shake = 0.35 * sh.shakeK; sh.say('Old Scar crashes out of the ferns and roars.', 3.5, 3, NARR); });
       if (k.said.r1 && t > 2.5) { k.trexFace = 1; k.trexX += 55 * dt; }
       if (k.said.r1 && t > 3) once('r2', () => sh.say('The Shadow turns away into the dark. For now.', 3.5, 3, NARR));
-      if (t > 7.5) go('home');
+      if (t > 7.5 && sh.quiet) go('home');
     } else if (k.beat === 'home') {
       // cut back to pack land at dusk
       if (t < 1) k.fade = t;
@@ -74,11 +74,11 @@ export function createPrologue(sh) {
         A.echo.x = A.echo.tx = 40; A.nip.x = A.nip.tx = 90;
       } else k.fade = Math.max(0, 2 - t);
       if (t > 1.6) once('h1', () => sh.say("That fire in you could make you the greatest hunter this valley has ever seen. Or it'll get you killed.", 6.5, 3, 'scar'));
-      if (t > 8.4) once('h2', () => sh.say("Rage, panic, the urge to run. Let me teach you to steer it.", 5.5, 3, 'scar'));
-      if (t > 14.2) go('rumble');
+      if (t > 8.4 && sh.quiet) once('h2', () => sh.say("Rage, panic, the urge to run. Let me teach you to steer it.", 5.5, 3, 'scar'));
+      if (k.said.h2 && t > 14.2 && sh.quiet) go('rumble');
     } else if (k.beat === 'rumble') {
       once('u1', () => { SFX.eruption(); sh.shake = 0.3 * sh.shakeK; sh.say('Far off, the mountain rumbles. Something is waking up.', 5, 3, NARR); });
-      if (t > 5.5) go('title');
+      if (t > 5.5 && sh.quiet) go('title');
     } else if (k.beat === 'title') {
       if (t > 4.5) k.skip();
     }

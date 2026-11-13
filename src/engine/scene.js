@@ -86,12 +86,17 @@ export function createShell(env) {
     },
     say(text, dur, prio, who) {
       prio = prio || 0;
-      if (sh.msgT > 0 && prio < sh.msgPrio) return;
+      if (sh.msgT > 0 && prio < sh.msgPrio) return;             // less important: skip it
+      if (sh.msgT > 0 && prio === sh.msgPrio) {                 // just as important: wait its turn, don't cut in
+        if (sh.msg !== text && !sh.queue.some(q => q.text === text) && sh.queue.length < 3) sh.queue.push({ text, dur, who, prio });
+        return;
+      }
       sh.msg = text; sh.msgT = dur || 4; sh.msgPrio = prio; sh.msgWho = who || sh.mentor;
       const v = env.voice && env.voice.speak(sh.msgWho, text, sh.voiceNames());
       if (v) sh.msgT = Math.max(sh.msgT, v + 0.6);
     },
     sayNext(text, dur, who) { sh.queue.push({ text, dur, who: who || sh.mentor }); },
+    get quiet() { return sh.msgT <= 0.15 && !sh.queue.length; },
     // Personal words the voice speaks as separate pieces: the child's warning signs and names.
     voiceNames() {
       const p = sh.profile || {};
@@ -205,7 +210,7 @@ export function createShell(env) {
     // ---------- per-frame logic ----------
     update(dt) {
       sh.T += dt;
-      if (sh.msgT > 0) sh.msgT -= dt; else if (sh.queue.length) { const q = sh.queue.shift(); sh.say(q.text, q.dur, 1, q.who); }
+      if (sh.msgT > 0) sh.msgT -= dt; else if (sh.queue.length) { const q = sh.queue.shift(); sh.say(q.text, q.dur, q.prio || 1, q.who); }
       sh.beat = Math.max(0, sh.beat - dt * 4);
       if (sh.shake > 0) sh.shake -= dt;
       for (const f of sh.floats) f.t += dt; sh.floats = sh.floats.filter(f => f.t < 2.2);
