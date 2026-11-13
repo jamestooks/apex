@@ -11,33 +11,13 @@
  },
  {
   "speaker": "echo",
-  "text": "A herd moves on the far ridge.",
-  "key": "xkfkbo"
- },
- {
-  "speaker": "echo",
-  "text": "A pack of raptors hunts together here.",
-  "key": "1ipbjms"
- },
- {
-  "speaker": "echo",
   "text": "A twitch in the ferns.",
   "key": "1a2m68a"
  },
  {
   "speaker": "echo",
-  "text": "A volcanic river valley, long ago.",
-  "key": "3j1rfo"
- },
- {
-  "speaker": "echo",
   "text": "After the hunt.'",
   "key": "1qi1mex"
- },
- {
-  "speaker": "echo",
-  "text": "All the way in.",
-  "key": "lvr0y0"
  },
  {
   "speaker": "echo",
@@ -91,11 +71,6 @@
  },
  {
   "speaker": "echo",
-  "text": "Calm down before anything else happens.",
-  "key": "trqirk"
- },
- {
-  "speaker": "echo",
   "text": "Can't sit still",
   "key": "m5ikez"
  },
@@ -113,11 +88,6 @@
   "speaker": "echo",
   "text": "Can't wait",
   "key": "1xxujv6"
- },
- {
-  "speaker": "echo",
-  "text": "Check your signs.",
-  "key": "1h5cbt1"
  },
  {
   "speaker": "echo",
@@ -156,11 +126,6 @@
  },
  {
   "speaker": "echo",
-  "text": "Every part of you says GO.",
-  "key": "rcqffe"
- },
- {
-  "speaker": "echo",
   "text": "Everything at once, and Nip needs you.",
   "key": "1s3qg9h"
  },
@@ -181,23 +146,8 @@
  },
  {
   "speaker": "echo",
-  "text": "Far off, the mountain rumbles.",
-  "key": "nmw7fe"
- },
- {
-  "speaker": "echo",
-  "text": "Faster.",
-  "key": "1n2jlst"
- },
- {
-  "speaker": "echo",
   "text": "Feel it drop?",
   "key": "3rmix3"
- },
- {
-  "speaker": "echo",
-  "text": "Feel the urge come, and let it go.",
-  "key": "1nn5cnr"
  },
  {
   "speaker": "echo",
@@ -216,18 +166,8 @@
  },
  {
   "speaker": "echo",
-  "text": "For now.",
-  "key": "1cnstpn"
- },
- {
-  "speaker": "echo",
   "text": "Frozen",
   "key": "1r4aloi"
- },
- {
-  "speaker": "echo",
-  "text": "Further.",
-  "key": "e5a0is"
  },
  {
   "speaker": "echo",
@@ -331,26 +271,6 @@
  },
  {
   "speaker": "echo",
-  "text": "Keep holding until the circle is full.",
-  "key": "d2cdoc"
- },
- {
-  "speaker": "echo",
-  "text": "Let go.",
-  "key": "1gjt95"
- },
- {
-  "speaker": "echo",
-  "text": "Let it ALL out.",
-  "key": "tencit"
- },
- {
-  "speaker": "echo",
-  "text": "Let's leave that for now.",
-  "key": "3qs6f0"
- },
- {
-  "speaker": "echo",
   "text": "Long Exhale.",
   "key": "51mcwr"
  },
@@ -411,18 +331,8 @@
  },
  {
   "speaker": "echo",
-  "text": "Now let go, and breathe out slowly.",
-  "key": "3w0vv7"
- },
- {
-  "speaker": "echo",
   "text": "Now you can think.",
   "key": "1q1yyup"
- },
- {
-  "speaker": "echo",
-  "text": "Old Scar crashes out of the ferns and roars.",
-  "key": "1kfndtb"
  },
  {
   "speaker": "echo",
@@ -566,38 +476,13 @@
  },
  {
   "speaker": "echo",
-  "text": "Slowly.",
-  "key": "1lg0my8"
- },
- {
-  "speaker": "echo",
   "text": "Snapping at people",
   "key": "14l7n2o"
  },
  {
   "speaker": "echo",
-  "text": "Something huge is coming.",
-  "key": "t46zwi"
- },
- {
-  "speaker": "echo",
-  "text": "Something is waking up.",
-  "key": "nauwa"
- },
- {
-  "speaker": "echo",
   "text": "Staring off",
   "key": "swd1id"
- },
- {
-  "speaker": "echo",
-  "text": "Still feeling it?",
-  "key": "mv21j8"
- },
- {
-  "speaker": "echo",
-  "text": "Still.",
-  "key": "xcxaw4"
  },
  {
   "speaker": "echo",
@@ -608,11 +493,6 @@
   "speaker": "echo",
   "text": "Talking super fast",
   "key": "1hplh9l"
- },
- {
-  "speaker": "echo",
-  "text": "Tap ONE THING again whenever you need it.",
-  "key": "1q0ou3x"
  },
  {
   "speaker": "echo",
@@ -671,36 +551,6 @@
  },
  {
   "speaker": "echo",
-  "text": "The ground shakes.",
-  "key": "1j8vhx9"
- },
- {
-  "speaker": "echo",
-  "text": "The herd is gone.",
-  "key": "1rfc7on"
- },
- {
-  "speaker": "echo",
-  "text": "The light is going.",
-  "key": "1ogclfn"
- },
- {
-  "speaker": "echo",
-  "text": "The pack is far behind now.",
-  "key": "1miwat3"
- },
- {
-  "speaker": "echo",
-  "text": "The Shadow turns away into the dark.",
-  "key": "ln2f9k"
- },
- {
-  "speaker": "echo",
-  "text": "The Shadow.",
-  "key": "rxbt5"
- },
- {
-  "speaker": "echo",
   "text": "The trail's going cold.",
   "key": "vtwzib"
  },
@@ -726,18 +576,8 @@
  },
  {
   "speaker": "echo",
-  "text": "This isn't pack land.",
-  "key": "nz5j0j"
- },
- {
-  "speaker": "echo",
   "text": "Three more minutes of hunting today, then we rest.",
   "key": "1p5bufs"
- },
- {
-  "speaker": "echo",
-  "text": "Thumb down to hide again.",
-  "key": "p5ypa3"
  },
  {
   "speaker": "echo",
@@ -811,11 +651,6 @@
  },
  {
   "speaker": "echo",
-  "text": "Welcome back.",
-  "key": "1ydwwxv"
- },
- {
-  "speaker": "echo",
   "text": "Which tool first?",
   "key": "11v8f10"
  },
@@ -823,11 +658,6 @@
   "speaker": "echo",
   "text": "You can come back.",
   "key": "11jabys"
- },
- {
-  "speaker": "echo",
-  "text": "You don't look back.",
-  "key": "5jx6xr"
  },
  {
   "speaker": "echo",
@@ -843,11 +673,6 @@
   "speaker": "echo",
   "text": "You had other choices.",
   "key": "71boy"
- },
- {
-  "speaker": "echo",
-  "text": "You hardly notice.",
-  "key": "17pxgl1"
  },
  {
   "speaker": "echo",
@@ -868,11 +693,6 @@
   "speaker": "echo",
   "text": "You parked them and came back to the trail.",
   "key": "1b0vgxq"
- },
- {
-  "speaker": "echo",
-  "text": "Your legs won't move.",
-  "key": "1qcu65m"
  },
  {
   "speaker": "echo",
@@ -908,11 +728,6 @@
   "speaker": "narr",
   "text": "A beetle glitters on the path.",
   "key": "de42mt"
- },
- {
-  "speaker": "narr",
-  "text": "A blue butterfly dances right past your nose.",
-  "key": "11u70as"
  },
  {
   "speaker": "narr",
@@ -966,18 +781,8 @@
  },
  {
   "speaker": "narr",
-  "text": "A lump of amber GLOWS on a fallen tree.",
-  "key": "ix1mcj"
- },
- {
-  "speaker": "narr",
   "text": "A pack of raptors hunts together here.",
   "key": "bet0jw"
- },
- {
-  "speaker": "narr",
-  "text": "A pale feather drifts down.",
-  "key": "1r1u0lc"
  },
  {
   "speaker": "narr",
@@ -1061,11 +866,6 @@
  },
  {
   "speaker": "narr",
-  "text": "And now a beetle, right on the trail.",
-  "key": "1syrkh9"
- },
- {
-  "speaker": "narr",
   "text": "And now Fang strolls up behind Nip, grinning.",
   "key": "15g26v6"
  },
@@ -1073,11 +873,6 @@
   "speaker": "narr",
   "text": "Another blast shakes the ridge.",
   "key": "4k6nda"
- },
- {
-  "speaker": "narr",
-  "text": "Another glint in the mud.",
-  "key": "1159k8j"
  },
  {
   "speaker": "narr",
@@ -1116,11 +911,6 @@
  },
  {
   "speaker": "narr",
-  "text": "Bumping into things",
-  "key": "rofh6z"
- },
- {
-  "speaker": "narr",
   "text": "Burned out.",
   "key": "sb3zyy"
  },
@@ -1133,11 +923,6 @@
   "speaker": "narr",
   "text": "But your legs are buzzing, your head is racing, and sleep feels miles away.",
   "key": "6bv9eo"
- },
- {
-  "speaker": "narr",
-  "text": "Butterflies",
-  "key": "sd5ra3"
  },
  {
   "speaker": "narr",
@@ -1193,11 +978,6 @@
   "speaker": "narr",
   "text": "Covering ears",
   "key": "b7s6hu"
- },
- {
-  "speaker": "narr",
-  "text": "Daydreaming",
-  "key": "bgmulf"
  },
  {
   "speaker": "narr",
@@ -1561,11 +1341,6 @@
  },
  {
   "speaker": "narr",
-  "text": "Have to do it NOW",
-  "key": "13cm7bh"
- },
- {
-  "speaker": "narr",
   "text": "He feeds on rage, and you gave him none.",
   "key": "1xhakrp"
  },
@@ -1866,11 +1641,6 @@
  },
  {
   "speaker": "narr",
-  "text": "Loud and fast",
-  "key": "11k53ct"
- },
- {
-  "speaker": "narr",
   "text": "Loud voice",
   "key": "1kd82z6"
  },
@@ -2068,11 +1838,6 @@
   "speaker": "narr",
   "text": "Nip, the youngest of the pack, barges in and snatches meat right from under your nose.",
   "key": "1l06ei9"
- },
- {
-  "speaker": "narr",
-  "text": "Nobody has seen a bird like that before.",
-  "key": "3rm853"
  },
  {
   "speaker": "narr",
@@ -2511,11 +2276,6 @@
  },
  {
   "speaker": "narr",
-  "text": "Teary eyes",
-  "key": "vj4acb"
- },
- {
-  "speaker": "narr",
   "text": "Teeth, claws, dust.",
   "key": "19eh4bg"
  },
@@ -2628,11 +2388,6 @@
   "speaker": "narr",
   "text": "The maze gets thicker.",
   "key": "1vzlhql"
- },
- {
-  "speaker": "narr",
-  "text": "The most amazing thing you have ever seen.",
-  "key": "dkylf"
  },
  {
   "speaker": "narr",
@@ -2931,11 +2686,6 @@
  },
  {
   "speaker": "narr",
-  "text": "Thinking about something else",
-  "key": "17h8l22"
- },
- {
-  "speaker": "narr",
   "text": "This isn't pack land.",
   "key": "1inczsb"
  },
@@ -3058,16 +2808,6 @@
   "speaker": "narr",
   "text": "Want to hide",
   "key": "1nmfpt9"
- },
- {
-  "speaker": "narr",
-  "text": "Want to lash out",
-  "key": "1g5b8ax"
- },
- {
-  "speaker": "narr",
-  "text": "Want to run",
-  "key": "gotmkq"
  },
  {
   "speaker": "narr",
@@ -3761,11 +3501,6 @@
  },
  {
   "speaker": "scar",
-  "text": "Back to the trail.",
-  "key": "f2jujv"
- },
- {
-  "speaker": "scar",
   "text": "Best time to breathe.",
   "key": "1rs94ep"
  },
@@ -4191,11 +3926,6 @@
  },
  {
   "speaker": "scar",
-  "text": "It'll still be there after.",
-  "key": "c0sd59"
- },
- {
-  "speaker": "scar",
   "text": "It's easiest to stop rage when it's small.",
   "key": "1dvbi5z"
  },
@@ -4508,11 +4238,6 @@
   "speaker": "scar",
   "text": "Pace yourself: burst, rest, burst.",
   "key": "1y6o09u"
- },
- {
-  "speaker": "scar",
-  "text": "Parked.",
-  "key": "1ux8jlx"
  },
  {
   "speaker": "scar",

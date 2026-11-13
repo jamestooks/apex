@@ -92,13 +92,14 @@ for (const file of walk('src')) {
   for (const m of src.matchAll(/say\(\s*(?:'((?:\\.|[^'\\])*)'|"((?:\\.|[^"\\])*)"|`([^`$]*)`)\s*,[^,)]*,[^,)]*(?:,\s*'(\w+)')?/g)) {
     const text = (m[1] ?? m[2] ?? m[3]).replace(/\\'/g, "'").replace(/\\"/g, '"');
     const who = m[4];
-    for (const sp of who ? [who] : ['scar', 'echo']) for (const t of recordPieces(text, [])) add(sp, t);
+    // Speaker given: record it. No speaker (it's whoever mentors the chapter): only add if the play-throughs never heard it, as Scar.
+    for (const t of recordPieces(text, [])) if (who) add(who, t); else if (!['scar', 'echo'].some(sp => lines.has(keyFor(sp, t)))) add('scar', t);
   }
 }
-for (const sp of ['scar', 'echo']) for (const t of [WARN_3, WARN_1]) add(sp, t);
+for (const sp of ['scar', 'echo']) for (const t of [WARN_3, WARN_1]) add(sp, t); // either mentor can be on duty
 for (const t of ['The valley waits for you.', 'Tap to carry on.']) add('narr', t);
 // Every built-in warning sign on its own, in each voice, for lines that name the child's signs.
-for (const who of ['scar', 'echo', 'narr']) for (const list of Object.values(SIGN_OPTIONS)) for (const s of list) add(who, s);
+for (const who of ['scar', 'echo']) for (const list of Object.values(SIGN_OPTIONS)) for (const s of list) add(who, s); // only mentors name a child's signs
 
 const out = [...lines.values()].sort((a, b) => a.speaker.localeCompare(b.speaker) || a.text.localeCompare(b.text));
 writeFileSync('voice/lines.json', JSON.stringify(out, null, 1));
