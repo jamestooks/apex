@@ -1,14 +1,18 @@
 # Voices
 
-Scar (Kokoro "Lewis", slower, deeper, with a gravel effect), Echo ("Isabella") and the narrator ("Daniel") are
-recorded on this computer with the open-source Kokoro model. Nothing is sent to any service.
+Recorded with ElevenLabs (see `voices.json`): Scar = "Julian" and Echo = "Oraya" on the expressive v3 model, the
+narrator = "Zane" on Multilingual v2. `voice/sources.json` records which clips came from ElevenLabs.
 
-After changing any wording in the game, re-record:
+After changing any wording in the game, record just the new lines (the free ElevenLabs plan is plenty for this):
 
 ```sh
-scripts/voice/setup.sh        # first time only (installs into ~/.cache/apex-voice)
-npm run voice                 # lists every line, records new ones, removes unused ones
+node scripts/voice/collect.mjs          # lists every line the game can speak
+node scripts/voice/eleven.mjs estimate  # credits needed for lines not yet recorded
+node scripts/voice/eleven.mjs generate  # records them (key in ~/.cache/apex-voice/elevenlabs.key)
 ```
+
+The older local generator (Kokoro: `setup.sh`, `generate.py`, `npm run voice`) still works with no account, but its voices
+are flatter and won't match the ElevenLabs ones.
 
 - `voice/lines.json` – every line the game can speak, by speaker (made by `collect.mjs`, which plays the whole game headlessly)
 - `voice/<key>.mp3` – one clip per line; `voice/manifest.json` – clip lengths the game uses

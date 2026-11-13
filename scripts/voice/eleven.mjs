@@ -53,8 +53,10 @@ function keyMoments() {
 }
 function plan() {
   const lines = JSON.parse(readFileSync('voice/lines.json', 'utf8')), km = keyMoments(), src = sources();
+  const cfg = existsSync(CONFIG) ? config() : {};
   return lines.filter(l => src[l.key] !== 'elevenlabs').map(l => {
-    const model = l.speaker === 'narr' && !km.has(l.key) ? FAST : HQ;
+    // Each speaker's model comes from voices.json; without one, key story moments get the best model.
+    const model = (cfg[l.speaker] && cfg[l.speaker].model) || (l.speaker === 'narr' && !km.has(l.key) ? FAST : HQ);
     return { ...l, model, cost: Math.ceil(l.text.replace(/^[\s,;:.\-]+/, '').length * COST[model]) };
   });
 }
@@ -71,8 +73,9 @@ const speakable = t => t.replace(/^[\s,;:.\-]+/, '').replace(/\b([A-Z]{2,})\b/g,
 const cmd = process.argv[2], args = process.argv.slice(3);
 if (cmd === 'credits') { console.log(await credits()); }
 else if (cmd === 'estimate') {
-  const p = plan(), sum = m => p.filter(l => l.model === m).reduce((n, l) => n + l.cost, 0);
-  console.log(`${p.length} lines to record: ${sum(HQ)} credits on the best model, ${sum(FAST)} on the fast model, ${sum(HQ) + sum(FAST)} in total`);
+  const p = plan(), by = {};
+  for (const l of p) by[l.model] = (by[l.model] || 0) + l.cost;
+  console.log(`${p.length} lines to record: ${Object.entries(by).map(([m, c]) => `${c} credits on ${m}`).join(', ')}; ${Object.values(by).reduce((a, b) => a + b, 0)} in total`);
 }
 else if (cmd === 'search') {
   mkdirSync(DESK, { recursive: true });

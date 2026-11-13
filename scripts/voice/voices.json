@@ -1,0 +1,5 @@
+{
+  "scar": { "name": "Julian - Deep, Rich and Mature", "voiceId": "7p1Ofvcwsv7UBPoFNcpI", "model": "eleven_v3", "settings": { "stability": 0.5, "similarity_boost": 0.8, "use_speaker_boost": true } },
+  "echo": { "name": "Oraya - Calm & professional young woman", "voiceId": "nRQT5qZlz63KgulRymWq", "model": "eleven_v3", "settings": { "stability": 0.5, "similarity_boost": 0.8, "use_speaker_boost": true } },
+  "narr": { "name": "Zane - Calm, Suspenseful Storyteller", "voiceId": "G4MBEL8urIiRY12lcDzS", "model": "eleven_multilingual_v2", "settings": { "stability": 0.45, "similarity_boost": 0.8, "style": 0.3, "use_speaker_boost": true } }
+}
