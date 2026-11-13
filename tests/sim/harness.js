@@ -93,7 +93,7 @@ export function oneThingBot(fi, { attack = false, start = 0.27, chooseBelow = 0.
 }
 
 // Fern Maze player: taps the glowing print; optionally parks each distraction by dragging it to the scent map.
-export function trackBot(fi, { park = true, tapDecoy = false, breathe = true } = {}) {
+export function trackBot(fi, { park = true, tapDecoy = false, breathe = true, every = 0.25 } = {}) {
   let dragging = null, holding = false, cool = 0;
   return ({ shell, scene }) => {
     cool -= 1 / 20;
@@ -107,6 +107,6 @@ export function trackBot(fi, { park = true, tapDecoy = false, breathe = true } =
       if (holding && le.phase === 'full') { fi.keyUp('Space'); holding = false; }
     }
     const p = scene.nextPrint && scene.nextPrint();
-    if (p && cool <= 0 && !holding && (!le || le.phase === 'idle')) { fi.tap(p.x, p.y); cool = 0.25; }
+    if (p && cool <= 0 && !holding && (!le || le.phase === 'idle')) { fi.tap(p.x, p.y); cool = every; }
   };
 }

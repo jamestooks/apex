@@ -117,7 +117,7 @@ export function createTrack(sc, sh) {
         if (!t.fired && k.printIndex >= t.at) fireTrig(t);
         if (t.fired && t.left > 0) { t.left -= dt; if (t.left <= 0) { const a = A[t.who]; if (a) { a.tx = 480; a.sp = 120; } rates[t.meter || 'rage'] = 0; } }
       }
-      if (!pausing) {
+      if (!pausing && !sh.listening(k, dt)) {
         if (drift) drift.simmer(ds.reduce((a, d) => a + (d.parked ? 0 : d.simmer), sc.baseSimmer || 0), dt);
         for (const [inst, r] of Object.entries(rates)) { const m = sh.meters.get(inst); if (m && r) m.simmer(r, dt); }
       }

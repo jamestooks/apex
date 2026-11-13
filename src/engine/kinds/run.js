@@ -78,7 +78,7 @@ export function createRun(sc, sh) {
         t.fired = true; const m = sh.meters.get(t.meter); if (m) { m.spike(t.spike || 0.3); rates[t.meter] = t.simmer || 0.05; }
         sh.noteTrigger(); if (t.sfx && SFX[t.sfx]) SFX[t.sfx](); if (t.intro) sh.say(t.intro, 4.5, 3, 'narr'); if (t.hint) sh.sayNext(t.hint, 4);
       }
-      if (!pausing) for (const [inst, r] of Object.entries(rates)) { const m = sh.meters.get(inst); if (m && r) m.simmer(r, dt); }
+      if (!pausing && !sh.listening(k, dt)) for (const [inst, r] of Object.entries(rates)) { const m = sh.meters.get(inst); if (m && r) m.simmer(r, dt); }
       const sceneHeld = !sh.activeTool && input.held({ x: 0, y: 70, w: W, h: SH() - 70 }, 'Space');
       let held = sceneHeld, speed;
       if (k.burnout > 0) { k.burnout = Math.max(0, k.burnout - dt); held = false; speed = 0; if (k.burnout === 0) { sh.say('Up you get. Short bursts this time.', 3, 2, 'scar'); } }

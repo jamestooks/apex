@@ -92,9 +92,10 @@ export function createAmbush(sc, sh) {
   k.update = dt => {
     pieces.update(dt, k.phase === 'hide');
     const h = held();
+    const listening = sh.listening(k, dt);
     // compute urge from waves before tools act, then credit any tool relief
     if (urge && (k.phase === 'settle' || k.phase === 'hide' || k.phase === 'signal')) {
-      if (k.phase === 'settle' && !h) k.settleAcc += SETTLE_SIMMER * sh.difficulty.simmerMul * dt;
+      if (k.phase === 'settle' && !h && !listening) k.settleAcc += SETTLE_SIMMER * sh.difficulty.simmerMul * dt;
       k.twitch = Math.max(0, k.twitch - TWITCH_DECAY * dt);
       const raw = BASE + k.settleAcc + waveLevel(k.heldT) + k.twitch - k.calmAcc;
       urge.set(Math.max(0, k.phase === 'settle' ? Math.min(1, raw) : Math.min(SPIKE_CAP, raw)));
@@ -102,7 +103,7 @@ export function createAmbush(sc, sh) {
     const before = urge ? urge.value : 0;
     const pausing = sh.updateTools(dt);
     if (urge && urge.value < before) k.calmAcc += before - urge.value;
-    for (const [inst, r] of Object.entries(rates)) { const m = sh.meters.get(inst); if (m && r && !pausing) m.simmer(r, dt); }
+    for (const [inst, r] of Object.entries(rates)) { const m = sh.meters.get(inst); if (m && r && !pausing && !listening) m.simmer(r, dt); }
     sh.move(A.fang, dt); sh.move(me, dt);
 
     if (k.phase === 'settle') {

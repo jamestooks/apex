@@ -97,6 +97,8 @@ export function createShell(env) {
     },
     sayNext(text, dur, who) { sh.queue.push({ text, dur, who: who || sh.mentor }); },
     get quiet() { return sh.msgT <= 0.15 && !sh.queue.length; },
+    // Meters hold still while Scar or the narrator is talking, so listening never costs a turn (up to 25 s a scene).
+    listening(scene, dt) { if (sh.quiet) return false; scene.heardT = (scene.heardT || 0) + dt; return scene.heardT < 25; },
     // Personal words the voice speaks as separate pieces: the child's warning signs and names.
     voiceNames() {
       const p = sh.profile || {};
@@ -225,11 +227,11 @@ export function createShell(env) {
       }
       for (const m of sh.meters.list) for (const i of m.crossings()) {
         sh.floats.push({ text: m.signs[i] || '', x: sh.actors.me.x, y: GY() - 80, t: 0 });
-        if (i === 0 && (!sh.hintSign[m.instinct] || sh.difficulty.promptEarly)) {
+        // Only when nobody else is talking (the sign also floats up above the raptor); otherwise try again later.
+        if (i === 0 && (!sh.hintSign[m.instinct] || sh.difficulty.promptEarly) && sh.quiet) {
           sh.hintSign[m.instinct] = 1;
           const tool = TOOLS[INSTINCTS[m.instinct].tool].TOOL;
-          const line = `There. ${m.signs[0]}. That's your first warning sign. Best time to ${tool.verb}.`;
-          if (sh.difficulty.promptEarly) sh.say(line, 4, 2); else sh.sayNext(line, 4);
+          sh.say(`There. ${m.signs[0]}. That's your first warning sign. Best time to ${tool.verb}.`, 4, sh.difficulty.promptEarly ? 2 : 1);
         }
       }
     },

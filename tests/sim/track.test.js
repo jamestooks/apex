@@ -29,6 +29,7 @@ test('tapping a decoy does not park it; dragging it to the map does, and stops i
   fi.tap(d.x, d.y); step(shell, scene, 0.1);
   assert.equal(d.parked, false);
   const drift = shell.meters.get('drift');
+  for (let i = 0; i < 400 && !shell.quiet; i++) step(shell, scene, 0.05); // drift holds still while the narrator speaks
   const v0 = drift.value; step(shell, scene, 1); assert.ok(drift.value > v0, 'unparked decoy simmers');
   const mr = shell.runs.parkIt.mapRect; fi.down(d.x, d.y, 3); fi.move(mr.x + 20, mr.y + 20, 3); fi.up(3); step(shell, scene, 0.1);
   assert.equal(d.parked, true);
@@ -38,7 +39,8 @@ test('tapping a decoy does not park it; dragging it to the map does, and stops i
 test('ignoring every decoy ends in takeover and a failed hunt, but the scene still finishes with a card', () => {
   const { shell, fi, scene } = setup(CH.scenarios.test[1]);
   let sawCard = false;
-  runScene(shell, scene, ctx => { if (shell.card) sawCard = true; trackBot(fi, { park: false })(ctx); }, { dt: 1 / 20, maxSecs: 300 });
+  const bot = trackBot(fi, { park: false, every: 1.5 }); // a child's pace
+  runScene(shell, scene, ctx => { if (shell.card) sawCard = true; bot(ctx); }, { dt: 1 / 20, maxSecs: 300 });
   assert.equal(scene.done, true);
   assert.equal(scene.result.forced, true);
   assert.equal(scene.result.success, false);

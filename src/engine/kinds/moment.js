@@ -192,7 +192,7 @@ export function createMoment(sc, sh) {
     }
     if (m.phase === 'live') {
       m.liveT += dt;
-      if (!pausing) for (const mm of sh.meters.list) if (rates[mm.instinct]) mm.simmer(rates[mm.instinct], dt);
+      if (!pausing && !sh.listening(m, dt)) for (const mm of sh.meters.list) if (rates[mm.instinct]) mm.simmer(rates[mm.instinct], dt);
       m.peakAfterTrigger = Math.max(m.peakAfterTrigger, sh.heat);
       for (const t of trig) if (t.fired && t.grab && t.who) { const a = A[t.who]; a.tx = t.dragTo || 345; a.sp = 10; sh.move(a, dt); if (m.carcass) m.carcass.x = a.x - 44; }
       const full = sh.meters.list.find(x => x.full);
